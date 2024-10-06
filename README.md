@@ -40,5 +40,19 @@ bash
 roslaunch <your_launch_file>.launch
 
 ## Commands
+Using these commands might required you to open rviz in a seperate terminal.
+
+Examples in rviz:
+Set your global Fixed Frame to `camera_link`
+
+If you want to add a camera, set your topic to /camera/rgb/image_color for color image
+
+Now add PointCloud2 for the Lidar scanner, using `/filtered_points`
+
+
+![Alt text](./images/your-image.png)
+
 
 The command `roslaunch pointcloud_filter filter_kinect.launch` is used to test the program by launching the point cloud filtering process.
+
+
