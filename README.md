@@ -50,7 +50,7 @@ If you want to add a camera, set your topic to /camera/rgb/image_color for color
 Now add PointCloud2 for the Lidar scanner, using `/filtered_points`
 
 
-![Alt text](./images/your-image.png)
+![PointCloud2](./images/simulation.png)
 
 
 The command `roslaunch pointcloud_filter filter_kinect.launch` is used to test the program by launching the point cloud filtering process.
