@@ -38,3 +38,7 @@ Launch the project to visualize the 3D model of the wind turbine using the Kinec
 bash
 
 roslaunch <your_launch_file>.launch
+
+## Commands
+
+The command 'roslaunch pointcloud_filter' passthrough_filter.launch is used to test the program by launching the point cloud filtering process.
