@@ -9,6 +9,10 @@ To use this project, you must install the following dependencies:
 - **ROS Noetic**: The ROS distribution used for managing the various packages and nodes required for the digital twin.
 - **freenect_stack**: This library enables the Xbox Kinect 360 camera to function with ROS, providing the necessary data to generate a 3D point cloud of the wind turbine.
 
+## Build Instructions
+
+`catkin_make` is used to build the ROS workspace and compile the project.
+
 ## Setup Instructions
 
 1. Clone the repository into your ROS workspace.
