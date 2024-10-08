@@ -55,6 +55,10 @@ Now add PointCloud2 for the Lidar scanner, using `/filtered_points`
 
 The command `roslaunch pointcloud_filter filter_kinect.launch` is used to test the program by launching the point cloud filtering process.
 
+
+roslaunch freenect_launch freenect.launch
+
+
 `mosquitto_sub -h 192.168.1.205 -t wind_turbine/hall_effect`
 
 
