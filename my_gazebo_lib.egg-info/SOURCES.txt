@@ -1,0 +1,9 @@
+README.md
+setup.py
+my_gazebo_lib/__init__.py
+my_gazebo_lib/gazebo_control.py
+my_gazebo_lib.egg-info/PKG-INFO
+my_gazebo_lib.egg-info/SOURCES.txt
+my_gazebo_lib.egg-info/dependency_links.txt
+my_gazebo_lib.egg-info/requires.txt
+my_gazebo_lib.egg-info/top_level.txt
