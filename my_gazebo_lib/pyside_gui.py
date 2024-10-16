@@ -1,10 +1,9 @@
 import sys
 import paho.mqtt.client as mqtt
-from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QWidget, QTextEdit
-from PySide2.QtCore import QTimer
+from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QWidget, QTextEdit, QLineEdit
+from PySide2.QtCore import QTimer, Qt
 import cv2
-from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtWidgets import QLabel
+from PySide2.QtGui import QImage, QPixmap, QColor
 
 class DigitalTwinGUI(QMainWindow):
     def __init__(self):
@@ -17,6 +16,23 @@ class DigitalTwinGUI(QMainWindow):
         # Main widget and layout
         main_widget = QWidget()
         layout = QVBoxLayout()
+
+        # Text input for IP address
+        self.ip_input = QLineEdit(self)
+        # example ip: 192.168.1.204
+        self.ip_input.setPlaceholderText("Enter MQTT broker IP")
+        layout.addWidget(self.ip_input)
+
+        # Connection status indicator
+        self.status_label = QLabel("Status: Offline")
+        self.status_label.setAlignment(Qt.AlignCenter)
+        self.status_label.setStyleSheet("QLabel { background-color : red; color : white; }")
+        layout.addWidget(self.status_label)
+
+        # Connect button
+        self.connect_button = QPushButton("Connect to MQTT")
+        self.connect_button.clicked.connect(self.connect_to_mqtt)
+        layout.addWidget(self.connect_button)
 
         # Labels for displaying sensor data
         self.rpm_label = QLabel("RPM: N/A")
@@ -72,13 +88,10 @@ class DigitalTwinGUI(QMainWindow):
         # Setup MQTT client
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
+        self.client.on_disconnect = self.on_disconnect
         self.client.on_message = self.on_message
 
-        # Connect to the MQTT broker (Replace with Raspberry Pi's IP)
-        self.client.connect("192.168.1.204", 1883, 60)
-        self.client.loop_start()
-
-        # Setup camera feed using OpenCV
+        # Timer for camera feed updates
         self.camera = cv2.VideoCapture(0)  # Use 0 for the first webcam
         self.camera.set(cv2.CAP_PROP_FPS, 30)  # Set FPS to 30
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # Reduce resolution
@@ -90,8 +103,23 @@ class DigitalTwinGUI(QMainWindow):
 
         self.frame_count = 0  # Initialize frame counter
 
+    def connect_to_mqtt(self):
+        # Get the IP address from the input field
+        ip_address = self.ip_input.text().strip()
+        if ip_address:
+            try:
+                # Try connecting to the MQTT broker at the entered IP
+                self.client.connect(ip_address, 1883, 60)
+                self.client.loop_start()
+            except Exception as e:
+                print(f"Connection failed: {e}")
+                self.update_status(False)
+        else:
+            print("Please enter a valid IP address.")
+
     def on_connect(self, client, userdata, flags, rc):
         print("Connected to MQTT broker with result code " + str(rc))
+        self.update_status(True)
         # Subscribe to the MQTT topics for sensor data
         client.subscribe("wind_turbine/rpm")
         client.subscribe("wind_turbine/temperature")
@@ -101,6 +129,18 @@ class DigitalTwinGUI(QMainWindow):
         client.subscribe("wind_turbine/current")
         client.subscribe("wind_turbine/vibration")
         client.subscribe("wind_turbine/warnings")
+
+    def on_disconnect(self, client, userdata, rc):
+        print("Disconnected from MQTT broker with result code " + str(rc))
+        self.update_status(False)
+
+    def update_status(self, online):
+        if online:
+            self.status_label.setText("Status: Online")
+            self.status_label.setStyleSheet("QLabel { background-color : green; color : white; }")
+        else:
+            self.status_label.setText("Status: Offline")
+            self.status_label.setStyleSheet("QLabel { background-color : red; color : white; }")
 
     def on_message(self, client, userdata, msg):
         # Update GUI based on the received MQTT messages
