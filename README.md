@@ -61,4 +61,7 @@ roslaunch freenect_launch freenect.launch
 
 `mosquitto_sub -h 192.168.1.205 -t wind_turbine/hall_effect`
 
+documention for BMEO055
+https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-with-raspberry-pi-and-beaglebone-black.pdf
+
 
