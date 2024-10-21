@@ -1,0 +1,1 @@
+this is ThingsBoard IoT I put it in a docker in order for it to work on Window and Linux machines
