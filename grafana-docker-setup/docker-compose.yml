@@ -1,0 +1,25 @@
+
+services:
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"  # Exposes Grafana on port 3000
+    volumes:
+      - grafana-data:/var/lib/grafana  # Volume to persist Grafana data
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=yourpassword  # Set your admin password here
+
+  node-red:
+    image: nodered/node-red
+    container_name: node-red
+    ports:
+      - "1880:1880"  # Exposes Node-RED on port 1880
+    volumes:
+      - node-red-data:/data  # Volume to persist Node-RED data
+    environment:
+      - TZ=America/New_York  # Set your timezone here
+
+volumes:
+  grafana-data:
+  node-red-data:
