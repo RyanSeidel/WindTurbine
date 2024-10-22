@@ -1,0 +1,227 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@10.8.2
+2 info using node@v20.18.0
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/data/.npmrc
+5 silly config load:file:/usr/src/node-red/.npmrc
+6 silly config load:file:/usr/local/etc/npmrc
+7 verbose title npm install node-red-contrib-influxdb@0.7.0
+8 verbose argv "install" "--no-audit" "--no-update-notifier" "--no-fund" "--save" "--save-prefix" "~" "--omit" "dev" "--engine-strict" "node-red-contrib-influxdb@0.7.0"
+9 verbose logfile logs-max:10 dir:/data/.npm/_logs/2024-10-22T19_26_34_162Z-
+10 verbose logfile /data/.npm/_logs/2024-10-22T19_26_34_162Z-debug-0.log
+11 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+12 silly logfile done cleaning log files
+13 silly idealTree buildDeps
+14 silly fetch manifest node-red-contrib-influxdb@0.7.0
+15 silly packumentCache full:https://registry.npmjs.org/node-red-contrib-influxdb cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/node-red-contrib-influxdb 527ms (cache miss)
+17 silly packumentCache full:https://registry.npmjs.org/node-red-contrib-influxdb set size:undefined disposed:false
+18 silly placeDep ROOT node-red-contrib-influxdb@0.7.0 OK for: node-red-project@0.0.1 want: 0.7.0
+19 silly fetch manifest influx@~5.9.3
+20 silly packumentCache full:https://registry.npmjs.org/influx cache-miss
+21 silly fetch manifest @influxdata/influxdb-client@~1.33.2
+22 silly packumentCache full:https://registry.npmjs.org/@influxdata%2finfluxdb-client cache-miss
+23 http fetch GET 200 https://registry.npmjs.org/influx 82ms (cache miss)
+24 silly packumentCache full:https://registry.npmjs.org/influx set size:undefined disposed:false
+25 http fetch GET 200 https://registry.npmjs.org/@influxdata%2finfluxdb-client 291ms (cache miss)
+26 silly packumentCache full:https://registry.npmjs.org/@influxdata%2finfluxdb-client set size:undefined disposed:false
+27 silly placeDep ROOT @influxdata/influxdb-client@1.33.2 OK for: node-red-contrib-influxdb@0.7.0 want: ~1.33.2
+28 silly placeDep ROOT influx@5.9.3 OK for: node-red-contrib-influxdb@0.7.0 want: ~5.9.3
+29 silly reify moves {}
+30 verbose reify failed optional dependency /data/node_modules/amqplib
+31 silly reify mark deleted [ '/data/node_modules/amqplib' ]
+32 verbose reify failed optional dependency /data/node_modules/bitsyntax
+33 silly reify mark deleted [ '/data/node_modules/bitsyntax' ]
+34 verbose reify failed optional dependency /data/node_modules/buffer-more-ints
+35 silly reify mark deleted [ '/data/node_modules/buffer-more-ints' ]
+36 verbose reify failed optional dependency /data/node_modules/when
+37 silly reify mark deleted [ '/data/node_modules/when' ]
+38 silly tarball no local data for node-red-contrib-influxdb@https://registry.npmjs.org/node-red-contrib-influxdb/-/node-red-contrib-influxdb-0.7.0.tgz. Extracting by manifest.
+39 silly tarball no local data for influx@https://registry.npmjs.org/influx/-/influx-5.9.3.tgz. Extracting by manifest.
+40 silly tarball no local data for @influxdata/influxdb-client@https://registry.npmjs.org/@influxdata/influxdb-client/-/influxdb-client-1.33.2.tgz. Extracting by manifest.
+41 http fetch GET 200 https://registry.npmjs.org/node-red-contrib-influxdb/-/node-red-contrib-influxdb-0.7.0.tgz 943ms (cache miss)
+42 http fetch GET 200 https://registry.npmjs.org/influx/-/influx-5.9.3.tgz 1478ms (cache miss)
+43 http fetch GET 200 https://registry.npmjs.org/@influxdata/influxdb-client/-/influxdb-client-1.33.2.tgz 1702ms (cache miss)
+44 info run fs-ext@0.5.0 install node_modules/fs-ext node-gyp configure build
+45 info run leveldown@1.4.6 install node_modules/leveldown prebuild --install
+46 info run snappy@5.0.5 install node_modules/snappy ./node_modules/.bin/node-gyp rebuild
+47 info run zmq@2.15.3 install node_modules/zmq node-gyp rebuild
+48 info run fs-ext@0.5.0 install { code: 1, signal: null }
+49 verbose reify failed optional dependency /data/node_modules/fs-ext
+50 silly reify mark deleted [ '/data/node_modules/fs-ext' ]
+51 info run zmq@2.15.3 install { code: 1, signal: null }
+52 verbose reify failed optional dependency /data/node_modules/zmq
+53 silly reify mark deleted [ '/data/node_modules/zmq' ]
+54 verbose reify failed optional dependency /data/node_modules/zmq/node_modules/nan
+55 silly reify mark deleted [ '/data/node_modules/zmq/node_modules/nan' ]
+56 info run snappy@5.0.5 install { code: 1, signal: null }
+57 verbose reify failed optional dependency /data/node_modules/snappy
+58 silly reify mark deleted [ '/data/node_modules/snappy' ]
+59 verbose reify failed optional dependency /data/node_modules/snappy/node_modules/nan
+60 silly reify mark deleted [ '/data/node_modules/snappy/node_modules/nan' ]
+61 verbose reify failed optional dependency /data/node_modules/snappy/node_modules/node-gyp
+62 silly reify mark deleted [
+62 silly reify   '/data/node_modules/snappy/node_modules/node-gyp',
+62 silly reify   '/data/node_modules/snappy/node_modules/.bin/node-gyp'
+62 silly reify ]
+63 info run leveldown@1.4.6 install { code: 2, signal: null }
+64 verbose reify failed optional dependency /data/node_modules/leveldown
+65 silly reify mark deleted [ '/data/node_modules/leveldown' ]
+66 verbose reify failed optional dependency /data/node_modules/fast-future
+67 silly reify mark deleted [ '/data/node_modules/fast-future' ]
+68 verbose reify failed optional dependency /data/node_modules/leveldown/node_modules/nan
+69 silly reify mark deleted [ '/data/node_modules/leveldown/node_modules/nan' ]
+70 verbose reify failed optional dependency /data/node_modules/prebuild
+71 silly reify mark deleted [ '/data/node_modules/prebuild', '/data/node_modules/.bin/prebuild' ]
+72 verbose reify failed optional dependency /data/node_modules/execspawn
+73 silly reify mark deleted [ '/data/node_modules/execspawn' ]
+74 verbose reify failed optional dependency /data/node_modules/expand-template
+75 silly reify mark deleted [ '/data/node_modules/expand-template' ]
+76 verbose reify failed optional dependency /data/node_modules/ghreleases
+77 silly reify mark deleted [ '/data/node_modules/ghreleases' ]
+78 verbose reify failed optional dependency /data/node_modules/github-from-package
+79 silly reify mark deleted [ '/data/node_modules/github-from-package' ]
+80 verbose reify failed optional dependency /data/node_modules/node-gyp
+81 silly reify mark deleted [ '/data/node_modules/node-gyp', '/data/node_modules/.bin/node-gyp' ]
+82 verbose reify failed optional dependency /data/node_modules/node-ninja
+83 silly reify mark deleted [
+83 silly reify   '/data/node_modules/node-ninja',
+83 silly reify   '/data/node_modules/.bin/node-ninja'
+83 silly reify ]
+84 verbose reify failed optional dependency /data/node_modules/noop-logger
+85 silly reify mark deleted [ '/data/node_modules/noop-logger' ]
+86 verbose reify failed optional dependency /data/node_modules/rc
+87 silly reify mark deleted [ '/data/node_modules/rc', '/data/node_modules/.bin/rc' ]
+88 verbose reify failed optional dependency /data/node_modules/simple-get
+89 silly reify mark deleted [ '/data/node_modules/simple-get' ]
+90 verbose reify failed optional dependency /data/node_modules/tar-fs
+91 silly reify mark deleted [ '/data/node_modules/tar-fs' ]
+92 verbose reify failed optional dependency /data/node_modules/tar-stream
+93 silly reify mark deleted [ '/data/node_modules/tar-stream' ]
+94 verbose reify failed optional dependency /data/node_modules/util-extend
+95 silly reify mark deleted [ '/data/node_modules/util-extend' ]
+96 verbose reify failed optional dependency /data/node_modules/after
+97 silly reify mark deleted [ '/data/node_modules/after' ]
+98 verbose reify failed optional dependency /data/node_modules/ghrepos
+99 silly reify mark deleted [ '/data/node_modules/ghrepos' ]
+100 verbose reify failed optional dependency /data/node_modules/ghutils
+101 silly reify mark deleted [ '/data/node_modules/ghutils' ]
+102 verbose reify failed optional dependency /data/node_modules/simple-mime
+103 silly reify mark deleted [ '/data/node_modules/simple-mime' ]
+104 verbose reify failed optional dependency /data/node_modules/url-template
+105 silly reify mark deleted [ '/data/node_modules/url-template' ]
+106 verbose reify failed optional dependency /data/node_modules/node-gyp/node_modules/semver
+107 silly reify mark deleted [
+107 silly reify   '/data/node_modules/node-gyp/node_modules/semver',
+107 silly reify   '/data/node_modules/node-gyp/node_modules/.bin/semver'
+107 silly reify ]
+108 verbose reify failed optional dependency /data/node_modules/deep-extend
+109 silly reify mark deleted [ '/data/node_modules/deep-extend' ]
+110 verbose reify failed optional dependency /data/node_modules/ini
+111 silly reify mark deleted [ '/data/node_modules/ini' ]
+112 verbose reify failed optional dependency /data/node_modules/strip-json-comments
+113 silly reify mark deleted [ '/data/node_modules/strip-json-comments' ]
+114 verbose reify failed optional dependency /data/node_modules/unzip-response
+115 silly reify mark deleted [ '/data/node_modules/unzip-response' ]
+116 verbose reify failed optional dependency /data/node_modules/chownr
+117 silly reify mark deleted [ '/data/node_modules/chownr' ]
+118 verbose reify failed optional dependency /data/node_modules/buffer-alloc
+119 silly reify mark deleted [ '/data/node_modules/buffer-alloc' ]
+120 verbose reify failed optional dependency /data/node_modules/fs-constants
+121 silly reify mark deleted [ '/data/node_modules/fs-constants' ]
+122 verbose reify failed optional dependency /data/node_modules/tar-stream/node_modules/readable-stream
+123 silly reify mark deleted [ '/data/node_modules/tar-stream/node_modules/readable-stream' ]
+124 verbose reify failed optional dependency /data/node_modules/to-buffer
+125 silly reify mark deleted [ '/data/node_modules/to-buffer' ]
+126 verbose reify failed optional dependency /data/node_modules/jsonist
+127 silly reify mark deleted [ '/data/node_modules/jsonist' ]
+128 verbose reify failed optional dependency /data/node_modules/buffer-alloc-unsafe
+129 silly reify mark deleted [ '/data/node_modules/buffer-alloc-unsafe' ]
+130 verbose reify failed optional dependency /data/node_modules/buffer-fill
+131 silly reify mark deleted [ '/data/node_modules/buffer-fill' ]
+132 verbose reify failed optional dependency /data/node_modules/tar-stream/node_modules/safe-buffer
+133 silly reify mark deleted [ '/data/node_modules/tar-stream/node_modules/safe-buffer' ]
+134 verbose reify failed optional dependency /data/node_modules/tar-stream/node_modules/string_decoder
+135 silly reify mark deleted [ '/data/node_modules/tar-stream/node_modules/string_decoder' ]
+136 verbose reify failed optional dependency /data/node_modules/jsonist/node_modules/bl
+137 silly reify mark deleted [ '/data/node_modules/jsonist/node_modules/bl' ]
+138 verbose reify failed optional dependency /data/node_modules/hyperquest
+139 silly reify mark deleted [ '/data/node_modules/hyperquest' ]
+140 verbose reify failed optional dependency /data/node_modules/jsonist/node_modules/readable-stream
+141 silly reify mark deleted [ '/data/node_modules/jsonist/node_modules/readable-stream' ]
+142 verbose reify failed optional dependency /data/node_modules/hyperquest/node_modules/buffer-from
+143 silly reify mark deleted [ '/data/node_modules/hyperquest/node_modules/buffer-from' ]
+144 verbose reify failed optional dependency /data/node_modules/duplexer2
+145 silly reify mark deleted [ '/data/node_modules/duplexer2' ]
+146 verbose reify failed optional dependency /data/node_modules/hyperquest/node_modules/through2
+147 silly reify mark deleted [ '/data/node_modules/hyperquest/node_modules/through2' ]
+148 verbose reify failed optional dependency /data/node_modules/jsonist/node_modules/string_decoder
+149 silly reify mark deleted [ '/data/node_modules/jsonist/node_modules/string_decoder' ]
+150 verbose reify failed optional dependency /data/node_modules/hyperquest/node_modules/readable-stream
+151 silly reify mark deleted [ '/data/node_modules/hyperquest/node_modules/readable-stream' ]
+152 verbose reify failed optional dependency /data/node_modules/hyperquest/node_modules/isarray
+153 silly reify mark deleted [ '/data/node_modules/hyperquest/node_modules/isarray' ]
+154 silly ADD node_modules/influx
+155 silly ADD node_modules/@influxdata/influxdb-client
+156 silly ADD node_modules/node-red-contrib-influxdb
+157 silly ADD
+158 silly ADD node_modules/nan
+159 silly ADD
+160 silly ADD
+161 silly ADD
+162 silly ADD
+163 silly ADD
+164 silly ADD
+165 silly ADD node_modules/string_decoder
+166 silly ADD node_modules/safe-buffer
+167 silly ADD node_modules/readable-stream
+168 silly ADD
+169 silly ADD
+170 silly ADD
+171 silly ADD node_modules/node-gyp
+172 silly ADD node_modules/nan
+173 silly ADD
+174 silly ADD
+175 silly ADD
+176 silly ADD
+177 silly ADD
+178 silly ADD
+179 silly ADD
+180 silly ADD node_modules/semver
+181 silly ADD
+182 silly ADD node_modules/nan
+183 silly ADD
+184 silly ADD node_modules/string_decoder
+185 silly ADD node_modules/readable-stream
+186 silly ADD node_modules/bl
+187 silly ADD
+188 silly ADD
+189 silly ADD node_modules/through2
+190 silly ADD node_modules/readable-stream
+191 silly ADD node_modules/isarray
+192 silly ADD node_modules/buffer-from
+193 silly ADD
+194 silly ADD
+195 silly ADD
+196 silly ADD
+197 silly ADD
+198 silly ADD
+199 silly ADD
+200 silly ADD
+201 silly ADD
+202 silly ADD
+203 silly ADD
+204 silly ADD
+205 silly ADD
+206 silly ADD
+207 silly ADD
+208 silly ADD
+209 silly ADD
+210 silly ADD
+211 silly ADD
+212 verbose cwd /data
+213 verbose os Linux 5.15.153.1-microsoft-standard-WSL2
+214 verbose node v20.18.0
+215 verbose npm  v10.8.2
+216 verbose exit 0
+217 info ok

@@ -19,4 +19,17 @@ services:
     environment:
       - TZ=America/New_York  # Set your timezone here
 
-# Removed the volumes section as we are now using bind mounts
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086"  # Exposes InfluxDB on port 8086
+    volumes:
+      - ./influxdb-data:/var/lib/influxdb  # Bind mount host directory to persist InfluxDB data
+    environment:
+      - INFLUXDB_DB=mydb  # Creates a default database 'mydb'
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=yourpassword
+      
+
+# No volumes section is needed as we are using bind mounts
