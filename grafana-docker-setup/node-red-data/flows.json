@@ -54,6 +54,21 @@
         "rejectUnauthorized": true
     },
     {
+        "id": "4d812f472c56fc8b",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "Test",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "timeout": "10",
+        "rejectUnauthorized": true
+    },
+    {
         "id": "4596a408e9ebef71",
         "type": "mqtt in",
         "z": "1045a0c06269d357",
@@ -70,7 +85,7 @@
         "y": 240,
         "wires": [
             [
-                "1e71140b29f85294"
+                "4e3045b7b9eca4de"
             ]
         ]
     },
@@ -103,8 +118,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 780,
-        "y": 460,
+        "x": 520,
+        "y": 300,
         "wires": [
             []
         ]
@@ -123,64 +138,83 @@
         "retentionPolicyV18Flux": "",
         "org": "TAMUCC",
         "bucket": "WindTurbine_RealTime",
-        "x": 1100,
-        "y": 460,
+        "x": 1040,
+        "y": 280,
         "wires": []
     },
     {
-        "id": "1e71140b29f85294",
-        "type": "change",
+        "id": "d059d31bc7e59a32",
+        "type": "inject",
         "z": "1045a0c06269d357",
-        "name": "Format",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "{}",
-                "tot": "json"
-            },
-            {
-                "t": "move",
-                "p": "payload",
-                "pt": "msg",
-                "to": "",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "payload.measurement",
-                "pt": "msg",
-                "to": "RPM Measurement",
-                "tot": "str"
-            },
-            {
-                "t": "set",
-                "p": "payload.fields.rpm",
-                "pt": "msg",
-                "to": "msg.rpm",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "payload.tags.sensor",
-                "pt": "msg",
-                "to": "hall effect",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 500,
-        "y": 360,
+        "name": "Start",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 550,
+        "y": 440,
         "wires": [
             [
-                "d44ddc4f6364cd24",
-                "4e3045b7b9eca4de"
+                "414c9a9624884586"
             ]
         ]
+    },
+    {
+        "id": "2f9faf2203c153ec",
+        "type": "debug",
+        "z": "1045a0c06269d357",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "414c9a9624884586",
+        "type": "function",
+        "z": "1045a0c06269d357",
+        "name": "function 1",
+        "func": "msg.payload = {\n  measurement: \"WindTurbine\",  // Match the measurement name from your Python script\n  fields: {\n      rpm: 123.45  // The data you want to send (same as your Python script)\n  },\n  tags: {\n      sensor: \"hall_effect\"  // Optional tags\n  }\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 440,
+        "wires": [
+            [
+                "2f9faf2203c153ec",
+                "0ebc8cf5b3930d94"
+            ]
+        ]
+    },
+    {
+        "id": "0ebc8cf5b3930d94",
+        "type": "influxdb out",
+        "z": "1045a0c06269d357",
+        "influxdb": "4d812f472c56fc8b",
+        "name": "Test",
+        "measurement": "Hall Effect",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "TAMUCC",
+        "bucket": "Test",
+        "x": 930,
+        "y": 440,
+        "wires": []
     }
 ]
