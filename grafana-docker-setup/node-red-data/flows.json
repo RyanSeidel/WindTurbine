@@ -49,7 +49,7 @@
         "usetls": false,
         "tls": "",
         "influxdbVersion": "2.0",
-        "url": "http://localhost:8086",
+        "url": "http://influxdb:8086",
         "timeout": "10",
         "rejectUnauthorized": true
     },
@@ -85,7 +85,7 @@
         "y": 240,
         "wires": [
             [
-                "4e3045b7b9eca4de"
+                "723ed556a19a81af"
             ]
         ]
     },
@@ -111,7 +111,7 @@
         "type": "function",
         "z": "1045a0c06269d357",
         "name": "RPM Function",
-        "func": "var rpm_value = parseFloat(msg.payload);  // Ensure the RPM is a numeric value\n\n// Create the JSON object for InfluxDB\nmsg.payload = {\n    measurement: \"RPM Measurement\",  // The measurement name in InfluxDB\n    fields: {\n        rpm: rpm_value  // RPM value as a field\n    },\n    tags: {\n        sensor: \"hall_effect\"  // Add tags like sensor type\n    }\n};\n\nreturn msg;\n",
+        "func": "// Attempt to parse the incoming msg.payload as a numeric value\nvar rpm_value = parseFloat(msg.payload);\n\n// Check if the value is a valid number (remove invalid entries)\nif (isNaN(rpm_value)) {\n    node.error(\"Invalid RPM value received: \" + msg.payload, msg);  // Log an error if not a number\n    return null;  // Stop further processing if the RPM value is invalid\n}\n\n// If it's a valid number, prepare the payload for InfluxDB\nmsg.payload = {\n    \n    rpm: rpm_value  // RPM value as a field (numeric)\n    };\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -121,7 +121,10 @@
         "x": 520,
         "y": 300,
         "wires": [
-            []
+            [
+                "d44ddc4f6364cd24",
+                "4e3045b7b9eca4de"
+            ]
         ]
     },
     {
@@ -130,14 +133,14 @@
         "z": "1045a0c06269d357",
         "influxdb": "cc7cfc788da92736",
         "name": "Wind Turbine",
-        "measurement": "Hall Sensor",
+        "measurement": "RPM Measurement",
         "precision": "",
         "retentionPolicy": "",
         "database": "database",
         "precisionV18FluxV20": "ms",
         "retentionPolicyV18Flux": "",
         "org": "TAMUCC",
-        "bucket": "WindTurbine_RealTime",
+        "bucket": "Test",
         "x": 1040,
         "y": 280,
         "wires": []
@@ -203,16 +206,16 @@
         "id": "0ebc8cf5b3930d94",
         "type": "influxdb out",
         "z": "1045a0c06269d357",
-        "influxdb": "4d812f472c56fc8b",
+        "influxdb": "cc7cfc788da92736",
         "name": "Test",
-        "measurement": "Hall Effect",
+        "measurement": "rpm",
         "precision": "",
         "retentionPolicy": "",
         "database": "database",
         "precisionV18FluxV20": "ms",
         "retentionPolicyV18Flux": "",
         "org": "TAMUCC",
-        "bucket": "Test",
+        "bucket": "WindTurbine",
         "x": 930,
         "y": 440,
         "wires": []
