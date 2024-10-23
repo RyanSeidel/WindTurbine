@@ -1,1 +1,6 @@
+# Ignore dynamically generated data directories
+grafana-data/
+influxdb-data/
+
+# Ignore Node-RED generated dependencies
 node-red-data/node_modules/
