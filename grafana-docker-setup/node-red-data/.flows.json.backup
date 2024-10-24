@@ -111,7 +111,7 @@
         "type": "function",
         "z": "1045a0c06269d357",
         "name": "RPM Function",
-        "func": "// Attempt to parse the incoming msg.payload as a numeric value\nvar rpm_value = parseFloat(msg.payload);\n\n// Check if the value is a valid number (remove invalid entries)\nif (isNaN(rpm_value)) {\n    node.error(\"Invalid RPM value received: \" + msg.payload, msg);  // Log an error if not a number\n    return null;  // Stop further processing if the RPM value is invalid\n}\n\n// If it's a valid number, prepare the payload for InfluxDB\nmsg.payload = {\n    measurement: \"RPM_Measurement\",  // The measurement name in InfluxDB (must be valid)\n\n    rpm: rpm_value  // RPM value as a field (numeric)\n    };\n\nreturn msg;\n",
+        "func": "// Attempt to parse the incoming msg.payload as a numeric value\nvar rpm_value = parseFloat(msg.payload);\n\n// Check if the value is a valid number (remove invalid entries)\nif (isNaN(rpm_value)) {\n    node.error(\"Invalid RPM value received: \" + msg.payload, msg);  // Log an error if not a number\n    return null;  // Stop further processing if the RPM value is invalid\n}\n\n// If it's a valid number, prepare the payload for InfluxDB\nmsg.payload = {\n    \n    rpm: rpm_value  // RPM value as a field (numeric)\n    };\n\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
