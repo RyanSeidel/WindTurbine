@@ -1,81 +1,117 @@
 const socket = io(); // Initialize Socket.IO
-let chartData = []; // Array to hold the chart data
 
-// Function to render or update the RPM data as a chart using D3.js
-function renderChart() {
+// Function to render or update the RPM data as a responsive full-circle gauge using D3.js
+function renderGauge(rpm) {
     // Clear the existing chart before rendering a new one
     d3.select("#chart").selectAll("*").remove();
 
-    // Prepare the SVG canvas dimensions
-    const svgWidth = 800, svgHeight = 400;
-    const margin = { top: 20, right: 30, bottom: 30, left: 60 };
-    const width = svgWidth - margin.left - margin.right;
-    const height = svgHeight - margin.top - margin.bottom;
+    // Define a slightly larger viewBox for better label spacing
+    const viewBoxSize = 250; // Adjusted size to fit tick labels and text better
+    const margin = 25;
+    const radius = viewBoxSize / 2 - margin;
 
-    // Create the SVG canvas
     const svg = d3.select("#chart")
         .append("svg")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight)
+        .attr("viewBox", `0 0 ${viewBoxSize} ${viewBoxSize}`) // Responsive size
+        .attr("preserveAspectRatio", "xMidYMid meet") // Keeps the gauge centered
         .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+        .attr("transform", `translate(${viewBoxSize / 2}, ${viewBoxSize / 2})`);
 
-    // Set up scales
-    const x = d3.scaleTime()
-        .domain(d3.extent(chartData, d => new Date(d._time)))
-        .range([0, width]);
+    // Set up scale for RPM, starting from the bottom
+    const maxRpm = 100;
+    const arcScale = d3.scaleLinear()
+        .domain([0, maxRpm])
+        .range([Math.PI, Math.PI + 2 * Math.PI]); // Full circle starting from the bottom
 
-    const y = d3.scaleLinear()
-        .domain([0, d3.max(chartData, d => d._value)])
-        .range([height, 0]);
-
-    // Line generator
-    const line = d3.line()
-        .x(d => x(new Date(d._time)))
-        .y(d => y(d._value));
-
-    // Add the dark gray background rectangle for the chart area
-    svg.append("rect")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("fill", "#444");
-
-    // Add the line path with green color
+    // Red arc for the remaining portion
     svg.append("path")
-        .datum(chartData)
-        .attr("fill", "none")
-        .attr("stroke", "green")
-        .attr("stroke-width", 1.5)
-        .attr("d", line);
+        .datum({ endAngle: Math.PI + 2 * Math.PI })
+        .style("fill", "#ff4c4c")
+        .attr("d", d3.arc()
+            .innerRadius(radius - 10)
+            .outerRadius(radius)
+            .startAngle(Math.PI)
+        );
 
-    // Add the X Axis
-    svg.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(x).ticks(5));
+    // Green arc for the covered portion based on the RPM
+    const greenArc = svg.append("path")
+        .datum({ endAngle: arcScale(rpm) })
+        .style("fill", "#00bfae")
+        .attr("d", d3.arc()
+            .innerRadius(radius - 10)
+            .outerRadius(radius)
+            .startAngle(Math.PI)
+        );
 
-    // Add the Y Axis
-    svg.append("g")
-        .call(d3.axisLeft(y));
+    // Add tick marks and labels for every 10 RPM
+    const tickValues = d3.range(0, maxRpm, 10);
+    tickValues.forEach(tick => {
+        const angle = arcScale(tick) - Math.PI / 2; // Adjust starting point to the bottom
+        const x1 = (radius - 5) * Math.cos(angle);
+        const y1 = (radius - 5) * Math.sin(angle);
+        const x2 = radius * Math.cos(angle);
+        const y2 = radius * Math.sin(angle);
+
+        svg.append("line")
+            .attr("x1", x1)
+            .attr("y1", y1)
+            .attr("x2", x2)
+            .attr("y2", y2)
+            .attr("stroke", "black")
+            .attr("stroke-width", 1);
+
+        const labelX = (radius + 15) * Math.cos(angle);
+        const labelY = (radius + 15) * Math.sin(angle);
+        svg.append("text")
+            .attr("x", labelX)
+            .attr("y", labelY)
+            .attr("text-anchor", "middle")
+            .attr("alignment-baseline", "middle")
+            .style("font-size", "8px") // Smaller font size
+            .style("fill", "#333")
+            .text(tick);
+    });
+
+    // Add text for the current RPM value below the gauge
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", radius + 30) // Position text lower for visibility
+        .attr("class", "rpm-text")
+        .style("font-size", "14px") // Smaller font size for RPM text
+        .style("fill", "#333");
+
+    function updateGauge(newRpm) {
+        greenArc.transition()
+            .duration(500)
+            .attrTween("d", function(d) {
+                const interpolate = d3.interpolate(d.endAngle, arcScale(newRpm));
+                return function(t) {
+                    d.endAngle = interpolate(t);
+                    return d3.arc()
+                        .innerRadius(radius - 10)
+                        .outerRadius(radius)
+                        .startAngle(Math.PI)(d);
+                };
+            });
+
+        // Update the HTML element with the new RPM value
+        document.getElementById("rpm-data").textContent = `RPM: ${newRpm.toFixed(2)}`;
+    }
+
+    return updateGauge;
 }
 
-// Listen for 'rpm_data' events from the server
-socket.on('rpm_data', function(data) {
-    console.log('Received data:', data); // Log data to see if it's received correctly
-    chartData = data.data; // Update the chart data
-    renderChart(); // Update the chart with the new data
+let updateGauge = renderGauge(0);
 
-    const latestRpm = data.latest_rpm; // Access the latest RPM from the data object
-    console.log(`Latest RPM: ${latestRpm}`);
-    const formattedRpm = latestRpm.toFixed(4);
-    document.getElementById('current-rpm').textContent = `CURRENT RPM: ${formattedRpm}`; // Update the displayed RPM
+socket.on('rpm_data', function(data) {
+    const latestRpm = data.latest_rpm;
+    updateGauge(latestRpm);
 });
 
-// Fetch initial data when the page loads
 fetch('/api/data')
     .then(response => response.json())
     .then(data => {
-        console.log('Initial data received:', data); // Log the initial data
-        chartData = data; // Set the initial chart data
-        renderChart(); // Render the chart with the initial data
+        const initialRpm = data.latest_rpm || 0;
+        updateGauge(initialRpm);
     })
     .catch(error => console.error('Error fetching initial data:', error));

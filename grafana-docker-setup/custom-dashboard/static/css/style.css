@@ -1,8 +1,65 @@
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body styling */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-h1 {
-  color: steelblue;
+/* Header styling */
+header {
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+}
+
+/* Dashboard container */
+.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Gauge container with flex properties */
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 300px; /* Control the width of each container */
+  text-align: center;
+  border: 2px solid #333;
+}
+
+/* Chart styling */
+#gauge, #chart {
+  width: 300px;
+  height: 300px;
+}
+
+/* RPM text styling */
+.rpm-data {
+  font-size: 18px;
+  color: #333;
+  margin-top: 10px;
+}
+
+/* Optional data container for other sections */
+.data-container {
+  padding: 10px;
+  border: 1px solid #ddd;
+  max-width: 300px;
+  text-align: center;
 }

@@ -3,23 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.IO RPM Data</title>
+    <title>Socket.IO RPM Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <style>
-        body {
-            background-color: white;
-            color: black;
-        }
-        #chart {
-            margin: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <h1>RPM Data from Socket.IO</h1>
-    <div id="chart"></div>
-    <div id="current-rpm">CURRENT RPM: 0</div>
+    <!-- Header section for the dashboard title -->
+    <header>
+        <h1>RPM Dashboard</h1>
+    </header>
+
+        <!-- Form for Predictions -->
+        <div class="form-container">
+            <h2>Enter Prediction Parameters</h2>
+            <form id="prediction-form">
+                <label for="wind-speed">Wind Speed (m/s):</label>
+                <input type="number" id="wind-speed" name="windSpeed" step="0.1" required>
+                
+                <label for="wind-direction">Wind Direction (°):</label>
+                <input type="number" id="wind-direction" name="windDirection" step="1" required>
+                
+                <label for="orientation">Orientation (°):</label>
+                <input type="number" id="orientation" name="orientation" step="1" required>
+                
+                <label for="blade1">Blade #1 Orientation (°):</label>
+                <input type="number" id="blade1" name="blade1Orientation" step="1" required>
+                
+                <label for="blade2">Blade #2 Orientation (°):</label>
+                <input type="number" id="blade2" name="blade2Orientation" step="1" required>
+                
+                <label for="blade3">Blade #3 Orientation (°):</label>
+                <input type="number" id="blade3" name="blade3Orientation" step="1" required>
+                
+                <button type="submit">Submit Prediction</button>
+            </form>
+        </div>
+    </div>
+    
+
+    <!-- Main dashboard container -->
+    <div class="dashboard">
+        <!-- Container for the gauge and RPM data -->
+        <div class="gauge-container">
+            <div id="chart" class="gauge"></div>
+            <div id="rpm-data" class="rpm-data">RPM: 0</div> <!-- RPM data will be dynamically updated -->
+        </div>
+
+        <!-- Placeholder for other dashboard sections -->
+        <div class="voltage-container">
+            <!-- Add other data or charts here in the future -->
+            <p>Additional data</p>
+        </div>
+
+        <div class="orientation-container">
+            <!-- Add other data or charts here in the future -->
+            <p>Additional data</p>
+        </div>
+    </div>
+
 
     <script src="/static/js/RPM.js"></script>
 </body>
