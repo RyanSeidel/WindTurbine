@@ -140,7 +140,7 @@
         "precisionV18FluxV20": "ms",
         "retentionPolicyV18Flux": "",
         "org": "TAMUCC",
-        "bucket": "Test",
+        "bucket": "WindTurbine",
         "x": 1040,
         "y": 280,
         "wires": []

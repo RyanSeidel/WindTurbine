@@ -1,43 +1,56 @@
-
 services:
   grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
-      - "3000:3000"  # Exposes Grafana on port 3000
+      - "3000:3000"
     volumes:
-      - ./grafana-data:/var/lib/grafana  # Bind mount host directory to persist Grafana data
+      - ./grafana-data:/var/lib/grafana
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=yourpassword  # Set your admin password here
+      - GF_SECURITY_ADMIN_PASSWORD=yourpassword
     networks:
-      - my_network  # Add the container to the common network
+      - my_network
 
   node-red:
     image: nodered/node-red
     container_name: node-red
     ports:
-      - "1880:1880"  # Exposes Node-RED on port 1880
+      - "1880:1880"
     volumes:
-      - ./node-red-data:/data  # Bind mount host directory to persist Node-RED data
+      - ./node-red-data:/data
     environment:
-      - TZ=America/New_York  # Set your timezone here
+      - TZ=America/New_York
     networks:
-      - my_network  # Add the container to the common network
+      - my_network
 
   influxdb:
     image: influxdb:latest
     container_name: influxdb
     ports:
-      - "8086:8086"  # Exposes InfluxDB on port 8086
+      - "8086:8086"
     volumes:
-      - ./influxdb-data:/var/lib/influxdb  # Bind mount host directory to persist InfluxDB data
+      - ./influxdb-data:/var/lib/influxdb2
     environment:
-      - INFLUXDB_DB=mydb  # Creates a default database 'mydb'
+      - INFLUXDB_DB=mydb
       - INFLUXDB_ADMIN_USER=admin
       - INFLUXDB_ADMIN_PASSWORD=yourpassword
     networks:
-      - my_network  # Add the container to the common network
+      - my_network
+
+  flask-app:
+    build:
+      context: ./custom-dashboard  # Points to the Flask app's Dockerfile location
+    container_name: flask-app
+    ports:
+      - "5000:5000"  # Exposes Flask on port 5000
+    environment:
+    - FLASK_ENV=development
+    - FLASK_DEBUG=1
+    volumes:
+      - ./custom-dashboard:/app
+    networks:
+      - my_network
 
 networks:
   my_network:
-    driver: bridge  # Use the bridge driver for inter-container communication
+    driver: bridge
