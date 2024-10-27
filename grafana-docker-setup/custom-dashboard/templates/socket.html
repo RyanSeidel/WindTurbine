@@ -7,61 +7,89 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/inputform.css">
 </head>
 <body>
     <!-- Header section for the dashboard title -->
     <header>
-        <h1>RPM Dashboard</h1>
+        <h1>Wind Turbine Dashboard</h1>
     </header>
 
-        <!-- Form for Predictions -->
-        <div class="form-container">
-            <h2>Enter Prediction Parameters</h2>
-            <form id="prediction-form">
-                <label for="wind-speed">Wind Speed (m/s):</label>
-                <input type="number" id="wind-speed" name="windSpeed" step="0.1" required>
-                
-                <label for="wind-direction">Wind Direction (°):</label>
-                <input type="number" id="wind-direction" name="windDirection" step="1" required>
-                
-                <label for="orientation">Orientation (°):</label>
-                <input type="number" id="orientation" name="orientation" step="1" required>
-                
-                <label for="blade1">Blade #1 Orientation (°):</label>
-                <input type="number" id="blade1" name="blade1Orientation" step="1" required>
-                
-                <label for="blade2">Blade #2 Orientation (°):</label>
-                <input type="number" id="blade2" name="blade2Orientation" step="1" required>
-                
-                <label for="blade3">Blade #3 Orientation (°):</label>
-                <input type="number" id="blade3" name="blade3Orientation" step="1" required>
-                
-                <button type="submit">Submit Prediction</button>
-            </form>
+    <!-- Dashboard container to align form and data sections side-by-side -->
+    <div class="dashboard-container">
+        <!-- Left side: Form Section -->
+        <div class="content">
+            <div class="form-box">
+                <h2>Wind Turbine Prediction Input Form</h2>
+                <form id="predictionForm">
+                    <label for="windSpeed">Wind Speed (RPM):</label>
+                    <input type="number" id="windSpeed" name="windSpeed" step="0.1" placeholder="e.g., 120.5" required><br><br>
+
+                    <label for="orientation">Turbine Orientation (°):</label>
+                    <input type="number" id="orientation" name="orientation" step="1" placeholder="e.g., 90" required><br><br>
+
+                    <!-- Blade Angle Dropdowns -->
+                    <label for="blade1">Blade #1 Angle (°):</label>
+                    <select id="blade1" name="blade1" required>
+                        <option value="15">15°</option>
+                        <option value="30">30°</option>
+                        <option value="45">45°</option>
+                    </select><br><br>
+
+                    <label for="blade2">Blade #2 Angle (°):</label>
+                    <select id="blade2" name="blade2" required>
+                        <option value="15">15°</option>
+                        <option value="30">30°</option>
+                        <option value="45">45°</option>
+                    </select><br><br>
+
+                    <label for="blade3">Blade #3 Angle (°):</label>
+                    <select id="blade3" name="blade3" required>
+                        <option value="15">15°</option>
+                        <option value="30">30°</option>
+                        <option value="45">45°</option>
+                    </select><br><br>
+
+                    <label for="windDirection">Wind Direction (°):</label>
+                    <input type="number" id="windDirection" name="windDirection" step="1" placeholder="e.g., 180" required><br><br>
+
+                    <label for="temperature">Temperature (°C):</label>
+                    <input type="number" id="temperature" name="temperature" step="0.1" placeholder="e.g., 25.0" required><br><br>
+
+                    <button type="submit">Submit Prediction Data</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right side: Side Items in a column layout -->
+        <div class="side-items">
+            <!-- Gauge and RPM data -->
+            <div class="gauge-container">
+                <div id="chart" class="gauge"></div>
+                <div id="rpm-data" class="rpm-data">RPM: 0</div>
+            </div>
+
+            <!-- Additional data containers -->
+            <div class="voltage-container">
+                <p>Voltage data</p>
+            </div>
+            <div class="orientation-container">
+                <p>Orientation data</p>
+            </div>
+            <div class="weather-container">
+                <p>Weather data</p>
+            </div>
+            <div class="rpm-container">
+                <p>RPM Prediction</p>
+            </div>
+            <div class="predictvoltage-container">
+                <p>Voltage Prediction</p>
+            </div>
+            <div class="status-container">
+                <p>Status Conditions</p>
+            </div>
         </div>
     </div>
-    
-
-    <!-- Main dashboard container -->
-    <div class="dashboard">
-        <!-- Container for the gauge and RPM data -->
-        <div class="gauge-container">
-            <div id="chart" class="gauge"></div>
-            <div id="rpm-data" class="rpm-data">RPM: 0</div> <!-- RPM data will be dynamically updated -->
-        </div>
-
-        <!-- Placeholder for other dashboard sections -->
-        <div class="voltage-container">
-            <!-- Add other data or charts here in the future -->
-            <p>Additional data</p>
-        </div>
-
-        <div class="orientation-container">
-            <!-- Add other data or charts here in the future -->
-            <p>Additional data</p>
-        </div>
-    </div>
-
 
     <script src="/static/js/RPM.js"></script>
 </body>

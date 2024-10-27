@@ -1,0 +1,74 @@
+/* Remove spinners from number input fields */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* For Firefox */
+}
+
+/* Container styling with box shadow */
+.content {
+    text-align: left;
+    background: #1111;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Container shadow */
+    width: 100%;
+    max-width: 350px;
+    flex: 1;
+    box-sizing: border-box;
+}
+
+/* Style for placeholder text */
+input::placeholder {
+    color: #A9A9A9; /* Light gray color */
+    opacity: 1; /* Ensures full opacity for cross-browser consistency */
+}
+
+/* Form box styling with fixed width */
+.form-box {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for form box */
+    width: 400px; /* Fixed width for the form */
+    max-width: 100%; /* Ensures responsiveness on small screens */
+    box-sizing: border-box;
+    background-color: #f0f2f5;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
