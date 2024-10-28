@@ -1,6 +1,9 @@
 # Use an official Python runtime as a parent image
 FROM python:3.9
 
+# Install ping utility
+RUN apt-get update && apt-get install -y iputils-ping
+
 # Set the working directory in the container
 WORKDIR /app
 
