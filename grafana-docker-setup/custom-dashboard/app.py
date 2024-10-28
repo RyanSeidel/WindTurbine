@@ -32,6 +32,17 @@ def on_connect(client, userdata, flags, rc):
         client.subscribe(MQTT_TOPIC)  # Subscribe to the topic
     else:
         print(f"Failed to connect, return code {rc}", flush=True)
+    
+# MQTT on_message callback to handle incoming messages
+def on_message(client, userdata, msg):
+    rpm_value = float(msg.payload.decode())  # Decode and convert RPM to float
+    print(f"Received message: {rpm_value} on topic {msg.topic}", flush=True)
+    
+    # Emit the RPM value to the front end via Socket.IO
+    socketio.emit('rpm_data', {'latest_rpm': rpm_value})
+    
+mqtt_client.on_connect = on_connect
+mqtt_client.on_message = on_message  # Attach on_message callback
 
 @app.route('/')
 def index():
