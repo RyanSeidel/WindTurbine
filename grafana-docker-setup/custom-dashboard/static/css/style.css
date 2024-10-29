@@ -71,15 +71,21 @@ header {
   border: 1px solid #ddd;
   box-sizing: border-box;
 }
-.orientation-container{
+.orientation-container {
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
-  width: 350px;
-  height: 375px;
+  width: 450px;
+  height: auto; /* Adjust height automatically based on content */
   padding: 20px;
   border-radius: 8px;
-  text-align: center;
+  text-align: left; /* Aligns all text inside the container to the left */
   border: 1px solid #ddd;
   box-sizing: border-box;
+}
+
+.orientation-container div {
+  margin-bottom: 10px; /* Adds space between each section */
+
+  border-radius: 5px; /* Optional: slightly rounded corners */
 }
 .weather-container{
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */

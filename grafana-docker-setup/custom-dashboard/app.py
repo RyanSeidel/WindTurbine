@@ -20,7 +20,18 @@ client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG
 # MQTT Configuration
 MQTT_BROKER = os.getenv("MQTT_BROKER", "192.168.1.208")  # Replace with your MQTT broker address
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-MQTT_TOPIC = "wind_turbine/rpm"
+# Topics under wind_turbine namespace
+MQTT_TOPICS = {
+    'rpm': 'wind_turbine/rpm',
+    'orientation': 'wind_turbine/orientation',
+    'temperature': 'wind_turbine/temperature',
+    'magnetometer': 'wind_turbine/magnetometer',
+    'gyroscope': 'wind_turbine/gyroscope',
+    'accelerometer': 'wind_turbine/accelerometer',
+    'linear_acceleration': 'wind_turbine/linear_acceleration',
+    'gravity': 'wind_turbine/gravity',
+    'calibration': 'wind_turbine/calibration'
+}
 
 # Initialize MQTT client
 mqtt_client = mqtt.Client()
@@ -29,17 +40,40 @@ mqtt_client = mqtt.Client()
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!", flush=True)
-        client.subscribe(MQTT_TOPIC)  # Subscribe to the topic
+        # Subscribe to all topics in MQTT_TOPICS
+        for topic in MQTT_TOPICS.values():
+            client.subscribe(topic)
+        print("Subscribed to all wind_turbine topics", flush=True)
     else:
         print(f"Failed to connect, return code {rc}", flush=True)
     
-# MQTT on_message callback to handle incoming messages
+# MQTT on_message callback to handle incoming messages for each topic
 def on_message(client, userdata, msg):
-    rpm_value = float(msg.payload.decode())  # Decode and convert RPM to float
-    print(f"Received message: {rpm_value} on topic {msg.topic}", flush=True)
+    topic = msg.topic
+    payload = msg.payload.decode()
     
-    # Emit the RPM value to the front end via Socket.IO
-    socketio.emit('rpm_data', {'latest_rpm': rpm_value})
+    # Emit data based on topic
+    if topic == MQTT_TOPICS['rpm']:
+        socketio.emit('rpm_data', {'latest_rpm': float(payload)})
+    elif topic == MQTT_TOPICS['temperature']:
+        socketio.emit('temperature_data', {'temperature': float(payload)})
+    elif topic == MQTT_TOPICS['orientation']:
+        socketio.emit('orientation_data', {'orientation': payload})
+    elif topic == MQTT_TOPICS['magnetometer']:
+        socketio.emit('magnetometer_data', {'magnetometer': payload})
+    elif topic == MQTT_TOPICS['gyroscope']:
+        socketio.emit('gyroscope_data', {'gyroscope': payload})
+    elif topic == MQTT_TOPICS['accelerometer']:
+        socketio.emit('accelerometer_data', {'accelerometer': payload})
+    elif topic == MQTT_TOPICS['linear_acceleration']:
+        socketio.emit('linear_acceleration_data', {'linear_acceleration': payload})
+    elif topic == MQTT_TOPICS['gravity']:
+        socketio.emit('gravity_data', {'gravity': payload})
+    elif topic == MQTT_TOPICS['calibration']:
+        socketio.emit('calibration_data', {'calibration': payload})
+
+
+    print(f"Received message: {payload} on topic {topic}", flush=True)
     
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message  # Attach on_message callback

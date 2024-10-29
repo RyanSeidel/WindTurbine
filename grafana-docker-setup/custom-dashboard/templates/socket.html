@@ -71,10 +71,18 @@
 
             <!-- Additional data containers -->
             <div class="voltage-container">
-                <p>Voltage data</p>
+                <p>View of Wind Turbine</p>
+                <video id="webcam" width="320" height="240" autoplay></video>
             </div>
             <div class="orientation-container">
                 <p>Orientation data</p>
+                <div id="Ori"><strong>Orientation:</strong> Heading: <span id="heading">0</span> Roll: <span id="roll">0</span> Pitch: <span id="pitch">0</span></div>
+                <div id="Temp"><strong>Temp:</strong> <span id="temp-value">0</span></div>
+                <div id="magnetometer"><strong>Magnetometer:</strong> mx: <span id="mx">0</span> my: <span id="my">0</span> mz: <span id="mz">0</span></div>
+                <div id="gyroscope"><strong>Gyroscope:</strong> gx: <span id="gx">0</span> gy: <span id="gy">0</span> gz: <span id="gz">0</span></div>
+                <div id="accelerometer"><strong>Accelerometer:</strong> ax: <span id="ax">0</span> ay: <span id="ay">0</span> az: <span id="az">0</span></div>
+                <div id="linear_acceleration"><strong>Linear Acceleration:</strong> lx: <span id="lx">0</span> ly: <span id="ly">0</span> lz: <span id="lz">0</span></div>
+                <div id="gravity"><strong>Gravity:</strong> <span id="gravity-values">grx: 0 gry: 0 grz: 0</span></div>
             </div>
             <div class="weather-container">
                 <p>Weather data</p>
@@ -90,6 +98,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="/static/js/RPM.js"></script>
 </body>

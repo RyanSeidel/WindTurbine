@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', function () {
 const socket = io(); // Initialize Socket.IO
 
 // Function to render or update the RPM data as a responsive full-circle gauge using D3.js
@@ -115,3 +116,106 @@ fetch('/api/data')
         updateGauge(initialRpm);
     })
     .catch(error => console.error('Error fetching initial data:', error));
+
+// BME Sensor
+// Function to update the temperature display
+// Function to update the temperature display
+function updateTemperatureDisplay(temp) {
+    document.getElementById('temp-value').textContent = temp; 
+}
+// Function to update the orientation display
+function updateOrientationDisplay(heading, roll, pitch) {
+    document.getElementById('heading').textContent = heading; 
+    document.getElementById('roll').textContent = roll; 
+    document.getElementById('pitch').textContent = pitch; 
+}
+// Socket.IO listener for temperature data
+socket.on('temperature_data', (data) => {
+    console.log("Temperature data received: ", data);  // Debugging log
+    updateTemperatureDisplay(data.temperature); // Update the display
+});
+
+// Socket.IO listener for orientation data
+socket.on('orientation_data', (data) => {
+    console.log("Orientation data received: ", data);  // Debugging log
+    const [heading, roll, pitch] = data.orientation.split(','); // Extract values
+    updateOrientationDisplay(heading, roll, pitch); // Update the display
+});
+
+
+
+
+// Function to update the magnetometer display
+function updateMagnetometerDisplay(mx, my, mz) {
+    document.getElementById('mx').textContent = mx; 
+    document.getElementById('my').textContent = my; 
+    document.getElementById('mz').textContent = mz; 
+}
+// Socket.IO listener for magnetometer data
+socket.on('magnetometer_data', (data) => {
+    console.log("Magnetometer data received: ", data);  // Debugging log
+    const [mx, my, mz] = data.magnetometer.split(',').map(Number); // Split and convert to numbers
+    updateMagnetometerDisplay(mx, my, mz); // Update the display
+});
+
+// Function to update the accelerometer display
+function updateAccelerometerDisplay(ax, ay, az) {
+    document.getElementById('ax').textContent = ax; 
+    document.getElementById('ay').textContent = ay; 
+    document.getElementById('az').textContent = az; 
+}
+
+// Socket.IO listener for accelerometer data
+socket.on('accelerometer_data', (data) => {
+    console.log("Accelerometer data received: ", data);  // Debugging log
+    const [ax, ay, az] = data.accelerometer.split(',').map(Number); // Split and convert to numbers
+    updateAccelerometerDisplay(ax, ay, az); // Update the display
+});
+
+
+// Function to update the gyroscope display
+function updateGyroscopeDisplay(gx, gy, gz) {
+    document.getElementById('gx').textContent = gx; 
+    document.getElementById('gy').textContent = gy; 
+    document.getElementById('gz').textContent = gz; 
+}
+
+// Socket.IO listener for magnetometer data
+socket.on('gyroscope_data', (data) => {
+    console.log("gyroscope data received: ", data);  // Debugging log
+    const [gx, gy, gz] = data.gyroscope.split(',').map(Number); // Split and convert to numbers
+    updateGyroscopeDisplay(gx, gy, gz); // Update the display
+});
+
+// Function to update the linear acceleration display
+function updateLinearAccelerationDisplay(lx, ly, lz) {
+    document.getElementById('lx').textContent = lx; 
+    document.getElementById('ly').textContent = ly; 
+    document.getElementById('lz').textContent = lz; 
+}
+
+// Socket.IO listener for linear acceleration data
+socket.on('linear_acceleration_data', (data) => {
+    console.log("Linear acceleration data received: ", data);  // Debugging log
+    const [lx, ly, lz] = data.linear_acceleration.split(',').map(Number); // Split and convert to numbers
+    updateLinearAccelerationDisplay(lx, ly, lz); // Update the display
+});
+
+// Function to update the gravity display
+function updateGravityDisplay(grx, gry, grz) {
+    document.getElementById('gravity-values').textContent = 
+        `grx: ${grx} gry: ${gry} grz: ${grz}`; 
+}
+
+// Socket.IO listener for gravity data
+socket.on('gravity_data', (data) => {
+    console.log("Gravity data received: ", data);  // Debugging log
+    const [grx, gry, grz] = data.gravity.split(',').map(Number); // Split and convert to numbers
+    updateGravityDisplay(grx, gry, grz); // Update the display
+});
+
+
+
+
+
+});
