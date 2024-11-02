@@ -1,4 +1,4 @@
-# Project Title
+# Wind Turbine Digital Twins
 
 ## Table of Contents
 - [Introduction](#introduction)
