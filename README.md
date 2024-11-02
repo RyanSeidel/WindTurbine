@@ -1,3 +1,27 @@
+# Project Title
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Introduction
+Some introductory text here.
+
+## Installation
+Steps to install your project.
+
+## Usage
+How to use your project.
+
+## Contributing
+Guidelines for contributing.
+
+## License
+License information.
+
 # Wind Turbine Digital Twin
 
 This project involves creating a digital twin of a wind turbine using ROS Noetic. The digital twin is generated with data from an Xbox Kinect 360 camera, utilizing the `freenect_stack` library to enable LiDAR capabilities for 3D mapping.
