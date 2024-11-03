@@ -30,7 +30,10 @@ MQTT_TOPICS = {
     'accelerometer': 'wind_turbine/accelerometer',
     'linear_acceleration': 'wind_turbine/linear_acceleration',
     'gravity': 'wind_turbine/gravity',
-    'calibration': 'wind_turbine/calibration'
+    'calibration': 'wind_turbine/calibration',
+    'voltage': 'wind_turbine/volt',
+    'power': 'wind_turbine/power',
+    'current': 'wind_turbine/current'
 }
 
 # Initialize MQTT client
@@ -71,7 +74,12 @@ def on_message(client, userdata, msg):
         socketio.emit('gravity_data', {'gravity': payload})
     elif topic == MQTT_TOPICS['calibration']:
         socketio.emit('calibration_data', {'calibration': payload})
-
+    elif topic == MQTT_TOPICS['voltage']:
+        socketio.emit('voltage_data', {'voltage': float(payload)})
+    elif topic == MQTT_TOPICS['power']:
+        socketio.emit('power_data', {'power': float(payload)})
+    elif topic == MQTT_TOPICS['current']:
+        socketio.emit('current_data', {'current': float(payload)})
 
     print(f"Received message: {payload} on topic {topic}", flush=True)
     
@@ -86,30 +94,30 @@ def index():
 def socket_page():
     return render_template('socket.html')
 
-@app.route('/api/data')
-def get_data():
-    try:
-        query = f'''
-        from(bucket: "{INFLUXDB_BUCKET}") 
-        |> range(start: -5m) 
-        |> filter(fn: (r) => r["_measurement"] == "RPM Measurement") 
-        |> filter(fn: (r) => r["_field"] == "rpm") 
-        |> keep(columns: ["_time", "_value"])
-        '''
-        tables = client.query_api().query(query=query)
+# @app.route('/api/data')
+# def get_data():
+#     try:
+#         query = f'''
+#         from(bucket: "{INFLUXDB_BUCKET}") 
+#         |> range(start: -5m) 
+#         |> filter(fn: (r) => r["_measurement"] == "RPM Measurement") 
+#         |> filter(fn: (r) => r["_field"] == "rpm") 
+#         |> keep(columns: ["_time", "_value"])
+#         '''
+#         tables = client.query_api().query(query=query)
 
-        # Extract the data from the query response
-        data = [{"_time": record["_time"], "_value": record["_value"]} for table in tables for record in table.records]
+#         # Extract the data from the query response
+#         data = [{"_time": record["_time"], "_value": record["_value"]} for table in tables for record in table.records]
 
-        print("Data fetched from InfluxDB:", data)  # Log the fetched data
+#         print("Data fetched from InfluxDB:", data)  # Log the fetched data
 
-        if data:
-            return jsonify(data)  # Return the data as JSON
-        else:
-            return jsonify({"status": "Connected to InfluxDB, but no data found"})
+#         if data:
+#             return jsonify(data)  # Return the data as JSON
+#         else:
+#             return jsonify({"status": "Connected to InfluxDB, but no data found"})
 
-    except Exception as e:
-        return jsonify({"status": "Failed to connect to InfluxDB", "error": str(e)})
+#     except Exception as e:
+#         return jsonify({"status": "Failed to connect to InfluxDB", "error": str(e)})
 
 # def fetch_and_emit_data():
 #     while True:

@@ -17,8 +17,8 @@ body {
 /* Header styling */
 header {
   padding: 20px;
-  background-color: #333;
-  color: #fff;
+  background-color: #ddd;
+  color: #333;
   text-align: center;
   width: 100%;
 }
@@ -26,6 +26,7 @@ header {
 /* Container to align form and side items */
 .dashboard-container {
   display: flex;
+  background-color: #333;
   align-items: flex-start;
   width: 100%;
   padding: 20px;
@@ -50,6 +51,7 @@ header {
 .gauge-container {
   display: flex;
   flex-direction: column;
+  background-color: #ddd;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -62,23 +64,70 @@ header {
 
 /* Individual data containers with fixed dimensions */
 .voltage-container{
-  background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
-  width: 450px;
-  height: 375px;
+  background-color: #ddd;
+  height: 550px;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
   border: 1px solid #ddd;
   box-sizing: border-box;
 }
+
+.chart svg {
+  background-color: #1a1a1a; /* Dark gray background for charts */
+}
+
+.chart .x-axis text, .chart .y-axis text {
+  fill: #ddd; /* Neon green for axis labels */
+  font-size: 10px;
+}
+
+.chart .grid line {
+  stroke: #444;
+  stroke-dasharray: 2,2; /* Dashed lines for grid */
+}
+
+#multiLineChart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Adds space between each section */
+}
+
+#multiLineChart > div {
+  text-align: left; /* Aligns text to the left */
+}
+
+
+
+.monitor-title {
+    font-weight: bold;
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.monitor-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between each unit */
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+.monitor-row div {
+    display: flex;
+    align-items: center;
+    font-size: 1em;
+}
+
 .orientation-container {
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
   width: 450px;
-  height: auto; /* Adjust height automatically based on content */
+  height: 350px; /* Adjust height automatically based on content */
   padding: 20px;
   border-radius: 8px;
   text-align: left; /* Aligns all text inside the container to the left */
   border: 1px solid #ddd;
+  background-color: #ddd;
   box-sizing: border-box;
 }
 
@@ -92,6 +141,7 @@ header {
   width: 250px;
   height: 375px;
   padding: 20px;
+  background-color: #ddd;
   border-radius: 8px;
   text-align: center;
   border: 1px solid #ddd;
@@ -102,6 +152,7 @@ header {
   width: 485px;
   height: 375px;
   padding: 20px;
+  background-color: #ddd;
   border-radius: 8px;
   text-align: center;
   border: 1px solid #ddd;
@@ -113,6 +164,7 @@ header {
   width: 485px;
   height: 375px;
   padding: 20px;
+  background-color: #ddd;
   border-radius: 8px;
   text-align: center;
   border: 1px solid #ddd;
@@ -124,6 +176,7 @@ header {
   width: 350px;
   height: 375px;
   padding: 20px;
+  background-color: #ddd;
   border-radius: 8px;
   text-align: center;
   border: 1px solid #ddd;

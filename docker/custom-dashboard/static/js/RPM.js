@@ -215,7 +215,144 @@ socket.on('gravity_data', (data) => {
 });
 
 
+// Connecting BMEO055 Sensor to move a 3D object!! using Three.js
 
 
+// Voltage Sensor Ina260
+    // Listen for voltage data and update the 'volt' element
+    const maxDataPoints = 50;
+
+    // Data storage for each metric
+    const dataPoints = {
+        voltage: [],
+        current: [],
+        power: []
+    };
+
+    // Set up chart dimensions
+
+const margin = { top: 10, right: 10, bottom: 30, left: 40 };
+const width = 350 - margin.left - margin.right;  // Adjust width to fit container
+const height = (375 / 3) - margin.top - margin.bottom;  // Divide height by 3 for each chart
+
+
+    // Function to create a chart
+    const createChart = (id, color, yDomain = [0, 50]) => {
+        const svg = d3.select(id)
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+        const x = d3.scaleLinear().domain([0, maxDataPoints - 1]).range([0, width]);
+        const y = d3.scaleLinear().domain(yDomain).range([height, 0]);
+    
+        // Add grid lines for X and Y axes
+        svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x).ticks(5).tickSize(-height).tickFormat(''))
+            .selectAll("line")
+            .attr("stroke", "#444")
+            .attr("stroke-dasharray", "2,2");
+    
+        svg.append("g")
+            .attr("class", "grid")
+            .call(d3.axisLeft(y).ticks(4).tickSize(-width).tickFormat(''))
+            .selectAll("line")
+            .attr("stroke", "#444")
+            .attr("stroke-dasharray", "2,2");
+    
+        // X and Y axes with limited ticks
+        svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x).ticks(5))
+            .selectAll("text")
+            .attr("fill", "#00FF9F"); // Neon green for x-axis labels
+    
+        svg.append("g")
+            .attr("class", "y-axis")
+            .call(d3.axisLeft(y).ticks(4)) // Set Y-axis to show only 4 ticks
+            .selectAll("text")
+            .attr("fill", "#00FF9F"); // Neon green for y-axis labels
+    
+        // Define line generator
+        const line = d3.line()
+            .x((d, i) => x(i))
+            .y(d => y(d))
+            .curve(d3.curveMonotoneX);
+    
+        // Define area generator for shading
+        const area = d3.area()
+            .x((d, i) => x(i))
+            .y0(height)
+            .y1(d => y(d))
+            .curve(d3.curveMonotoneX);
+    
+        // Append shaded area
+        const areaPath = svg.append("path")
+            .datum([])
+            .attr("fill", color)
+            .attr("opacity", 0.2);  // Light opacity for shading
+    
+        // Append line with neon color
+        const linePath = svg.append("path")
+            .datum([])
+            .attr("fill", "none")
+            .attr("stroke", color)
+            .attr("stroke-width", 2)
+            .attr("filter", "url(#neon-glow)"); // Glow filter
+    
+        return { svg, line, linePath, area, areaPath, y };
+    };
+    
+
+    // Create charts for each metric
+    const charts = {
+        voltage: createChart("#voltageChart", "red"),
+        current: createChart("#currentChart", "orange"),
+        power: createChart("#powerChart", "green")
+    };
+
+    // Function to update each chart
+    const updateChart = (chart, data, value) => {
+        if (data.length >= maxDataPoints) data.shift();
+        data.push(value);
+    
+        // Update y-axis domain within a capped range
+        const maxDataValue = Math.min(d3.max(data) || 50, 50); // Cap max Y-axis to 50 for voltage
+        chart.y.domain([0, maxDataValue]);
+    
+        // Generate 4 evenly spaced tick values based on the current domain
+        const tickValues = d3.range(0, maxDataValue + 1, maxDataValue / 3);
+    
+        // Update line and shaded area with new data
+        chart.linePath.datum(data).attr("d", chart.line);
+        chart.areaPath.datum(data).attr("d", chart.area);
+    
+        // Update y-axis with exactly 4 ticks
+        chart.svg.select(".y-axis")
+            .transition()
+            .duration(500)
+            .call(d3.axisLeft(chart.y).tickValues(tickValues).tickFormat(d3.format(".2f")));
+    };
+
+    // Listen for Socket.IO events and update DOM & charts
+    socket.on('voltage_data', (data) => {
+        document.getElementById('volt').textContent = data.voltage.toFixed(2);
+        updateChart(charts.voltage, dataPoints.voltage, data.voltage);
+    });
+
+    socket.on('current_data', (data) => {
+        document.getElementById('currents').textContent = data.current.toFixed(2);
+        updateChart(charts.current, dataPoints.current, data.current);
+    });
+
+    socket.on('power_data', (data) => {
+        document.getElementById('powerunit').textContent = data.power.toFixed(2);
+        updateChart(charts.power, dataPoints.power, data.power);
+    });
 
 });

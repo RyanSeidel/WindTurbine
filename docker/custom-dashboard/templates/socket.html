@@ -70,10 +70,8 @@
             </div>
 
             <!-- Additional data containers -->
-            <div class="voltage-container">
-                <p>View of Wind Turbine</p>
-                <video id="webcam" width="320" height="240" autoplay></video>
-            </div>
+
+
             <div class="orientation-container">
                 <p>Orientation data</p>
                 <div id="Ori"><strong>Orientation:</strong> Heading: <span id="heading">0</span> Roll: <span id="roll">0</span> Pitch: <span id="pitch">0</span></div>
@@ -84,6 +82,25 @@
                 <div id="linear_acceleration"><strong>Linear Acceleration:</strong> lx: <span id="lx">0</span> ly: <span id="ly">0</span> lz: <span id="lz">0</span></div>
                 <div id="gravity"><strong>Gravity:</strong> <span id="gravity-values">grx: 0 gry: 0 grz: 0</span></div>
             </div>
+
+            <div class="voltage-container">
+                <p class="monitor-title">Power Monitor</p>
+
+                <div class="monitor-row">
+
+                </div>
+                    <!-- Separate charts for each metric -->
+             <div id="multiLineChart">
+                <div id="Volts"><strong>Volts:</strong> <span id="volt">0</span> V</div>
+                 <div id="voltageChart" class="chart"></div>
+                 <div id="Current"><strong>Current:</strong> <span id="currents">0</span> mA</div>
+                 <div id="currentChart" class="chart"></div>
+                 <div id="Power"><strong>Power:</strong> <span id="powerunit">0</span> mW</div>
+                 <div id="powerChart" class="chart"></div>
+            </div>
+            </div>
+
+            
             <div class="weather-container">
                 <p>Weather data</p>
             </div>
