@@ -1,16 +1,4 @@
 services:
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana-data:/var/lib/grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=yourpassword
-    networks:
-      - my_network
-
   node-red:
     image: nodered/node-red
     container_name: node-red
