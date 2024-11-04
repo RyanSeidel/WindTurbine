@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
-from influxdb_client import InfluxDBClient
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 from flask_socketio import SocketIO
 import paho.mqtt.client as mqtt
 import os
@@ -15,7 +16,8 @@ INFLUXDB_ORG = os.getenv("INFLUXDB_ORG", "TAMUCC")
 INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET", "WindTurbine")
 
 # Initialize the InfluxDB client
-client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+influx_client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+write_api = influx_client.write_api(write_options=SYNCHRONOUS)  # This line initializes write_api
 
 # MQTT Configuration
 MQTT_BROKER = os.getenv("MQTT_BROKER", "192.168.1.208")  # Replace with your MQTT broker address
@@ -54,6 +56,18 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode()
+    
+    # # Prepare data point for InfluxDB NEW
+    # measurement = topic.split('/')[-1]  # Extract the last part of the topic as the measurement name
+    # point = Point(measurement).field("value", float(payload)).time(time.time(), write_precision="s")
+    
+    # # Write to InfluxDB
+    # try:
+        
+    #     write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+    #     print(f"Data written to InfluxDB: {measurement} - {payload}", flush=True)
+    # except Exception as e:
+    #     print(f"Failed to write to InfluxDB: {e}", flush=True)
     
     # Emit data based on topic
     if topic == MQTT_TOPICS['rpm']:
