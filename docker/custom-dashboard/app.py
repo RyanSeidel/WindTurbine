@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from influxdb_client import InfluxDBClient
 from flask_socketio import SocketIO
 import paho.mqtt.client as mqtt
@@ -147,14 +147,38 @@ def socket_page():
 #         print(f"Emitting data: {data}")  # Print emitted data to the console
 #         time.sleep(1)  # Adjust the frequency as needed
 
-# Attach the callback function to the MQTT client
-mqtt_client.on_connect = on_connect
+@app.route('/connect-mqtt', methods=['POST'])
+def connect_mqtt():
+    data = request.json
+    broker_ip = data.get('broker_ip')
+    blade1_orientation = data.get('blade1_orientation')
+    blade2_orientation = data.get('blade2_orientation')
+    blade3_orientation = data.get('blade3_orientation')
 
-# Start MQTT connection
-def start_mqtt():
-    print("Attempting to connect to MQTT Broker...", flush=True)
-    mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
-    mqtt_client.loop_start()  # Run MQTT in the background
+    if broker_ip:
+        print(f"Attempting to connect to MQTT Broker at {broker_ip}", flush=True)
+        mqtt_client.connect(broker_ip, MQTT_PORT, 60)
+        mqtt_client.loop_start()
+
+        # Optionally, publish the blade orientations to specific MQTT topics
+        mqtt_client.publish("wind_turbine/blade1_orientation", blade1_orientation)
+        mqtt_client.publish("wind_turbine/blade2_orientation", blade2_orientation)
+        mqtt_client.publish("wind_turbine/blade3_orientation", blade3_orientation)
+
+        print(f"Blade 1 Orientation: {blade1_orientation}°")
+        print(f"Blade 2 Orientation: {blade2_orientation}°")
+        print(f"Blade 3 Orientation: {blade3_orientation}°")
+
+        return jsonify({
+            "status": "Connection started",
+            "broker_ip": broker_ip,
+            "blade1_orientation": blade1_orientation,
+            "blade2_orientation": blade2_orientation,
+            "blade3_orientation": blade3_orientation
+        })
+    else:
+        return jsonify({"status": "Failed", "error": "No broker IP provided"}), 400
+
 
 @socketio.on('connect')
 def handle_connect():
@@ -162,7 +186,6 @@ def handle_connect():
     # Start a background task to fetch and emit data
     #socketio.start_background_task(fetch_and_emit_data)
 
-start_mqtt() # need this to connect  
 
 
 

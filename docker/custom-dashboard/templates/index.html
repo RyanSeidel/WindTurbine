@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO RPM Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/OBJLoader.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/inputform.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>           
+    <div class="Mqtt-box">
+        <h2>Enter MQTT Broker IP and Blade Orientations</h2>
+        <form id="mqttConnectForm">
+            <label for="broker_ip">Broker IP Address:</label>
+            <input type="text" id="broker_ip" name="broker_ip" required>
+            <br><br>
+
+            <label for="blade1">Blade #1 Orientation (°):</label>
+            <select id="blade1" name="blade1" required>
+                <option value="15">15°</option>
+                <option value="30">30°</option>
+                <option value="45">45°</option>
+            </select>
+            <br><br>
+
+            <label for="blade2">Blade #2 Orientation (°):</label>
+            <select id="blade2" name="blade2" required>
+                <option value="15">15°</option>
+                <option value="30">30°</option>
+                <option value="45">45°</option>
+            </select>
+            <br><br>
+
+            <label for="blade3">Blade #3 Orientation (°):</label>
+            <select id="blade3" name="blade3" required>
+                <option value="15">15°</option>
+                <option value="30">30°</option>
+                <option value="45">45°</option>
+            </select>
+            <br><br>
+
+            <button type="submit" class="small-button">Connect</button>
+        </form>
+        <p id="connection-status">Status: Not Connected</p>
+    </div>
+    <script src="/static/js/MQTT.js"></script>
+</body>
+</html>

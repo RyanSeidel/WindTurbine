@@ -30,7 +30,7 @@ header {
   align-items: flex-start;
   width: 100%;
   padding: 20px;
-  gap: 45px;
+  gap: 20px;
 }
 
 /* Form section on the left */
@@ -40,11 +40,22 @@ header {
 }
 
 /* Right column for side items */
-.side-items {
+.first-box {
   display: flex;
   flex-wrap: wrap; /* Allows items to wrap to the next row */
-  gap: 45px;
-  flex: 1;
+  gap: 20px;
+  border: 2px solid #fff;
+  width: 1025px; /* Fixed width for the entire side panel */
+  
+}
+
+.second-box {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next row */
+  gap: 20px;
+  border: 2px solid #fff;
+  width: 400px; /* Fixed width for the entire side panel */
+  
 }
 
 /* Gauge container */
@@ -121,14 +132,25 @@ header {
 
 .orientation-container {
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
-  width: 450px;
-  height: 350px; /* Adjust height automatically based on content */
+  width: 700px;
+  height: 375px; /* Adjust height automatically based on content */
   padding: 20px;
   border-radius: 8px;
   text-align: left; /* Aligns all text inside the container to the left */
   border: 1px solid #ddd;
   background-color: #ddd;
   box-sizing: border-box;
+  display: flex;
+  gap: 30px;
+}
+
+/* 3D Model Container */
+.model-container {
+  width: 275px; /* Adjust width as needed */
+  height: 300px; /* Adjust height as needed */
+  background-color: #1a1a1a;
+  border: 2px solid #333; /* Border to distinguish the model container */
+  margin-top: 15px;
 }
 
 .orientation-container div {
@@ -138,18 +160,24 @@ header {
 }
 .weather-container{
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
-  width: 250px;
-  height: 375px;
-  padding: 20px;
+  width: 185px;
+  height: 207px;
+  padding: 10px;
   background-color: #ddd;
   border-radius: 8px;
   text-align: center;
   border: 1px solid #ddd;
   box-sizing: border-box;
 }
+
+.weather-text{
+  text-align:left
+}
+
+
 .rpm-container {
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
-  width: 485px;
+  width: 500px;
   height: 375px;
   padding: 20px;
   background-color: #ddd;
@@ -161,7 +189,7 @@ header {
 
 .predictvoltage-container {
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
-  width: 485px;
+  width: 500px;
   height: 375px;
   padding: 20px;
   background-color: #ddd;
@@ -173,8 +201,8 @@ header {
 
 .status-container {
   background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
-  width: 350px;
-  height: 375px;
+  width: 185px;
+  height: 207px;
   padding: 20px;
   background-color: #ddd;
   border-radius: 8px;

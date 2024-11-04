@@ -6,8 +6,13 @@
     <title>Socket.IO RPM Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/OBJLoader.js"></script>
+
+    
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/inputform.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <!-- Header section for the dashboard title -->
@@ -17,8 +22,11 @@
 
     <!-- Dashboard container to align form and data sections side-by-side -->
     <div class="dashboard-container">
+
         <!-- Left side: Form Section -->
         <div class="content">
+
+            
             <div class="form-box">
                 <h2>Wind Turbine Prediction Input Form</h2>
                 <form id="predictionForm">
@@ -60,9 +68,10 @@
                 </form>
             </div>
         </div>
+   
 
         <!-- Right side: Side Items in a column layout -->
-        <div class="side-items">
+        <div class="first-box">
             <!-- Gauge and RPM data -->
             <div class="gauge-container">
                 <div id="chart" class="gauge"></div>
@@ -73,6 +82,7 @@
 
 
             <div class="orientation-container">
+                <div class="measurements">
                 <p>Orientation data</p>
                 <div id="Ori"><strong>Orientation:</strong> Heading: <span id="heading">0</span> Roll: <span id="roll">0</span> Pitch: <span id="pitch">0</span></div>
                 <div id="Temp"><strong>Temp:</strong> <span id="temp-value">0</span></div>
@@ -81,42 +91,66 @@
                 <div id="accelerometer"><strong>Accelerometer:</strong> ax: <span id="ax">0</span> ay: <span id="ay">0</span> az: <span id="az">0</span></div>
                 <div id="linear_acceleration"><strong>Linear Acceleration:</strong> lx: <span id="lx">0</span> ly: <span id="ly">0</span> lz: <span id="lz">0</span></div>
                 <div id="gravity"><strong>Gravity:</strong> <span id="gravity-values">grx: 0 gry: 0 grz: 0</span></div>
-            </div>
-
-            <div class="voltage-container">
-                <p class="monitor-title">Power Monitor</p>
-
-                <div class="monitor-row">
-
                 </div>
-                    <!-- Separate charts for each metric -->
-             <div id="multiLineChart">
-                <div id="Volts"><strong>Volts:</strong> <span id="volt">0</span> V</div>
-                 <div id="voltageChart" class="chart"></div>
-                 <div id="Current"><strong>Current:</strong> <span id="currents">0</span> mA</div>
-                 <div id="currentChart" class="chart"></div>
-                 <div id="Power"><strong>Power:</strong> <span id="powerunit">0</span> mW</div>
-                 <div id="powerChart" class="chart"></div>
-            </div>
+
+                    <!-- 3D Model Container -->
+                <div id="3d-model-container" class="model-container"></div>
             </div>
 
-            
-            <div class="weather-container">
-                <p>Weather data</p>
-            </div>
+
+
             <div class="rpm-container">
                 <p>RPM Prediction</p>
             </div>
             <div class="predictvoltage-container">
                 <p>Voltage Prediction</p>
             </div>
-            <div class="status-container">
-                <p>Status Conditions</p>
-            </div>
+
+
         </div>
+
+        <div class="second-box">
+    <div class="voltage-container">
+        <p class="monitor-title">Power Monitor</p>
+
+        <div class="monitor-row">
+
+        </div>
+            <!-- Separate charts for each metric -->
+     <div id="multiLineChart">
+        <div id="Volts"><strong>Volts:</strong> <span id="volt">0</span> V</div>
+         <div id="voltageChart" class="chart"></div>
+         <div id="Current"><strong>Current:</strong> <span id="currents">0</span> mA</div>
+         <div id="currentChart" class="chart"></div>
+         <div id="Power"><strong>Power:</strong> <span id="powerunit">0</span> mW</div>
+         <div id="powerChart" class="chart"></div>
+    </div>
     </div>
 
+    <div class="weather-container">
 
+            <p>Weather Data</p>
+
+        <div class="weather-text">
+        <p><i class="fa-regular fa-compass"></i> Wind Direction: </p>
+        <span id="wind-direction">30 N</span>
+        <p><i class="fa-solid fa-wind"></i> Wind Speed: </p>
+        <span id="wind-speed">15 mph</span>
+        </div>
+    </div>
+    
+    <div class="status-container">
+        <p>Status Conditions</p>
+        <p>Warning</p>
+        <p>Working<p>
+        <p>DANGER<p>
+    </div>
+</div>
+</div>
+</div>
     <script src="/static/js/RPM.js"></script>
+    <script src="/static/js/model.js"></script>
+
+
 </body>
 </html>

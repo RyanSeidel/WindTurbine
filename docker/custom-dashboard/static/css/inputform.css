@@ -39,6 +39,30 @@ input::placeholder {
     background-color: #f0f2f5;
 }
 
+/* MQTT Form editting */
+.Mqtt-box{
+    background-color: #f0f2f5;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for form box */
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Styling for the Connect to MQTT button */
+.small-button {
+    width: 100px; /* Set desired width */
+    padding: 5px 10px;
+    font-size: 0.9em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.small-button:hover {
+    background-color: #0056b3;
+}
+
 h2 {
     text-align: center;
     color: #333;
