@@ -1,4 +1,9 @@
-flask
-flask-socketio
-influxdb-client
-paho-mqtt
+# requirements.txt
+
+Flask==2.2.3              # Flask web framework
+Flask-SocketIO==5.3.3     # Flask extension for real-time communication
+influxdb-client==1.30.0   # Client for InfluxDB interactions
+paho-mqtt==1.6.1          # MQTT client for Python
+numpy==1.23.5             # Needed for numerical computations (often used with ML models)
+tensorflow==2.11.0        # TensorFlow for LSTM model (specify if TensorFlow is used in your ML model)
+ 

@@ -3,6 +3,7 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from flask_socketio import SocketIO
 import paho.mqtt.client as mqtt
+from machinelearning.lstm_model import predict_rpm_volts
 import os
 import time
 
@@ -192,6 +193,28 @@ def connect_mqtt():
         })
     else:
         return jsonify({"status": "Failed", "error": "No broker IP provided"}), 400
+    
+    
+@app.route('/predict', methods=['GET', 'POST'])
+def predict():
+    if request.method == 'POST':
+        # Get user inputs from form
+        wind_speed = float(request.form.get('wind_speed'))
+        wind_direction = float(request.form.get('wind_direction'))
+        temperature = float(request.form.get('temperature'))
+        orientation = float(request.form.get('orientation'))
+
+        # Call the LSTM prediction function
+        predicted_rpm, predicted_volts = predict_rpm_volts(wind_speed, wind_direction, temperature, orientation)
+
+        # Return the results as JSON or render them in a template
+        return jsonify({
+            "predicted_rpm": predicted_rpm,
+            "predicted_volts": predicted_volts
+        })
+
+    # Display the prediction form if GET request
+    return render_template('predict_form.html')
 
 
 @socketio.on('connect')
