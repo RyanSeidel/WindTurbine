@@ -355,10 +355,7 @@ const height = (375 / 3) - margin.top - margin.bottom;  // Divide height by 3 fo
         updateChart(charts.power, dataPoints.power, data.power);
     });
 
-
-    
-
-    
+   
 
 });
 
