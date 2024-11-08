@@ -15,6 +15,7 @@ Steps to install your project.
 
 pip install python3-rpi.gpio
 pip install Adafruit-GPIO
+pip3 install influxdb-client
 
 enable i2c connection
 enable serial 
