@@ -17,10 +17,10 @@ Some introductory text here.
 ## Installation
 Steps to install your project.
 
+Raspberry Libraries Required:
 pip install python3-rpi.gpio
 pip install Adafruit-GPIO
 pip3 install influxdb-client
-
 enable i2c connection
 enable serial 
 pip3 install adafruit-circuitpython-ina260
@@ -50,31 +50,11 @@ To use this project, you must install the following dependencies:
 
 `catkin_make` is used to build the ROS workspace and compile the project.
 
-## Setup Instructions
+## Setup ROS Neotic Instructions
 
-1. Clone the repository into your ROS workspace.
-   ```bash
-   cd ~/digital_ws/src
-   git clone <repository-url>
+Extract the digital_ws zip 
 
-    Navigate to your workspace and build the project using catkin_make.
 
-    bash
-
-cd ~/digital_ws
-catkin_make
-
-After building, source the setup file to configure your environment.
-
-bash
-
-source ~/digital_ws/devel/setup.bash
-
-Launch the project to visualize the 3D model of the wind turbine using the Kinect LiDAR.
-
-bash
-
-roslaunch <your_launch_file>.launch
 
 ## Commands
 Using these commands might required you to open rviz in a seperate terminal.
