@@ -17,9 +17,6 @@
 ## Introduction
 Some introductory text here.
 
-## Installation
-Steps to install your project.
-
 ## RaspberryPi
 
 ### Raspberry Libraries Required
@@ -54,14 +51,15 @@ make stop_all # to stop all programs
 
 ## Dashboard 
 
-## Usage
-How to use your project.
+My partner and I used visual code for navigating and running our flask application for our dashboard.
+Before navigating for cd /docker inside of WindTurbine
+You will need to download Docker and turn on docker. 
 
-## Contributing
-Guidelines for contributing.
+If your docker is on, you can do docker-compose up -d --build or docker-compose down to stop all containers.
 
-## License
-License information.
+Once all containers are activated, you will go to localhost:5000 which will take you to the page localhost:5000/socket if your MQTT Broker IP is correct if Raspberry Pi is running all the programs in the [Raspberry Pi Setup](#RaspberryPi). 
+
+
 
 # Wind Turbine Digital Twin
 
