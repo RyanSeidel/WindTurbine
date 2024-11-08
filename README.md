@@ -9,6 +9,8 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Raspberry Pi Setup](#RaspberryPi)
+- [Dashboard Setup](#Dashboard)
+- [ROS/RViz Setup](#RViz)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -61,6 +63,8 @@ License information.
 # Wind Turbine Digital Twin
 
 This project involves creating a digital twin of a wind turbine using ROS Noetic. The digital twin is generated with data from an Xbox Kinect 360 camera, utilizing the `freenect_stack` library to enable LiDAR capabilities for 3D mapping.
+
+## RViz
 
 ## ROS/RViz Dependencies
 
