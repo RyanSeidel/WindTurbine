@@ -18,6 +18,7 @@ pip install Adafruit-GPIO
 
 enable i2c connection
 enable serial 
+pip3 install adafruit-circuitpython-ina260
 
 ## Usage
 How to use your project.
