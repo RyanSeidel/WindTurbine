@@ -60,11 +60,6 @@ If your docker is on, you can do docker-compose up -d --build or docker-compose 
 Once all containers are activated, you will go to localhost:5000 which will take you to the page localhost:5000/socket if your MQTT Broker IP is correct if Raspberry Pi is running all the programs in the [Raspberry Pi Setup](#RaspberryPi). 
 
 
-
-# Wind Turbine Digital Twin
-
-This project involves creating a digital twin of a wind turbine using ROS Noetic. The digital twin is generated with data from an Xbox Kinect 360 camera, utilizing the `freenect_stack` library to enable LiDAR capabilities for 3D mapping.
-
 ## RViz
 
 ## ROS/RViz Dependencies
@@ -96,13 +91,19 @@ If you want to add a camera, set your topic to /camera/rgb/image_color for color
 
 Now add PointCloud2 for the Lidar scanner, using `/filtered_points`
 
-
 ![PointCloud2](./images/simulation.png)
 
-
+## Sensors I used
 ## BMEO055
 documention for BMEO055
 https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-with-raspberry-pi-and-beaglebone-black.pdf
+Note I did have to changed Adafruit.GPIO to using the RPIO library.
+
+## INA260 
+
+## HallEffect
+
+## AngularServo
 
 
 ## MQTT
