@@ -8,6 +8,7 @@
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Raspberry Pi Setup](#RaspberryPi)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -16,6 +17,8 @@ Some introductory text here.
 
 ## Installation
 Steps to install your project.
+
+## RaspberryPi
 
 ### Raspberry Libraries Required
 
