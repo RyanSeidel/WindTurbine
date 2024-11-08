@@ -41,6 +41,12 @@ Enable I2C Connection: Run the Raspberry Pi configuration tool:
 
 
 This format organizes each step and command in markdown with clear instructions.
+
+Use the Raspberry Pi Folder and extract/move it to your Raspberry Pi OS
+In the file, there is a Makefile that will run all your sensors code.
+make run_all # to run all programs
+or 
+make stop_all # to stop all programs
    
 
 ## Usage
