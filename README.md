@@ -17,14 +17,28 @@ Some introductory text here.
 ## Installation
 Steps to install your project.
 
-Raspberry Libraries Required:
-pip install python3-rpi.gpio
-pip install Adafruit-GPIO
-pip3 install influxdb-client
-enable i2c connection
-enable serial 
-pip3 install adafruit-circuitpython-ina260
-pip3 install gpiozero
+### Raspberry Libraries Required
+
+To set up the necessary libraries and configurations for this project on a Raspberry Pi, follow these steps:
+
+1. **Install Required Python Libraries**:
+   ```bash
+   pip install python3-rpi.gpio
+   pip install Adafruit-GPIO
+   pip3 install influxdb-client
+   pip3 install adafruit-circuitpython-ina260
+   pip3 install gpiozero
+Enable I2C Connection: Run the Raspberry Pi configuration tool:
+
+    sudo raspi-config
+
+    Navigate to "Interfacing Options" and enable I2C.
+
+    Enable Serial Connection: In the same configuration tool (raspi-config), go to "Interfacing Options" and enable Serial.
+
+
+This format organizes each step and command in markdown with clear instructions.
+   
 
 ## Usage
 How to use your project.
