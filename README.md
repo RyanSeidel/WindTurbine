@@ -16,6 +16,9 @@ Steps to install your project.
 pip install python3-rpi.gpio
 pip install Adafruit-GPIO
 
+enable i2c connection
+enable serial 
+
 ## Usage
 How to use your project.
 
