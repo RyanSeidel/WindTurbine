@@ -1,5 +1,9 @@
 # Wind Turbine Digital Twins
 
+- Dashboard to monitor a wind turbine
+- Model for Predictions
+- How to use multiple sensors
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Installation](#installation)
