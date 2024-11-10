@@ -30,6 +30,7 @@ To set up the necessary libraries and configurations for this project on a Raspb
    pip3 install influxdb-client
    pip3 install adafruit-circuitpython-ina260
    pip3 install gpiozero
+   
 Enable I2C Connection: Run the Raspberry Pi configuration tool:
 
     sudo raspi-config
@@ -47,6 +48,24 @@ make run_all # to run all programs
 or 
 make stop_all # to stop all programs
    
+
+## Setting up the MQTT Broker
+
+Install pip3 install paho-mqtt
+sudo apt install mosquitto mosquitto-clients
+
+2. Configure Mosquitto for External Access
+
+To allow other computers on your network to connect to the broker, open the Mosquitto configuration file:
+
+sudo nano /etc/mosquitto/mosquitto.conf
+
+Add the following lines to the file to enable anonymous access (only do this if your network is secure) or set up user authentication if needed:
+
+allow_anonymous true
+listener 1883
+
+sudo systemctl restart mosquitto to reboot the Mosquitto
 
 
 ## Dashboard 
