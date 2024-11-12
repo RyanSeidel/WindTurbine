@@ -36,7 +36,8 @@ MQTT_TOPICS = {
     'calibration': 'wind_turbine/calibration',
     'voltage': 'wind_turbine/volt',
     'power': 'wind_turbine/power',
-    'current': 'wind_turbine/current'
+    'current': 'wind_turbine/current',
+    'servo': 'wind_turbine/servo'
 }
 
 # Initialize MQTT client
@@ -223,6 +224,13 @@ def on_message(client, userdata, msg):
         # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
         
         socketio.emit('current_data', {'current': float(payload)})
+        
+    elif topic == MQTT_TOPICS['servo']:
+        # payload_value = float(payload)
+        # point = Point("current").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
+        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+        
+        socketio.emit('servo_data', {'servo': float(payload)})
 
     print(f"Received message: {payload} on topic {topic}", flush=True)
     
