@@ -25,11 +25,12 @@ measurements = {
     "magnetometer": ["mx", "my", "mz"],
     "gyroscope": ["gx", "gy", "gz"],
     "accelerometer": ["ax", "ay", "az"],
-    "linear_acceleration": ["lx", "ly", "lz"],
-    "gravity": ["grx", "gry", "grz"],
-    "voltage": ["value"],
-    "current": ["value"],
-    "power": ["value"]
+    "linear_acceleration": ["lx", "ly", "lz"], 
+    "gravity": ["grx", "gry", "grz"], 
+    "voltage": ["value"], # voltage 
+    "current": ["value"], # current 
+    "power": ["value"], # power
+    "servo": ["value"] # gives the servo angle base
 }
 
 # Retrieve data for each measurement and store it in a DataFrame
@@ -39,7 +40,7 @@ for measurement, fields in measurements.items():
     for field in fields:
         query = f'''
         from(bucket: "{INFLUXDB_BUCKET}")
-        |> range(start: -1h)
+        |> range(start: -20m)
         |> filter(fn: (r) => r["_measurement"] == "{measurement}")
         |> filter(fn: (r) => r["_field"] == "{field}")
         '''
@@ -65,6 +66,12 @@ client.close()
 df = pd.DataFrame(data)
 df = df.ffill().bfill()
 
+# Add constant values for wind direction and blade orientation
+df['wind_direction'] = 1  # Representing "North" as 1
+df['blade_orientation_1'] = 60
+df['blade_orientation_2'] = 60
+df['blade_orientation_3'] = 60
+
 # Normalize the data for the LSTM model
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(df)
@@ -88,7 +95,6 @@ print("Training data shape:", train_data.shape)
 print("Testing data shape:", test_data.shape)
 
 # Build the LSTM model
-# Build the LSTM model with an explicit Input layer
 model = Sequential([
     Input(shape=(timesteps, train_data.shape[2])),  # Define input shape in Input layer
     LSTM(50, activation='relu', return_sequences=True),
@@ -96,7 +102,8 @@ model = Sequential([
     Dense(train_data.shape[2])  # Output layer with the same number of features
 ])
 
-model.compile(optimizer='adam', loss='mse', metrics=[MeanAbsoluteError()])
+# Use 'mean_squared_error' instead of 'mse' to ensure compatibility
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=[MeanAbsoluteError()])
 model.summary()
 
 # Train the model
