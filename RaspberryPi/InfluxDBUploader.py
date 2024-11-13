@@ -7,7 +7,7 @@ import time
 
 
 # InfluxDB Configuration
-INFLUXDB_URL = os.getenv("INFLUXDB_URL", "192.168.1.143:8086")
+INFLUXDB_URL = os.getenv("INFLUXDB_URL", "http://localhost:8086")
 INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "iNLROvcnYQmb6CNVmUyrNuB6CG2EiKOjUrT-F13uF-x1pSYLZGcGS-rbgj9J1cS-zaUwMB6UPd8_SJgVl3KFdQ==")
 INFLUXDB_ORG = os.getenv("INFLUXDB_ORG", "TAMUCC")
 INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET", "WindTurbine")
@@ -17,7 +17,7 @@ influx_client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLU
 write_api = influx_client.write_api(write_options=SYNCHRONOUS)  # This line initializes write_api
 
 # MQTT Configuration
-MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")  # Replace with your MQTT broker address
+MQTT_BROKER = os.getenv("MQTT_BROKER", "192.168.0.100")  # Replace with your MQTT broker address
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 # Topics under wind_turbine namespace
 MQTT_TOPICS = {
@@ -32,7 +32,8 @@ MQTT_TOPICS = {
     'calibration': 'wind_turbine/calibration',
     'voltage': 'wind_turbine/volt',
     'power': 'wind_turbine/power',
-    'current': 'wind_turbine/current'
+    'current': 'wind_turbine/current',
+    'servo':'wind_turbine/servo'
 }
 
 # Initialize MQTT client
@@ -210,6 +211,11 @@ def on_message(client, userdata, msg):
     elif topic == MQTT_TOPICS['current']:
         payload_value = float(payload)
         point = Point("current").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+        
+    elif topic == MQTT_TOPICS['servo']:
+        payload_value = float(payload)
+        point = Point("servo").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
         write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
         
     print(f"Received message: {payload} on topic {topic}", flush=True)

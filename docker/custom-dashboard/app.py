@@ -74,23 +74,23 @@ def on_message(client, userdata, msg):
         
     elif topic == MQTT_TOPICS['orientation']:
         # Split the payload by commas
-        # parts = payload.split(',')
-        # heading = float(parts[0].strip())
-        # roll = float(parts[1].strip())
-        # pitch = float(parts[2].strip())
+        parts = payload.split(',')
+        heading = float(parts[0].strip())
+        roll = float(parts[1].strip())
+        pitch = float(parts[2].strip())
         
-        # # Create a point for InfluxDB with each value as a field
-        # point = (
-        #     Point("orientation")
-        #     .field("heading", heading)
-        #     .field("roll", roll)
-        #     .field("pitch", pitch)
-        #     .time(int(time.time() * 1000), write_precision="ms")
-        # )
+        # Create a point for InfluxDB with each value as a field
+        point = (
+            Point("orientation")
+            .field("heading", heading)
+            .field("roll", roll)
+            .field("pitch", pitch)
+            .time(int(time.time() * 1000), write_precision="ms")
+        )
         
-        # # Write to InfluxDB
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        #print(f"Orientation data written to InfluxDB: Heading={heading}, Roll={roll}, Pitch={pitch}", flush=True)
+        # Write to InfluxDB
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+        print(f"Orientation data written to InfluxDB: Heading={heading}, Roll={roll}, Pitch={pitch}", flush=True)
            
         socketio.emit('orientation_data', {'orientation': payload})
     elif topic == MQTT_TOPICS['magnetometer']:
