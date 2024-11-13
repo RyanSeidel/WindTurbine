@@ -467,5 +467,24 @@
                 "file": "/data/node_modules/node-red-contrib-influxdb/influxdb.js"
             }
         }
+    },
+    "node-red-contrib-aedes": {
+        "name": "node-red-contrib-aedes",
+        "version": "0.6.0",
+        "local": true,
+        "user": false,
+        "nodes": {
+            "aedes-mqtt-broker": {
+                "name": "aedes-mqtt-broker",
+                "types": [
+                    "aedes broker"
+                ],
+                "enabled": true,
+                "local": true,
+                "user": false,
+                "module": "node-red-contrib-aedes",
+                "file": "/data/node_modules/node-red-contrib-aedes/aedes.js"
+            }
+        }
     }
 }

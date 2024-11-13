@@ -30,8 +30,14 @@
             <div class="form-box">
                 <h2>Wind Turbine Prediction Input Form</h2>
                 <form id="predictionForm">
-                    <label for="windSpeed">Wind Speed (RPM):</label>
+                    <label for="windSpeed">Wind Speed:</label>
                     <input type="number" id="windSpeed" name="windSpeed" step="0.1" placeholder="e.g., 120.5" required><br><br>
+
+                    <label for="windDirection">Wind Direction (°):</label>
+                    <input type="number" id="windDirection" name="windDirection" step="1" placeholder="e.g., 180" required><br><br>
+
+                    <label for="temperature">Temperature (°C):</label>
+                    <input type="number" id="temperature" name="temperature" step="0.1" placeholder="e.g., 25.0" required><br><br>
 
                     <label for="orientation">Turbine Orientation (°):</label>
                     <input type="number" id="orientation" name="orientation" step="1" placeholder="e.g., 90" required><br><br>
@@ -57,12 +63,6 @@
                         <option value="30">30°</option>
                         <option value="45">45°</option>
                     </select><br><br>
-
-                    <label for="windDirection">Wind Direction (°):</label>
-                    <input type="number" id="windDirection" name="windDirection" step="1" placeholder="e.g., 180" required><br><br>
-
-                    <label for="temperature">Temperature (°C):</label>
-                    <input type="number" id="temperature" name="temperature" step="0.1" placeholder="e.g., 25.0" required><br><br>
 
                     <button type="submit">Submit Prediction Data</button>
                 </form>
