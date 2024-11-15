@@ -37,8 +37,13 @@ scene.add(pointLightBack);
 // Load GLB model
 const loader = new THREE.GLTFLoader();
 let turbine;
+let blades; // Variable to hold the blades mesh
 
-loader.load('/static/model/turbine.glb', (gltf) => {
+// RPM setup
+let rpm = 33; // Example RPM
+let angularVelocity = (rpm * 2 * Math.PI) / 60; // Radians per second
+
+loader.load('/static/model/Turbine1.glb', (gltf) => {
     turbine = gltf.scene;
 
     // Adjust scale and position as needed
@@ -47,11 +52,59 @@ loader.load('/static/model/turbine.glb', (gltf) => {
 
     scene.add(turbine);
 
-    // Start animation loop for smooth transitions
+    console.log("Loaded turbine model:", turbine.children);
+
+    // Access the "Empty" object
+    const emptyObject = turbine.getObjectByName("Empty");
+    if (emptyObject) {
+        console.log("Empty object found:", emptyObject);
+
+        // Access the blades ("remesh1") from the children of "Empty"
+        blades = emptyObject.getObjectByName("remesh1");
+        if (blades) {
+            console.log("Blades object found:", blades);
+        } else {
+            console.warn("Blades object ('remesh1') not found!");
+        }
+    } else {
+        console.warn("Empty object not found!");
+    }
+
+    // Start animation loop
     animate();
 }, undefined, (error) => {
     console.error('Error loading GLB file:', error);
 });
+
+// Animation loop for smooth transitions and blade spinning
+let lastFrameTime = performance.now(); // Keep track of the last frame time
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const currentTime = performance.now();
+    const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+    lastFrameTime = currentTime;
+
+    if (turbine) {
+        // Lerp the rotation towards the target rotation (optional)
+        currentRotation.x += (targetRotation.x - currentRotation.x) * lerpSpeed;
+        currentRotation.y += (targetRotation.y - currentRotation.y) * lerpSpeed;
+        currentRotation.z += (targetRotation.z - currentRotation.z) * lerpSpeed;
+
+        // Apply the interpolated rotation to the turbine base
+        turbine.rotation.x = currentRotation.x;
+        turbine.rotation.y = currentRotation.y;
+        turbine.rotation.z = currentRotation.z;
+    }
+
+    // Spin the blades based on angular velocity
+    if (blades) {
+        blades.rotation.z += angularVelocity * deltaTime; // Rotate around the z-axis like a steering wheel
+    }
+
+    renderer.render(scene, camera);
+}
 
 // Variables to hold the current and target orientation
 let targetRotation = { x: 0, y: 0, z: 0 };
@@ -65,25 +118,6 @@ function updateOrientation(heading, roll, pitch) {
     targetRotation.z = THREE.MathUtils.degToRad(roll);
 }
 
-// Animation loop for smooth transitions
-function animate() {
-    requestAnimationFrame(animate);
-
-    if (turbine) {
-        // Lerp the rotation towards the target rotation
-        currentRotation.x += (targetRotation.x - currentRotation.x) * lerpSpeed;
-        currentRotation.y += (targetRotation.y - currentRotation.y) * lerpSpeed;
-        currentRotation.z += (targetRotation.z - currentRotation.z) * lerpSpeed;
-
-        // Apply the interpolated rotation to the model
-        turbine.rotation.x = currentRotation.x;
-        turbine.rotation.y = currentRotation.y;
-        turbine.rotation.z = currentRotation.z;
-    }
-
-    renderer.render(scene, camera);
-}
-
 // Initialize Socket.IO connection to receive orientation data
 const socket = io();
 
@@ -93,3 +127,15 @@ socket.on('orientation_data', (data) => {
     const [heading, roll, pitch] = data.orientation.split(',').map(Number); // Extract values as numbers
     updateOrientation(heading, roll, pitch); // Update target orientation
 });
+
+// Function to dynamically update RPM
+function updateRPM(newRPM) {
+    rpm = newRPM;
+    angularVelocity = (rpm * 2 * Math.PI) / 60; // Recalculate angular velocity
+    console.log("Updated RPM:", rpm, "Angular Velocity:", angularVelocity);
+}
+
+// Example of RPM update simulation (optional)
+// socket.on('rpm_data', (data) => {
+//     updateRPM(data.rpm);
+// });
