@@ -1,8 +1,10 @@
 // Basic Three.js setup
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000); // Temporary aspect ratio, will update later
+const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
+renderer.shadowMap.enabled = false; // Disable shadow map rendering
+renderer.setClearColor(0xadd8e6); // Set background color to light blue
 const modelContainer = document.getElementById("3d-model-container");
 renderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
 modelContainer.appendChild(renderer.domElement);
@@ -20,54 +22,78 @@ window.addEventListener("resize", () => {
 
 camera.position.z = 5;
 
-// Lighting
-const ambientLight = new THREE.AmbientLight(0x404040, 2);
+// Ambient Light to provide a base level of brightness
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Lower intensity for softer ambient light
 scene.add(ambientLight);
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(1, 1, 1).normalize();
-scene.add(directionalLight);
 
-// Load OBJ model
-const objLoader = new THREE.OBJLoader();
-let bunny;
-objLoader.load('/static/model/bunny.obj', (obj) => {
-    bunny = obj;
+// PointLights surrounding the object
+const lights = [];
+const lightIntensity = 0.8; // Lowered intensity for surrounding lights
 
-    bunny.scale.set(0.3, 0.3, 0.3); // Adjust the values as needed
+// Light positions around the object
+const positions = [
+    { x: 5, y: 5, z: 5 },
+    { x: -5, y: 5, z: 5 },
+    { x: 5, y: -5, z: 5 },
+    { x: -5, y: -5, z: 5 },
+    { x: 5, y: 5, z: -5 },
+    { x: -5, y: 5, z: -5 },
+    { x: 5, y: -5, z: -5 },
+    { x: -5, y: -5, z: -5 }
+];
 
-    bunny.position.set(0, -1, 0);
+// Create PointLights at each position and add them to the scene
+positions.forEach(pos => {
+    const pointLight = new THREE.PointLight(0xffffff, lightIntensity); // Use the lower intensity
+    pointLight.position.set(pos.x, pos.y, pos.z);
+    scene.add(pointLight);
+    lights.push(pointLight); // Store reference if you want to adjust them later
+});
 
-    // Apply a basic material if the model lacks one
-    bunny.traverse((child) => {
-        if (child.isMesh) {
-            child.material = new THREE.MeshStandardMaterial({ color: 0x808080 });
+// Load GLB model
+const loader = new THREE.GLTFLoader();
+let turbine;
+
+loader.load('/static/model/turbine.glb', (gltf) => {
+    turbine = gltf.scene;
+
+    // Adjust scale and position as needed
+    turbine.scale.set(6.5, 6.5, 6.5);
+    turbine.position.set(0, -2.5, 0);
+
+    // Ensure the model doesn't cast or receive shadows
+    turbine.traverse((node) => {
+        if (node.isMesh) {
+            node.castShadow = false;
+            node.receiveShadow = false;
         }
     });
 
-    // Add bunny to scene
-    scene.add(bunny);
+    // Add the turbine model to the scene
+    scene.add(turbine);
 
     // Start animation
     animate();
+}, undefined, (error) => {
+    console.error('Error loading GLB file:', error);
 });
 
 function animate() {
     requestAnimationFrame(animate);
 
-    // Rotate the bunny model continuously
-    if (bunny) {
-        bunny.rotation.y += 0.01; // Adjust speed as needed (0.01 is a slow rotation)
+    // Rotate the turbine model continuously
+    if (turbine) {
+        turbine.rotation.y += 0.01; // Adjust speed if needed
     }
 
     renderer.render(scene, camera);
 }
 
-
 // Function to update orientation based on real-time data
 function updateOrientation(heading, roll, pitch) {
-    if (bunny) {
-        bunny.rotation.x = THREE.MathUtils.degToRad(pitch);
-        bunny.rotation.y = THREE.MathUtils.degToRad(heading);
-        bunny.rotation.z = THREE.MathUtils.degToRad(roll);
+    if (turbine) {
+        turbine.rotation.x = THREE.MathUtils.degToRad(pitch);
+        turbine.rotation.y = THREE.MathUtils.degToRad(heading);
+        turbine.rotation.z = THREE.MathUtils.degToRad(roll);
     }
 }
