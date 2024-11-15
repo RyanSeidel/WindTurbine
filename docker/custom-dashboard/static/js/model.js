@@ -22,33 +22,17 @@ window.addEventListener("resize", () => {
 
 camera.position.z = 5;
 
-// Ambient Light to provide a base level of brightness
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Lower intensity for softer ambient light
+// Lighting setup
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 scene.add(ambientLight);
 
-// PointLights surrounding the object
-const lights = [];
-const lightIntensity = 0.8; // Lowered intensity for surrounding lights
+const pointLight = new THREE.PointLight(0xffffff, 1);
+pointLight.position.set(5, 5, 5);
+scene.add(pointLight);
 
-// Light positions around the object
-const positions = [
-    { x: 5, y: 5, z: 5 },
-    { x: -5, y: 5, z: 5 },
-    { x: 5, y: -5, z: 5 },
-    { x: -5, y: -5, z: 5 },
-    { x: 5, y: 5, z: -5 },
-    { x: -5, y: 5, z: -5 },
-    { x: 5, y: -5, z: -5 },
-    { x: -5, y: -5, z: -5 }
-];
-
-// Create PointLights at each position and add them to the scene
-positions.forEach(pos => {
-    const pointLight = new THREE.PointLight(0xffffff, lightIntensity); // Use the lower intensity
-    pointLight.position.set(pos.x, pos.y, pos.z);
-    scene.add(pointLight);
-    lights.push(pointLight); // Store reference if you want to adjust them later
-});
+const pointLightBack = new THREE.PointLight(0xffffff, 0.7);
+pointLightBack.position.set(-5, -5, -5);
+scene.add(pointLightBack);
 
 // Load GLB model
 const loader = new THREE.GLTFLoader();
@@ -58,42 +42,54 @@ loader.load('/static/model/turbine.glb', (gltf) => {
     turbine = gltf.scene;
 
     // Adjust scale and position as needed
-    turbine.scale.set(6.5, 6.5, 6.5);
-    turbine.position.set(0, -2.5, 0);
+    turbine.scale.set(6, 6, 6);
+    turbine.position.set(0, -2, 0);
 
-    // Ensure the model doesn't cast or receive shadows
-    turbine.traverse((node) => {
-        if (node.isMesh) {
-            node.castShadow = false;
-            node.receiveShadow = false;
-        }
-    });
-
-    // Add the turbine model to the scene
     scene.add(turbine);
 
-    // Start animation
+    // Start animation loop for smooth transitions
     animate();
 }, undefined, (error) => {
     console.error('Error loading GLB file:', error);
 });
 
+// Variables to hold the current and target orientation
+let targetRotation = { x: 0, y: 0, z: 0 };
+let currentRotation = { x: 0, y: 0, z: 0 };
+const lerpSpeed = 0.1; // Adjust this value to control the smoothness (0.1 is usually good)
+
+// Function to update the target orientation based on real-time data
+function updateOrientation(heading, roll, pitch) {
+    targetRotation.x = THREE.MathUtils.degToRad(pitch);
+    targetRotation.y = THREE.MathUtils.degToRad(heading);
+    targetRotation.z = THREE.MathUtils.degToRad(roll);
+}
+
+// Animation loop for smooth transitions
 function animate() {
     requestAnimationFrame(animate);
 
-    // Rotate the turbine model continuously
     if (turbine) {
-        turbine.rotation.y += 0.01; // Adjust speed if needed
+        // Lerp the rotation towards the target rotation
+        currentRotation.x += (targetRotation.x - currentRotation.x) * lerpSpeed;
+        currentRotation.y += (targetRotation.y - currentRotation.y) * lerpSpeed;
+        currentRotation.z += (targetRotation.z - currentRotation.z) * lerpSpeed;
+
+        // Apply the interpolated rotation to the model
+        turbine.rotation.x = currentRotation.x;
+        turbine.rotation.y = currentRotation.y;
+        turbine.rotation.z = currentRotation.z;
     }
 
     renderer.render(scene, camera);
 }
 
-// Function to update orientation based on real-time data
-function updateOrientation(heading, roll, pitch) {
-    if (turbine) {
-        turbine.rotation.x = THREE.MathUtils.degToRad(pitch);
-        turbine.rotation.y = THREE.MathUtils.degToRad(heading);
-        turbine.rotation.z = THREE.MathUtils.degToRad(roll);
-    }
-}
+// Initialize Socket.IO connection to receive orientation data
+const socket = io();
+
+// Listen for 'orientation_data' event and update target orientation
+socket.on('orientation_data', (data) => {
+    console.log("Orientation data received:", data); // Debugging log
+    const [heading, roll, pitch] = data.orientation.split(',').map(Number); // Extract values as numbers
+    updateOrientation(heading, roll, pitch); // Update target orientation
+});
