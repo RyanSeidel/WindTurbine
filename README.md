@@ -67,6 +67,8 @@ Using the same Raspberry Pi configuration tool (`raspi-config`):
 
 ## Setting up the MQTT Broker
 
+**Raspberry Pi Config**
+
 Install pip3 install paho-mqtt
 sudo apt install mosquitto mosquitto-clients
 
