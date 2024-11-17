@@ -131,9 +131,10 @@ https://www.youtube.com/watch?v=40tZQPd3z8g&t=351s
 
 
 ## MQTT
+
+http://www.steves-internet-guide.com/mqtt/
 `mosquitto_sub -h 192.168.1.205 -t wind_turbine/hall_effect`
 
-documention for BMEO055
-https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-with-raspberry-pi-and-beaglebone-black.pdf
+
 
 
