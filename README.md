@@ -85,6 +85,8 @@ listener 1883
 
 sudo systemctl restart mosquitto to reboot the Mosquitto
 
+http://www.steves-internet-guide.com/mqtt/
+`mosquitto_sub -h 192.168.0.100 -t wind_turbine/hall_effect`
 
 ## Dashboard 
 
@@ -130,28 +132,24 @@ Now add PointCloud2 for the Lidar scanner, using `/filtered_points`
 
 ![PointCloud2](./images/simulation.png)
 
-## Sensors 
-BMEO055
-documention for BMEO055
-https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-with-raspberry-pi-and-beaglebone-black.pdf
-Note I did have to changed Adafruit.GPIO to using the RPIO library.
+## Sensors
 
-INA260 
-https://www.youtube.com/watch?v=ym5ioJFsh4M
-Make sure to install the adafruit ina260 library 
-Wires are the same with Raspberry Pi 5
+- **BNO055**
+  - [Documentation for BNO055](https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-with-raspberry-pi-and-beaglebone-black.pdf)
+  - Note: I had to change from using `Adafruit.GPIO` to the `RPIO` library.
 
-HallEffect
-https://circuitdigest.com/microcontroller-projects/interfacing-hall-sensor-with-raspberry-pi
+- **INA260**
+  - [Setup Video](https://www.youtube.com/watch?v=ym5ioJFsh4M)
+  - Make sure to install the Adafruit INA260 library.
+  - Wiring is the same for Raspberry Pi 5.
 
-AngularServo
-https://www.youtube.com/watch?v=40tZQPd3z8g&t=351s
+- **Hall Effect Sensor**
+  - [Guide for Interfacing with Raspberry Pi](https://circuitdigest.com/microcontroller-projects/interfacing-hall-sensor-with-raspberry-pi)
+
+- **Angular Servo**
+  - [Setup Video](https://www.youtube.com/watch?v=40tZQPd3z8g&t=351s)
 
 
-MQTT
-
-http://www.steves-internet-guide.com/mqtt/
-`mosquitto_sub -h 192.168.1.205 -t wind_turbine/hall_effect`
 
 
 
