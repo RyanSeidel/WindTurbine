@@ -53,7 +53,7 @@ Using the same Raspberry Pi configuration tool (`raspi-config`):
 
 1. Copy or extract the **Raspberry Pi Folder** onto your Raspberry Pi OS.
 2. Inside the folder, you'll find a `Makefile` that can run all your sensor programs.
-**{Warning}** Before you start programs, make sure to check all the [Sensors Setup](#Sensors) guidelines to set up your sensors correctly!
+**⚠️ Warning**: Before you start the programs, make sure to check all the [Sensors Setup](#Sensors) guidelines to set up your sensors correctly!
 
 ### Commands for Running Programs
 
