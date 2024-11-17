@@ -64,7 +64,7 @@ Using the same Raspberry Pi configuration tool (`raspi-config`):
   - `make stop_all`
 
    
-
+## MQTT
 ## Setting up the MQTT Broker
 
 **⚠️ Raspberry Pi Config**
