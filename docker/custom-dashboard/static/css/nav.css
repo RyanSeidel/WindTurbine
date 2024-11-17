@@ -70,7 +70,7 @@ main {
   display: flex;
   align-items: center;
   height: 5rem;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   text-decoration: none;
   filter: grayscale(100%) opacity(0.7);
   transition: var(--transition-speed);
@@ -309,7 +309,7 @@ main {
 
 /* Themes */
 .dark {
-  --text-primary: #b6b6b6;
+  --text-primary: #23232e;
   --text-secondary: #ececec;
   --bg-primary: #23232e;
   --bg-secondary: #141418;
@@ -318,14 +318,14 @@ main {
 .light {
   --text-primary: #1f1f1f;
   --text-secondary: #000000;
-  --bg-primary: #23232e;
-  --bg-secondary: #e4e4e4;
+  --bg-primary: #e4e4e4;
+  --bg-secondary: #ffffff;
 }
 
 .solar {
-  --text-primary: #576e75;
+  --text-primary: #49575c;
   --text-secondary: #35535c;
-  --bg-primary: #23232e;
+  --bg-primary: #d4c59a;
   --bg-secondary: #f5e5b8;
 }
 

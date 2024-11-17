@@ -11,18 +11,7 @@ input[type="number"] {
     -moz-appearance: textfield; /* For Firefox */
 }
 
-/* Container styling with box shadow */
-.content {
-    text-align: left;
-    background-color: var(--bg-primary); /* Background color based on theme */
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Container shadow */
-    width: 100%;
-    max-width: 350px;
-    flex: 1;
-    box-sizing: border-box;
-}
+
 
 /* Style for placeholder text */
 input::placeholder {
@@ -30,7 +19,7 @@ input::placeholder {
     opacity: 1; /* Ensures full opacity for cross-browser consistency */
 }
 
-/* Form box styling with fixed width */
+/* Form box styling with fixed width Prediction Input */
 .form-box {
     padding: 20px;
     border-radius: 8px;
@@ -38,15 +27,20 @@ input::placeholder {
     width: 400px; /* Fixed width for the form */
     max-width: 100%; /* Ensures responsiveness on small screens */
     box-sizing: border-box;
-    background-color: var(--bg-secondary); /* Use secondary background color */
+    background-color: #ddd;
 }
 
 /* MQTT Form editing */
+
+.setting-container{
+    padding: 55 55 55 100;
+}
+
 .Mqtt-box {
-    background-color: var(--bg-secondary); /* Use secondary background color */
+    background-color: #ddd; /* Use secondary background color */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for form box */
     border-radius: 8px;
-    padding: 20px;
+    
 }
 
 /* Styling for the Connect to MQTT button */
@@ -79,24 +73,24 @@ input[type="number"], select {
     width: 100%;
     padding: 8px;
     margin: 5px 0 15px 0;
-    border: 1px solid var(--text-secondary); /* Use secondary text color */
+    border: 1px solid var(--text-primary); /* Use secondary text color */
     border-radius: 4px;
     box-sizing: border-box;
-    background-color: var(--bg-primary); /* Use primary background color */
-    color: var(--text-primary); /* Use primary text color */
+    background-color: var(--bg-secondary); /* Use primary background color */
+    color: var(--text-secondary); /* Use primary text color */
 }
 
 button {
     width: 100%;
     padding: 10px;
-    background-color: var(--text-primary); /* Use primary text color */
+    background-color: var(--bg-primary); /* Use primary text color */
     border: none;
     border-radius: 4px;
-    color: var(--bg-primary); /* Use primary background color */
+    color: var(--text-secondary); /* Use primary background color */
     font-weight: bold;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: var(--text-secondary); /* Use secondary text color on hover */
+    background-color: var(--bg-secondary); /* Use secondary text color on hover */
 }

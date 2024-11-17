@@ -2,7 +2,7 @@
 .table {
   width: 460px;
   height: 775px;
-  background-color: var(--bg-primary); /* Sync with theme */
+  background-color: #ddd;; /* Sync with theme */
   color: var(--text-primary); /* Sync text color with theme */
   border-radius: 8px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for better aesthetics */
@@ -14,7 +14,7 @@
 .compare-graph {
   width: 775px;
   height: 775px; /* Adjust height dynamically */
-  background-color: var(--bg-primary); /* Sync with theme */
+  background-color: #ddd;; /* Sync with theme */
   color: var(--text-primary); /* Sync text color with theme */
   border-radius: 8px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
@@ -35,7 +35,7 @@
   text-align: left;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for the table */
   background-color: var(--bg-primary); /* Ensure table background matches theme */
-  color: var(--text-primary); /* Ensure text is theme-synced */
+  color: var(--text-secondary); /* Ensure text is theme-synced */
 }
 
 .styled-table thead tr {
@@ -47,7 +47,7 @@
 .styled-table td {
   padding: 12px 15px;
   border-bottom: 1px solid var(--bg-secondary); /* Sync border color with theme */
-  color: var(--text-primary); /* Sync cell text color with theme */
+  color: var(--text-secondary); /* Sync cell text color with theme */
 }
 
 .styled-table tbody tr:nth-of-type(even) {
@@ -72,12 +72,11 @@ h3 {
 /* Data Selection Styling */
 .data-select {
   width: 100%; /* Adjust width to span container */
-  color: var(--text-primary);
   border-radius: 8px;
-
 }
 
-.data-select h3 {
+
+.data-select h2 {
   text-align: center;
   color: var(--text-primary);
   margin-bottom: 15px;
@@ -103,7 +102,7 @@ h3 {
   border: 1px solid var(--bg-secondary);
   border-radius: 4px;
   background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 .dropdown option {
@@ -111,21 +110,19 @@ h3 {
   color: var(--text-primary);
 }
 
-.small-button {
-  background-color: var(--text-secondary);
+.small-buttonPredict {
+  background-color: var(--bg-primary);
   border: none;
   border-radius: 4px;
-  color: var(--bg-primary);
-  font-weight: bold;
-  font-size: 1.2rem;
+  color: var(--text-secondary);
   width: 100px; /* Set a wider button width */
   height: 35px; /* Set a taller button height */
   cursor: pointer;
   position: relative;
-  top: 5px; /* Adjust this value to raise the button */
+  top: 6px; /* Adjust this value to raise the button */
 }
 
-.small-button:hover {
+.small-buttonPredict:hover {
   background-color: var(--bg-secondary);
 }
 

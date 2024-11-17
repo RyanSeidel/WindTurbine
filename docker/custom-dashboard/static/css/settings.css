@@ -1,0 +1,90 @@
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.dark {
+  --bg-color: #23232e; /* Dark background */
+  --text-color: #23232e; /* Light text for contrast */
+}
+
+body.light {
+  --bg-color: #ffffff; /* Light background */
+  --text-color: #1f1f1f; /* Dark text for contrast */
+}
+
+body.solar {
+  --bg-color: #fdf6e3; /* Solar-themed background */
+  --text-color: #35535c; /* Muted dark text */
+}
+
+body {
+  background-color: var(--bg-color); /* Apply background color */
+  color: var(--text-color); /* Apply text color */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+.setting-container{
+  padding: 55 55 55 100;
+}
+
+.Mqtt-box {
+  background-color: #ddd; /* Use secondary background color */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for form box */
+  border-radius: 8px;
+  
+}
+
+/* Styling for the Connect to MQTT button */
+.small-button {
+  width: 100px; /* Set desired width */
+  padding: 5px 10px;
+  font-size: 0.9em;
+  background-color: var(--text-primary); /* Use primary text color */
+  color: var(--bg-primary); /* Use primary background color */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.small-button:hover {
+  background-color: var(--text-secondary); /* Use secondary text color on hover */
+}
+
+h2 {
+  text-align: center;
+  color: var(--text-primary); /* Use primary text color */
+}
+
+label {
+  font-weight: bold;
+  color: var(--text-primary); /* Use primary text color */
+}
+
+input[type="number"], select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 15px 0;
+  border: 1px solid var(--text-primary); /* Use secondary text color */
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: var(--bg-secondary); /* Use primary background color */
+  color: var(--text-secondary); /* Use primary text color */
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--bg-primary); /* Use primary text color */
+  border: none;
+  border-radius: 4px;
+  color: var(--text-secondary); /* Use primary background color */
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--bg-secondary); /* Use secondary text color on hover */
+}

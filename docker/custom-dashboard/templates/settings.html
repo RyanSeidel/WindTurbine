@@ -1,6 +1,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script defer src="theme.js"></script>
+  <script defer src="/static/js/theme.js"></script>
+  <script defer src="/static/js/console.js"></script>
   <link rel="stylesheet" href="/static/css/nav.css" />
 
   <link
@@ -14,7 +15,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   
 
-  <link rel="stylesheet" href="/static/css/inputform.css">
+  <link rel="stylesheet" href="/static/css/settings.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
@@ -167,6 +168,7 @@
   </nav>
 
   <main>
+    <div class="setting-container">
     <div class="Mqtt-box">
       <h2>Enter MQTT Broker IP and Blade Orientations</h2>
       <form id="mqttConnectForm">
@@ -202,6 +204,7 @@
       </form>
       <p id="connection-status">Status: Not Connected</p>
   </div>
+</div>
   <script src="/static/js/MQTT.js"></script>
 
   </main>
