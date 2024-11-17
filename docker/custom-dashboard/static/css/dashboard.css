@@ -153,7 +153,6 @@ body {
 }
 
 .orientation-container {
-  background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
   width: 700px; /* Limits maximum width for larger screens */
   height: 375px; /* Adjusts height automatically based on content */
   padding: 20px;

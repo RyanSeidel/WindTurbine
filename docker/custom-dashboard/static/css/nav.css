@@ -173,6 +173,7 @@ main {
 }
 
 
+
 /* Sliding Console Panel */
 .console-panel {
   position: fixed;
@@ -181,9 +182,9 @@ main {
   width: 400px;
   height: 100%;
   background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  color: var(--bg-primary);
   box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
+  overflow-y: hidden; /* Prevent overflow */
   transition: right 0.3s ease; /* Only apply transition to the right property */
   z-index: 1000;
   padding: 40px;
@@ -193,16 +194,34 @@ main {
   right: 0; /* Show the panel */
 }
 
-.console-msg{
-  text-align: left;
-}
-
 .console-content {
   text-align: center;
   height: 100%;
+  display: flex; /* Flexbox for layout */
+  flex-direction: column; /* Stack content */
+  justify-content: flex-end; /* Start messages from the bottom */
   background-color: white;
   padding: 10px;
+  overflow-y: auto; /* Allow scrolling when messages exceed height */
 }
+
+.console-msg-container {
+  display: flex;
+  flex-direction: column-reverse; /* Messages appear from bottom to top */
+  width: 100%;
+  height: 100%; /* Full height */
+  overflow-y: auto; /* Enable scrolling */
+}
+
+.console-msg {
+  text-align: left;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: var(--msg-bg, #f4f4f4);
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
 
 .close-button {
   position: absolute;
@@ -216,7 +235,23 @@ main {
 }
 
 .close-button:hover {
-  color: var(--text-secondary);
+  color: #ff8080; /* Light red color for hover */
+}
+
+/* Keyframes for blinking red effect */
+.error-active  {
+  filter: grayscale(0%) opacity(1);
+  animation: blink-red 1s infinite; /* Blink animation */
+}
+
+/* Define the blinking red animation */
+@keyframes blink-red {
+  0%, 100% {
+    color: red; /* Red color at the start and end */
+  }
+  50% {
+    color: transparent; /* Transparent during the middle */
+  }
 }
 
 
@@ -283,14 +318,14 @@ main {
 .light {
   --text-primary: #1f1f1f;
   --text-secondary: #000000;
-  --bg-primary: #ffffff;
+  --bg-primary: #23232e;
   --bg-secondary: #e4e4e4;
 }
 
 .solar {
   --text-primary: #576e75;
   --text-secondary: #35535c;
-  --bg-primary: #fdf6e3;
+  --bg-primary: #23232e;
   --bg-secondary: #f5e5b8;
 }
 
