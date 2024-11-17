@@ -1,0 +1,331 @@
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.dark {
+  --bg-color: #23232e; /* Dark background */
+  --text-color: #23232e; /* Light text for contrast */
+}
+
+body.light {
+  --bg-color: #ffffff; /* Light background */
+  --text-color: #1f1f1f; /* Dark text for contrast */
+}
+
+body.solar {
+  --bg-color: #fdf6e3; /* Solar-themed background */
+  --text-color: #35535c; /* Muted dark text */
+}
+
+body {
+  background-color: var(--bg-color); /* Apply background color */
+  color: var(--text-color); /* Apply text color */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+/* Ensure all child elements inherit the theme styling */
+.navbar {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.main-content {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Add similar styles for any other container or specific sections */
+
+/* Container to align form and side items */
+.dashboard-container {
+  display: flex;
+  align-items: flex-start;
+  width: 100%; /* Full width of the viewport */
+  height: 100vh; /* Full height of the viewport */
+  padding: 55 55 55 100;
+  gap: 20px;
+}
+
+/* Form section on the left */
+.content {
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Right column for side items */
+.first-box {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next row */
+  gap: 20px;
+  border: 2px solid #fff;
+  max-width: 1025px; /* Fixed width for the entire side panel */
+  
+}
+
+.second-box {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next row */
+  gap: 20px;
+  border: 2px solid #fff;
+  max-width: 625px; /* Fixed width for the entire side panel */
+  
+}
+
+/* Gauge container */
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #ddd;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px solid #333;
+  padding: 20px;
+  max-width: 300px;
+  height: 375px;
+  box-sizing: border-box;
+}
+
+/* Individual data containers with fixed dimensions */
+.voltage-container{
+  background-color: #ddd;
+  height: 460px;
+  width: 1025px;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.chart svg {
+  background-color: #1a1a1a; /* Dark gray background for charts */
+}
+
+.chart .x-axis text, .chart .y-axis text {
+  fill: #ddd; /* Neon green for axis labels */
+  font-size: 10px;
+}
+
+.chart .grid line {
+  stroke: #444;
+  stroke-dasharray: 2,2; /* Dashed lines for grid */
+}
+
+#multiLineChart {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next row */
+  gap: 20px; /* Adds space between items */
+}
+
+#multiLineChart > div {
+  flex: 1 1 calc(50% - 10px); /* Each item takes 50% width minus the gap */
+  text-align: left; /* Aligns text to the left */
+  box-sizing: border-box; /* Includes padding/border in width calculations */
+  min-width: 200px; /* Prevents items from getting too small */
+}
+
+
+
+.monitor-title {
+    font-weight: bold;
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.monitor-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between each unit */
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+.monitor-row div {
+    display: flex;
+    align-items: center;
+    font-size: 1em;
+}
+
+.orientation-container {
+  background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
+  width: 700px; /* Limits maximum width for larger screens */
+  height: 375px; /* Adjusts height automatically based on content */
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center; /* Aligns all text inside the container to the left */
+  border: 1px solid #ddd;
+  background-color: #ddd;
+  box-sizing: border-box;
+
+
+}
+
+
+.ori-inside{
+  border: 1px solid #ddd;
+  background-color: #ddd;
+  box-sizing: border-box;
+  display: flex;
+  text-align: left;
+  flex-wrap: wrap; /* Enables wrapping of child elements */
+  gap: 20px;
+  margin-top: 10px;
+  
+}
+
+
+/* 3D Model Container */
+.model-container {
+  width: 275px; /* Optional: Limit the maximum width */
+  height: auto; /* Adjust height dynamically based on aspect ratio */
+  aspect-ratio: 1; /* Maintain a square aspect ratio */
+  background-color: #1a1a1a;
+  border: 2px solid #333; /* Border to distinguish the model container */
+}
+
+/* Ensure the container resizes with the parent */
+/* Ensure the container resizes with the parent */
+#3d-model-container {
+  max-width: 700px; /* Optional: Limit maximum width */
+  max-height: 500px; /* Optional: Limit maximum height */
+  aspect-ratio: 16 / 9; /* Maintain a widescreen aspect ratio */
+  border: 2px solid #333; /* Optional: Add a border for visibility */
+  background-color: #1a1a1a; /* Background for the container */
+}
+
+.orientation-container div {
+  margin-bottom: 10px; /* Adds space between each section */
+
+  border-radius: 5px; /* Optional: slightly rounded corners */
+}
+.weather-container{
+  background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
+  width: 625px;
+  height: 250px;
+  padding: 10px;
+  background-color: #ddd;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.weather-text{
+  text-align:left
+}
+
+
+.rpm-container {
+  background-color: rgba(30, 144, 255, 0.1); /* Light blue with transparency */
+  max-width: 500px;
+  height: 375px;
+  padding: 20px;
+  background-color: #ddd;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+
+
+.accelerometer-container {
+  width: 625px;
+  height: 250px;
+  padding: 20px;
+  background-color: #ddd;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+
+.gravlinear-container{
+  width: 625px;
+  height: 314px;
+  padding: 20px;
+  background-color: #ddd;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+
+/* Chart styling */
+#gauge, #chart {
+  width: 300px;
+  height: 300px;
+}
+
+/* RPM text styling */
+.rpm-data {
+  font-size: 18px;
+  color: #333;
+  margin-top: 10px;
+}
+
+
+/* For 1600 width */
+@media (max-width: 1850px) {
+  .first-box {
+    max-width: 725px;
+  }
+
+  .orientation-container {
+    width: 400px; 
+    height: 375px;
+  }
+
+  .rpm-container{
+    max-width: 50%;
+  }
+
+  .model-container{
+    width: 155px; 
+    height: 155px;
+  }
+
+  #3d-model-container {
+      max-width: 40%; /* Scale down for smaller screens */
+      max-height: 80%;
+  }
+  
+}
+
+/* For 1280 width */
+@media (max-width: 1850px) {
+  .first-box {
+    max-width: 500px;
+  }
+
+  .orientation-container {
+    width: 200px; 
+    height: 375px;
+  }
+
+  .rpm-container{
+    max-width: 50%;
+  }
+
+  .model-container{
+    width: 155px; 
+    height: 155px;
+  }
+
+  #3d-model-container {
+      max-width: 40%; /* Scale down for smaller screens */
+      max-height: 80%;
+  }
+  
+}
+
+
+
+

@@ -1,0 +1,304 @@
+:root {
+  /* Global Font and Colors */
+  font-size: 14px;
+  font-family: 'Open Sans';
+  --text-primary: #b6b6b6;
+  --text-secondary: #ececec;
+  --bg-primary: #23232e;
+  --bg-secondary: #141418;
+  --transition-speed: 600ms;
+}
+
+body {
+  /* Body Styling */
+  color: black;
+  margin: 0;
+  padding: 0;
+  
+}
+
+body::-webkit-scrollbar {
+  /* Custom Scrollbar */
+  width: 0.25rem;
+}
+
+body::-webkit-scrollbar-track {
+  background: #1e1e24;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #6649b8;
+}
+
+main {
+  /* Main Content Styling */
+  margin-left: 5rem;
+  padding: 1rem;
+}
+
+.navbar {
+  /* Navigation Bar Styling */
+  position: fixed;
+  background-color: var(--bg-primary);
+  transition: width var(--transition-speed) ease;
+  overflow: auto; /* Changed from 'scroll' for smoother behavior */
+}
+
+.navbar-nav {
+  /* Navigation Items */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-item {
+  /* Individual Nav Items */
+  width: 100%;
+}
+
+.nav-item:last-child {
+  /* Move Last Item to Bottom */
+  margin-top: auto;
+}
+
+.nav-link {
+  /* Navigation Links */
+  display: flex;
+  align-items: center;
+  height: 5rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  filter: grayscale(100%) opacity(0.7);
+  transition: var(--transition-speed);
+}
+
+.nav-link:hover {
+  /* Hover Effects */
+  filter: grayscale(0%) opacity(1);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.link-text {
+  /* Text for Nav Links */
+  display: none;
+  margin-left: 1rem;
+}
+
+.nav-link svg{
+  width: 2rem; /* Set consistent width */
+  height: 2rem; /* Set consistent height */
+  min-width: 2rem;
+  margin: 0 1.5rem;
+  transition: var(--transition-speed);
+}
+
+.nav-link i {
+  font-size: 2rem; /* Match the SVG icon size */
+  margin: 0 1.5rem;
+  transition: var(--transition-speed);
+  transition: transform 1s ease; /* Smooth transition for the spin */
+}
+
+/* Specific spin effect for the 'spin-on-hover' class */
+.nav-link .spin-on-hover {
+  transition: transform 1s ease; /* Smooth spin transition */
+}
+
+.nav-link:hover .spin-on-hover {
+  transform: rotate(360deg); /* Rotate 360 degrees on hover */
+}
+
+.fa-primary {
+  /* Icon Primary Color */
+  color: #ff7eee;
+}
+
+.fa-secondary {
+  /* Icon Secondary Color */
+  color: #df49a6;
+}
+
+.fa-primary,
+.fa-secondary {
+  transition: var(--transition-speed);
+}
+
+.logo {
+  /* Logo Styling */
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  font-size: 1rem;
+  letter-spacing: 0.3ch;
+  width: 100%;
+}
+
+.logo svg {
+  /* Logo Icon Styling */
+  transform: rotate(0deg);
+  transition: var(--transition-speed);
+}
+
+.logo-text {
+  /* Logo Text Styling */
+  display: inline;
+  position: absolute;
+  left: -999px;
+  transition: var(--transition-speed);
+}
+
+.navbar {
+  position: fixed;
+  background-color: var(--bg-primary);
+  transition: width var(--transition-speed) ease; /* Only apply transition to width */
+  overflow: auto;
+}
+
+.navbar:hover .logo svg {
+  /* Rotate Logo Icon on Hover */
+  transform: rotate(-180deg);
+}
+
+.navbar:hover .link-text {
+  /* Show Text on Hover */
+  display: inline;
+}
+
+
+/* Sliding Console Panel */
+.console-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100%;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  transition: right 0.3s ease; /* Only apply transition to the right property */
+  z-index: 1000;
+}
+
+.console-panel.open {
+  right: 0; /* Show the panel */
+}
+
+.console-content {
+  padding: 20px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: var(--text-secondary);
+}
+
+
+/* Responsive Styling */
+
+/* Small Screens */
+@media only screen and (max-width: 600px) {
+  .navbar {
+    bottom: 0;
+    width: 100vw;
+    height: 5rem;
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .navbar-nav {
+    flex-direction: row;
+  }
+
+  .nav-link {
+    justify-content: center;
+  }
+
+  main {
+    margin: 0;
+  }
+}
+
+/* Large Screens */
+@media only screen and (min-width: 600px) {
+  .navbar {
+    top: 0;
+    width: 5rem;
+    height: 100vh;
+  }
+
+  .navbar:hover {
+    width: 13rem;
+  }
+
+  .navbar:hover .link-text {
+    display: inline;
+  }
+
+  .navbar:hover .logo svg {
+    margin-left: 10rem;
+  }
+
+  .navbar:hover .logo-text {
+    left: 0px;
+  }
+}
+
+/* Themes */
+.dark {
+  --text-primary: #b6b6b6;
+  --text-secondary: #ececec;
+  --bg-primary: #23232e;
+  --bg-secondary: #141418;
+}
+
+.light {
+  --text-primary: #1f1f1f;
+  --text-secondary: #000000;
+  --bg-primary: #ffffff;
+  --bg-secondary: #e4e4e4;
+}
+
+.solar {
+  --text-primary: #576e75;
+  --text-secondary: #35535c;
+  --bg-primary: #fdf6e3;
+  --bg-secondary: #f5e5b8;
+}
+
+.theme-icon {
+  /* Theme Toggle Icons */
+  display: none;
+}
+
+.dark #darkIcon {
+  display: block;
+}
+
+.light #lightIcon {
+  display: block;
+}
+
+.solar #solarIcon {
+  display: block;
+}
