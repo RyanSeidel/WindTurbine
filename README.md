@@ -119,10 +119,15 @@ https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-
 Note I did have to changed Adafruit.GPIO to using the RPIO library.
 
 ## INA260 
+https://www.youtube.com/watch?v=ym5ioJFsh4M
+Make sure to install the adafruit ina260 library 
+Wires are the same with Raspberry Pi 5
 
 ## HallEffect
+https://circuitdigest.com/microcontroller-projects/interfacing-hall-sensor-with-raspberry-pi
 
 ## AngularServo
+https://www.youtube.com/watch?v=40tZQPd3z8g&t=351s
 
 
 ## MQTT
