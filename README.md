@@ -17,36 +17,50 @@
 ## Introduction
 Some introductory text here.
 
-## Setting Up the RaspberryPi
+# RaspberryPi
 
-### Raspberry Libraries Required
+## Raspberry Libraries Required
 
 To set up the necessary libraries and configurations for this project on a Raspberry Pi, follow these steps:
 
-1. **Install Required Python Libraries**:
-   ```bash
-   pip install python3-rpi.gpio
-   pip install Adafruit-GPIO
-   pip3 install influxdb-client
-   pip3 install adafruit-circuitpython-ina260
-   pip3 install gpiozero
-   
-Enable I2C Connection: Run the Raspberry Pi configuration tool:
+### Install Required Python Libraries
 
-    sudo raspi-config
+Run the following commands to install the required Python libraries:
 
-    Navigate to "Interfacing Options" and enable I2C.
+- `pip install python3-rpi.gpio`
+- `pip install Adafruit-GPIO`
+- `pip3 install influxdb-client`
+- `pip3 install adafruit-circuitpython-ina260`
+- `pip3 install gpiozero`
 
-    Enable Serial Connection: In the same configuration tool (raspi-config), go to "Interfacing Options" and enable Serial.
+### Enable I2C Connection
 
+Run the Raspberry Pi configuration tool to enable I2C:
 
-This format organizes each step and command in markdown with clear instructions.
+- Use the command `sudo raspi-config`.
+- Navigate to **"Interfacing Options"** and enable **I2C**.
 
-Use the Raspberry Pi Folder and extract/move it to your Raspberry Pi OS
-In the file, there is a Makefile that will run all your sensors code.
-make run_all # to run all programs
-or 
-make stop_all # to stop all programs
+### Enable Serial Connection
+
+Using the same Raspberry Pi configuration tool (`raspi-config`):
+
+- Navigate to **"Interfacing Options"**.
+- Enable **Serial**.
+
+---
+
+## Using the Raspberry Pi Folder
+
+1. Copy or extract the **Raspberry Pi Folder** onto your Raspberry Pi OS.
+2. Inside the folder, you'll find a `Makefile` that can run all your sensor programs.
+
+### Commands for Running Programs
+
+- To run all programs:
+  - `make run_all`
+- To stop all programs gracefully:
+  - `make stop_all`
+
    
 
 ## Setting up the MQTT Broker
