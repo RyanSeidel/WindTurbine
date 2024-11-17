@@ -17,7 +17,7 @@
 ## Introduction
 Some introductory text here.
 
-## RaspberryPi
+## Setting Up the RaspberryPi
 
 ### Raspberry Libraries Required
 
