@@ -65,28 +65,34 @@ Using the same Raspberry Pi configuration tool (`raspi-config`):
 
    
 ## MQTT
-## Setting up the MQTT Broker
 
-**⚠️ Raspberry Pi Config**
+### Setting up the MQTT Broker
 
-Install pip3 install paho-mqtt
-sudo apt install mosquitto mosquitto-clients
+#### Raspberry Pi Configuration
 
-2. Configure Mosquitto for External Access
+1. Install the required libraries:
+   - `pip3 install paho-mqtt`
+   - `sudo apt install mosquitto mosquitto-clients`
 
-To allow other computers on your network to connect to the broker, open the Mosquitto configuration file:
+2. Configure Mosquitto for External Access:
+   - Open the Mosquitto configuration file:
+     - `sudo nano /etc/mosquitto/mosquitto.conf`
+   - Add the following lines to enable anonymous access (only do this if your network is secure) or set up user authentication if needed:
+     ```plaintext
+     allow_anonymous true
+     listener 1883
+     ```
+   - Save and exit the file, then restart Mosquitto to apply the changes:
+     - `sudo systemctl restart mosquitto`
 
-sudo nano /etc/mosquitto/mosquitto.conf
+3. Test the setup:
+   - Subscribe to the `wind_turbine/hall_effect` topic:
+     - `mosquitto_sub -h 192.168.0.100 -t wind_turbine/hall_effect`
 
-Add the following lines to the file to enable anonymous access (only do this if your network is secure) or set up user authentication if needed:
+### Additional Resources
 
-allow_anonymous true
-listener 1883
+For more details and troubleshooting, refer to [Steve's Internet Guide on MQTT](http://www.steves-internet-guide.com/mqtt/).
 
-sudo systemctl restart mosquitto to reboot the Mosquitto
-
-http://www.steves-internet-guide.com/mqtt/
-`mosquitto_sub -h 192.168.0.100 -t wind_turbine/hall_effect`
 
 ## Dashboard 
 
