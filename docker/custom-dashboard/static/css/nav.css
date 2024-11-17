@@ -186,14 +186,22 @@ main {
   overflow-y: auto;
   transition: right 0.3s ease; /* Only apply transition to the right property */
   z-index: 1000;
+  padding: 40px;
 }
 
 .console-panel.open {
   right: 0; /* Show the panel */
 }
 
+.console-msg{
+  text-align: left;
+}
+
 .console-content {
-  padding: 20px;
+  text-align: center;
+  height: 100%;
+  background-color: white;
+  padding: 10px;
 }
 
 .close-button {
