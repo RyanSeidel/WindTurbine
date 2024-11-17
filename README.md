@@ -125,7 +125,7 @@ For more details and troubleshooting, refer to [Steve's Internet Guide on MQTT](
 ## RViz
 
 ### ROS/RViz Dependencies
-
+**⚠️ Warning**: Only work for Neotic Ubuntu Version!
 To use this project, you must install the following dependencies:
 
 - **ROS Noetic**: The ROS distribution used for managing the various packages and nodes required for the digital twin.
