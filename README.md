@@ -131,24 +131,24 @@ Now add PointCloud2 for the Lidar scanner, using `/filtered_points`
 ![PointCloud2](./images/simulation.png)
 
 ## Sensors 
-## BMEO055
+# BMEO055
 documention for BMEO055
 https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-with-raspberry-pi-and-beaglebone-black.pdf
 Note I did have to changed Adafruit.GPIO to using the RPIO library.
 
-## INA260 
+# INA260 
 https://www.youtube.com/watch?v=ym5ioJFsh4M
 Make sure to install the adafruit ina260 library 
 Wires are the same with Raspberry Pi 5
 
-## HallEffect
+# HallEffect
 https://circuitdigest.com/microcontroller-projects/interfacing-hall-sensor-with-raspberry-pi
 
-## AngularServo
+# AngularServo
 https://www.youtube.com/watch?v=40tZQPd3z8g&t=351s
 
 
-## MQTT
+# MQTT
 
 http://www.steves-internet-guide.com/mqtt/
 `mosquitto_sub -h 192.168.1.205 -t wind_turbine/hall_effect`
