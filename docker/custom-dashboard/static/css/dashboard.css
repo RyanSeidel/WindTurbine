@@ -107,14 +107,15 @@ body {
 }
 
 .chart .x-axis text, .chart .y-axis text {
-  fill: #ddd; /* Neon green for axis labels */
-  font-size: 10px;
+  fill: #ddd; /* Light gray for axis labels */
+  font-size: 10px; /* Adjust font size */
 }
 
 .chart .grid line {
   stroke: #444;
   stroke-dasharray: 2,2; /* Dashed lines for grid */
 }
+
 
 #multiLineChart {
   display: flex;
@@ -214,6 +215,23 @@ body {
   border: 1px solid #ddd;
   box-sizing: border-box;
 }
+
+.weather-chart {
+  width: 100%;
+  height: 250px; /* Adjusted to fit within container */
+  margin: 0 auto;
+}
+
+.axis text {
+  font-size: 12px;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
 
 .weather-text{
   text-align:left
