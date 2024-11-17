@@ -90,47 +90,65 @@ http://www.steves-internet-guide.com/mqtt/
 
 ## Dashboard 
 
-My partner and I used visual code for navigating and running our flask application for our dashboard.
-Before navigating for cd /docker inside of WindTurbine
-You will need to download Docker and turn on docker. 
+## Setting Up the Dashboard with Docker
 
-If your docker is on, you can do docker-compose up -d --build or docker-compose down to stop all containers.
+### Prerequisites
+- Download and install **Docker** on your machine.
+- Ensure Docker is running before proceeding.
 
-Once all containers are activated, you will go to localhost:5000 which will take you to the page localhost:5000/socket if your MQTT Broker IP is correct if Raspberry Pi is running all the programs in the [Raspberry Pi Setup](#RaspberryPi). 
+### Steps to Navigate and Run the Flask Application
+1. Navigate to the `docker` directory inside the `WindTurbine` project folder:
+   - `cd /docker`
+2. Use **Visual Studio Code** (VS Code) for navigating and running the Flask application.
+
+### Starting and Stopping Docker Containers
+- To start all containers:
+  - `docker-compose up -d --build`
+- To stop all containers:
+  - `docker-compose down`
+
+### Accessing the Dashboard
+1. Once all containers are activated, open your browser and navigate to:
+   - `http://localhost:5000`
+2. If everything is set up correctly, this will redirect you to:
+   - `http://localhost:5000/socket`
+   - Ensure that your **MQTT Broker IP** is correct.
+   - Verify that the Raspberry Pi is running all required programs as outlined in the [Raspberry Pi Setup](#RaspberryPi) section.
 
 
 ## RViz
 
-## ROS/RViz Dependencies
+### ROS/RViz Dependencies
 
 To use this project, you must install the following dependencies:
 
 - **ROS Noetic**: The ROS distribution used for managing the various packages and nodes required for the digital twin.
 - **freenect_stack**: This library enables the Xbox Kinect 360 camera to function with ROS, providing the necessary data to generate a 3D point cloud of the wind turbine.
 
-## Build Instructions
+### Build Instructions
 
-Extract the digital_ws zip 
+1. Extract the `digital_ws` zip file.
+2. Erase any previous build files and run:
+   - `catkin_make`
+3. Check and fix any incorrect pathing if necessary.
+4. Source the workspace setup file:
+   - `source ~/path/digital_ws/devel/setup.bash`
+5. Launch the required ROS nodes:
+   - `roslaunch freenect_launch freenect.launch`
+   - To test the program, run:
+     - `roslaunch pointcloud_filter filter_kinect.launch`  
+       *(This is the custom code for filtering point clouds.)*
 
-You are going need to erase previous and do catkin_make
+### RViz Configuration
 
-The pathing might be wrong which need to be fixed. 
-
-Make sure to do ~/path/digital_ws/devel/setup.bash
-
-Once you have done all this, you should be able to do
-
-roslaunch freenect_launch freenect.launch 
-
-The command `roslaunch pointcloud_filter filter_kinect.launch` is used to test the program by launching the point cloud filtering process. (This is my code filter)
-
-The program should already open RVIZ for you!
-
-If you want to add a camera, set your topic to /camera/rgb/image_color for color image
-
-Now add PointCloud2 for the Lidar scanner, using `/filtered_points`
+- The program should automatically open **RViz** for you.
+- If you want to add a camera:
+  - Set the topic to `/camera/rgb/image_color` for a color image.
+- To add **PointCloud2** for the LiDAR scanner:
+  - Use the topic `/filtered_points`.
 
 ![PointCloud2](./images/simulation.png)
+
 
 ## Sensors
 
