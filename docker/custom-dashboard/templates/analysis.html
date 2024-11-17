@@ -2,6 +2,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script defer src="/static/js/theme.js"></script>
   <script defer src="/static/js/table.js"></script>
+  <script defer src="/static/js/console.js"></script>
   <link rel="stylesheet" href="/static/css/nav.css" />
 
   <link
@@ -62,8 +63,8 @@
       </li>
 
       <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="fa-solid fa-bug"></i>
+        <a href="#" class="nav-link " id="console-toggle">
+          <i class="fa-solid fa-bug" id="bug-icon"></i>
           <span class="link-text">Console (Debug)</span>
         </a>
       </li>
@@ -174,10 +175,28 @@
   </nav>
 
   <main>
+
+    
     <!-- Dashboard container to align form and data sections side-by-side -->
     <div class="dashboard-container">
 
-
+      <div id="console-panel" class="console-panel">
+        <button class="close-button" id="close-console">
+          <i class="fa-solid fa-x"></i>
+        </button>
+        <div class="console-content">
+          <div class="monitor-title">Console Messages</div>
+          <div class="console-msg-container">
+            <div class="console-msg">
+              <p>All connections are good! 1:36 PM</p>
+            </div>
+            <div class="console-msg">
+              <p>Another message appears here! 1:37 PM</p>
+            </div>
+            <!-- New messages will be added dynamically here -->
+          </div>
+        </div>
+      </div>
           
           <div class="form-box">
               <h2>Wind Turbine Prediction Input Form</h2>
