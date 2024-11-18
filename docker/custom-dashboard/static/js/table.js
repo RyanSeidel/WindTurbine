@@ -1,5 +1,6 @@
+const socket = io(); // Initialize Socket.IO
 // Data for real-time and prediction
-const data = [
+let data = [
   { metric: "Orientation", realTime: "Heading: 0, Roll: 0, Pitch: 0", prediction: "Heading: 1, Roll: 0, Pitch: 1" },
   { metric: "Temp", realTime: "0", prediction: "0.2" },
   { metric: "Wind Direction", realTime: "0", prediction: "1" },
@@ -33,10 +34,10 @@ const createTable = (data) => {
   const tbody = table.append("tbody");
 
   // Populate rows
-  data.forEach((row) => {
-    const tr = tbody.append("tr");
+  data.forEach((row, index) => {
+    const tr = tbody.append("tr").attr("data-index", index); // Attach data-index for updating rows
     tr.append("td").text(row.metric);
-    tr.append("td").text(row.realTime);
+    tr.append("td").attr("class", "real-time").text(row.realTime); // Assign a class for real-time updates
     tr.append("td").text(row.prediction);
   });
 };
@@ -44,8 +45,61 @@ const createTable = (data) => {
 // Create the table
 createTable(data);
 
-// Selection with Graph
+// Function to update a specific metric in the table
+const updateTableMetric = (metric, newValue) => {
+  const index = data.findIndex((row) => row.metric === metric);
+  if (index >= 0) {
+    data[index].realTime = newValue;
+    // Update the corresponding table cell
+    d3.select(`tr[data-index="${index}"] .real-time`).text(newValue);
+  }
+};
 
+// Socket.IO listeners to update table in real-time
+socket.on("gravity_data", (data) => {
+  const [grx, gry, grz] = data.gravity.split(",").map(Number);
+  const gravityText = `grx: ${grx.toFixed(2)}, gry: ${gry.toFixed(2)}, grz: ${grz.toFixed(2)}`;
+  updateTableMetric("Gravity", gravityText);
+});
+
+socket.on("linear_acceleration_data", (data) => {
+  const [lx, ly, lz] = data.linear_acceleration.split(",").map(Number);
+  const linearText = `lx: ${lx.toFixed(2)}, ly: ${ly.toFixed(2)}, lz: ${lz.toFixed(2)}`;
+  updateTableMetric("Linear Acceleration", linearText);
+});
+
+socket.on("temperature_data", (data) => {
+  const tempText = `${data.temperature.toFixed(2)} °C`;
+  updateTableMetric("Temp", tempText);
+});
+
+socket.on("magnetometer_data", (data) => {
+  const [mx, my, mz] = data.magnetometer.split(",").map(Number);
+  const magnetText = `mx: ${mx.toFixed(2)}, my: ${my.toFixed(2)}, mz: ${mz.toFixed(2)}`;
+  updateTableMetric("Magnetometer", magnetText);
+});
+
+socket.on("accelerometer_data", (data) => {
+  const [ax, ay, az] = data.accelerometer.split(",").map(Number);
+  const accelText = `ax: ${ax.toFixed(2)}, ay: ${ay.toFixed(2)}, az: ${az.toFixed(2)}`;
+  updateTableMetric("Accelerometer", accelText);
+});
+
+
+socket.on("gyroscope_data", (data) => {
+  const [gx, gy, gz] = data.gyroscope.split(",").map(Number);
+  const gyroscopeText = `gx: ${gx.toFixed(2)}, gy: ${gy.toFixed(2)}, gz: ${gz.toFixed(2)}`;
+  updateTableMetric("Gyroscope", gyroscopeText);
+});
+
+
+socket.on("orientation_data", (data) => {
+  const [heading, roll, pitch] = data.orientation.split(",").map((v) => parseFloat(v).toFixed(2));
+  const orientationText = `Heading: ${heading}, Roll: ${roll}, Pitch: ${pitch}`;
+  updateTableMetric("Orientation", orientationText);
+});
+
+// Selection with Graph
 document.getElementById("start-button").addEventListener("click", () => {
   const realTimeMetric = document.getElementById("real-time-metric").value;
   const predictionMetric = document.getElementById("prediction-metric").value;
@@ -57,4 +111,3 @@ document.getElementById("start-button").addEventListener("click", () => {
     alert("Please select both metrics.");
   }
 });
-

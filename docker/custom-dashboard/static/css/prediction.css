@@ -1,6 +1,6 @@
 /* General Table Styling */
 .table {
-  width: 460px;
+  width: 575px;
   height: 775px;
   background-color: #ddd;; /* Sync with theme */
   color: var(--text-primary); /* Sync text color with theme */
