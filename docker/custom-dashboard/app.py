@@ -237,11 +237,9 @@ def on_message(client, userdata, msg):
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message  # Attach on_message callback
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
-@app.route('/dashboard')
+
+@app.route('/')
 def dashboard():
     return render_template('dashboard.html')
 
@@ -253,9 +251,7 @@ def analysis():
 def settings():
     return render_template('settings.html')
 
-@app.route('/socket')
-def socket_page():
-    return render_template('socket.html')
+
 
 
 @app.route('/connect-mqtt', methods=['POST'])

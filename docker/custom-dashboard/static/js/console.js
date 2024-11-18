@@ -4,22 +4,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeConsole = document.getElementById("close-console");
   const closeButtonIcon = closeConsole.querySelector("i");
   const bugIcon = document.querySelector("#console-toggle i");
+  const consoleContainer = document.querySelector(".console-msg-container");
 
   // Add nav-link for error-active behavior
-  const navLink = consoleToggle; // Target the entire nav-link
+  const navLink = consoleToggle;
+
+  // Function to add a message to the console panel
+  const addConsoleMessage = (message, duration = 5000) => {
+    const currentTime = new Date().toLocaleTimeString();
+    const newMessage = document.createElement("div");
+    newMessage.classList.add("console-msg");
+    newMessage.innerHTML = `<p>${message} (${currentTime})</p>`;
+    consoleContainer.appendChild(newMessage);
+    consolePanel.scrollTop = consolePanel.scrollHeight; // Auto-scroll to the latest message
+
+    // Remove the message after the specified duration
+    setTimeout(() => {
+      newMessage.remove();
+    }, duration);
+  };
 
   // Function to activate error state
   const triggerErrorState = () => {
-    closeButtonIcon.classList.add("error-active"); // Add red effect to close button
-    bugIcon.classList.add("error-active"); // Add red effect to bug icon
-    navLink.classList.add("error-active"); // Add error-active to the nav-link
+    closeButtonIcon.classList.add("error-active");
+    bugIcon.classList.add("error-active");
+    navLink.classList.add("error-active");
   };
 
   // Function to deactivate error state
   const clearErrorState = () => {
     closeButtonIcon.classList.remove("error-active");
     bugIcon.classList.remove("error-active");
-    navLink.classList.remove("error-active"); // Remove error-active from the nav-link
+    navLink.classList.remove("error-active");
   };
 
   // Open the console panel
@@ -31,10 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Close the console panel
   closeConsole.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent any event bubbling
+    e.stopPropagation();
     consolePanel.classList.remove("open");
   });
 
   // Simulate an error (replace this with your actual error condition)
-  setTimeout(triggerErrorState, 3000); // Trigger error after 3 seconds
+  setTimeout(() => {
+    triggerErrorState();
+    addConsoleMessage("Error: Something went wrong!", 7000); // Message will auto-clear in 7 seconds
+  }, 3000); // Trigger error after 3 seconds
 });
