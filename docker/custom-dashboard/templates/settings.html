@@ -71,7 +71,7 @@
 
       <li class="nav-item">
         <a href="settings" class="nav-link">
-          <i class="fa-solid fa-gear fa-primary spin-on-hover"></i>
+          <i class="fa-solid fa-gear spin-on-hover"></i>
           <span class="link-text">Settings</span>
         </a>
       </li>
@@ -170,7 +170,6 @@
   </nav>
 
   <main>
-
     <div id="console-panel" class="console-panel">
       <button class="close-button" id="close-console">
         <i class="fa-solid fa-x"></i>
@@ -184,48 +183,47 @@
           <div class="console-msg">
             <p>Another message appears here! 1:37 PM</p>
           </div>
-          <!-- New messages will be added dynamically here -->
         </div>
       </div>
     </div>
-    
-    <div class="setting-container">
-    <div class="Mqtt-box">
-      <h2>Enter MQTT Broker IP and Blade Orientations</h2>
-      <form id="mqttConnectForm">
+  <div class="setting-contain">
+    <div class="settings-page">
+      <h1 class="settings-title">Settings</h1>
+      <div class="settings-section">
+        <h2><i class="fa-solid fa-network-wired"></i> MQTT Configuration</h2>
+        <div class="setting-item">
           <label for="broker_ip">Broker IP Address:</label>
-          <input type="text" id="broker_ip" name="broker_ip" required>
-          <br><br>
-
-          <label for="blade1">Blade #1 Orientation (°):</label>
-          <select id="blade1" name="blade1" required>
-              <option value="15">15°</option>
-              <option value="30">30°</option>
-              <option value="45">45°</option>
+          <input type="text" id="broker_ip" name="broker_ip" placeholder="Enter MQTT Broker IP">
+        </div>
+        <div class="setting-item">
+          <label for="blade1">Blade #1 Orientation:</label>
+          <select id="blade1" name="blade1">
+            <option value="15">15°</option>
+            <option value="30">30°</option>
+            <option value="45">45°</option>
           </select>
-          <br><br>
-
-          <label for="blade2">Blade #2 Orientation (°):</label>
-          <select id="blade2" name="blade2" required>
-              <option value="15">15°</option>
-              <option value="30">30°</option>
-              <option value="45">45°</option>
+        </div>
+        <div class="setting-item">
+          <label for="blade2">Blade #2 Orientation:</label>
+          <select id="blade2" name="blade2">
+            <option value="15">15°</option>
+            <option value="30">30°</option>
+            <option value="45">45°</option>
           </select>
-          <br><br>
-
-          <label for="blade3">Blade #3 Orientation (°):</label>
-          <select id="blade3" name="blade3" required>
-              <option value="15">15°</option>
-              <option value="30">30°</option>
-              <option value="45">45°</option>
+        </div>
+        <div class="setting-item">
+          <label for="blade3">Blade #3 Orientation:</label>
+          <select id="blade3" name="blade3">
+            <option value="15">15°</option>
+            <option value="30">30°</option>
+            <option value="45">45°</option>
           </select>
-          <br><br>
-
-          <button type="submit" class="small-button">Connect</button>
-      </form>
-      <p id="connection-status">Status: Not Connected</p>
+        </div>
+        <button type="submit" class="connect-button">Connect</button>
+        <p id="connection-status">Status: Not Connected</p>
+      </div>
+    </div>
   </div>
-</div>
   <script src="/static/js/MQTT.js"></script>
 
   </main>

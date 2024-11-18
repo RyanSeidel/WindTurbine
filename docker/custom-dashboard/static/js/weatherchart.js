@@ -1,7 +1,7 @@
 // Initial Weather Data and Settings
 let currentTime = new Date(); // Current time as the starting point
 let weatherData = []; // Start with an empty dataset
-const maxDataPoints = 5; // Maximum number of points before resetting
+const maxDataPoints = 6; // Maximum number of points before resetting
 const interval = 2000; // Interval for adding new points (2 seconds)
 
 // Set dimensions and margins
@@ -15,7 +15,8 @@ const svg = d3
   .select(".weather-chart")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom);
+  .attr("height", height + margin.top + margin.bottom)
+  .style("background", "#1a1a1a");
 
 // Add a title to the chart
 svg.append("text")
@@ -168,13 +169,15 @@ function updateChart() {
   const newPressure = 1000 + Math.random() * 20; // Random pressure
   weatherData.push({ time: newTime, windSpeed: newWindSpeed, pressure: newPressure });
 
-  // Remove oldest point if exceeding maxDataPoints
-  if (weatherData.length > maxDataPoints) {
-    weatherData.shift();
-  }
+// Remove oldest point if exceeding maxDataPoints
+if (weatherData.length > maxDataPoints+1) {
+  weatherData.shift();
+}
 
   // Update scales
   x.domain([weatherData[0].time, new Date(weatherData[0].time.getTime() + maxDataPoints * interval)]);
+
+  
 
   // Update X-axis dynamically
 chartGroup.select(".x-axis")
