@@ -257,58 +257,6 @@ def settings():
 def socket_page():
     return render_template('socket.html')
 
-# @app.route('/api/data')
-# def get_data():
-#     try:
-#         query = f'''
-#         from(bucket: "{INFLUXDB_BUCKET}") 
-#         |> range(start: -5m) 
-#         |> filter(fn: (r) => r["_measurement"] == "RPM Measurement") 
-#         |> filter(fn: (r) => r["_field"] == "rpm") 
-#         |> keep(columns: ["_time", "_value"])
-#         '''
-#         tables = client.query_api().query(query=query)
-
-#         # Extract the data from the query response
-#         data = [{"_time": record["_time"], "_value": record["_value"]} for table in tables for record in table.records]
-
-#         print("Data fetched from InfluxDB:", data)  # Log the fetched data
-
-#         if data:
-#             return jsonify(data)  # Return the data as JSON
-#         else:
-#             return jsonify({"status": "Connected to InfluxDB, but no data found"})
-
-#     except Exception as e:
-#         return jsonify({"status": "Failed to connect to InfluxDB", "error": str(e)})
-
-# def fetch_and_emit_data():
-#     while True:
-#         print("Collecting data...")  # Log the collection process
-#         query = f'''
-#         from(bucket: "{INFLUXDB_BUCKET}") 
-#         |> range(start: -5m) 
-#         |> filter(fn: (r) => r["_measurement"] == "RPM Measurement") 
-#         |> filter(fn: (r) => r["_field"] == "rpm") 
-#         |> keep(columns: ["_time", "_value"])
-#         '''
-#         tables = client.query_api().query(query=query)
-        
-#         # Prepare the data for emitting
-#         data = [
-#             {
-#                 "_time": record["_time"].isoformat(),  # Convert datetime to string
-#                 "_value": record["_value"]
-#             } for table in tables for record in table.records
-#         ]
-        
-#         # Extract the latest RPM value
-#         latest_rpm = data[-1]["_value"] if data else None  # Get the latest value if available
-
-#         # Emit the data along with the latest RPM
-#         socketio.emit('rpm_data', {'data': data, 'latest_rpm': latest_rpm})
-#         print(f"Emitting data: {data}")  # Print emitted data to the console
-#         time.sleep(1)  # Adjust the frequency as needed
 
 @app.route('/connect-mqtt', methods=['POST'])
 def connect_mqtt():

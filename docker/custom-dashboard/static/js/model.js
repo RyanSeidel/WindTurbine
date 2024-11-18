@@ -1,3 +1,5 @@
+// THIS COMBINES MAGNET AND GYROSCOPE SO LETS USE THIS LATER
+
 // Basic Three.js setup
 const scene = new THREE.Scene();
 
@@ -83,6 +85,27 @@ loader.load(
     }
 );
 
+// Add Axes Helper (optional for debugging orientation)
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
+
+// Create arrow helpers for gyroscope and magnetometer
+const gyroArrow = new THREE.ArrowHelper(
+    new THREE.Vector3(1, 0, 0), // Initial direction
+    new THREE.Vector3(0, 0, 0), // Origin
+    2,                          // Length
+    0xff0000                    // Color (red for gyroscope)
+);
+scene.add(gyroArrow);
+
+const magnetoArrow = new THREE.ArrowHelper(
+    new THREE.Vector3(0, 1, 0), // Initial direction
+    new THREE.Vector3(0, 0, 0), // Origin
+    2,                          // Length
+    0x0000ff                    // Color (blue for magnetometer)
+);
+scene.add(magnetoArrow);
+
 // Animation loop
 let lastFrameTime = performance.now(); // Track the last frame time
 
@@ -126,14 +149,49 @@ function updateOrientation(heading, roll, pitch) {
     targetRotation.z = THREE.MathUtils.degToRad(roll);
 }
 
+// Update gyroscope display
+function updateGyroscopeDisplay(gx, gy, gz) {
+    //console.log(`Gyroscope Data: gx=${gx}, gy=${gy}, gz=${gz}`);
+    // Apply gyroscope data to dynamically adjust rotation (example)
+    if (turbine) {
+        turbine.rotation.x += gx * 0.01;
+        turbine.rotation.y += gy * 0.01;
+        turbine.rotation.z += gz * 0.01;
+    }
+}
+
+// Update magnetometer display
+function updateMagnetometerDisplay(mx, my, mz) {
+    //console.log(`Magnetometer Data: mx=${mx}, my=${my}, mz=${mz}`);
+    // Example of applying magnetometer data to an arrow helper
+    const magnetoDirection = new THREE.Vector3(mx, my, mz).normalize();
+    const magnetoLength = new THREE.Vector3(mx, my, mz).length();
+    magnetoArrow.setDirection(magnetoDirection);
+    magnetoArrow.setLength(magnetoLength);
+}
+
 // Socket.IO for real-time data
 const socket = io();
 
 // Listen for orientation data updates
 socket.on('orientation_data', (data) => {
-    console.log("Orientation data received:", data);
+    //console.log("Orientation data received:", data);
     const [heading, roll, pitch] = data.orientation.split(',').map(Number); // Parse data
     updateOrientation(heading, roll, pitch);
+});
+
+// Listen for magnetometer data updates
+socket.on('magnetometer_data', (data) => {
+    //console.log("Magnetometer data received: ", data);  // Debugging log
+    const [mx, my, mz] = data.magnetometer.split(',').map(Number); // Parse data
+    updateMagnetometerDisplay(mx, my, mz);
+});
+
+// Listen for gyroscope data updates
+socket.on('gyroscope_data', (data) => {
+    //console.log("Gyroscope data received: ", data);  // Debugging log
+    const [gx, gy, gz] = data.gyroscope.split(',').map(Number); // Parse data
+    updateGyroscopeDisplay(gx, gy, gz);
 });
 
 // Dynamically update RPM and recalculate angular velocity
@@ -143,7 +201,22 @@ function updateRPM(newRPM) {
     console.log("Updated RPM:", rpm, "Angular Velocity:", angularVelocity);
 }
 
-// Example: Listen for RPM updates
-// socket.on('rpm_data', (data) => {
-//     updateRPM(data.rpm);
-// });
+// Listen for RPM updates
+socket.on('rpm_data', (data) => {
+    console.log("RPM data received:", data);
+
+    // Ensure data contains the RPM value
+    if (data && typeof data === 'object' && data.hasOwnProperty('latest_rpm')) {
+        const rpm = parseFloat(data.latest_rpm); // Convert RPM value to float
+        if (!isNaN(rpm)) {
+            updateRPM(rpm); // Update RPM with the parsed value
+        } else {
+            console.error("Invalid RPM value received:", data.latest_rpm);
+        }
+    } else {
+        console.error("Invalid RPM data format:", data);
+    }
+});
+    
+    
+

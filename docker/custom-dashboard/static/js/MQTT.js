@@ -25,7 +25,7 @@ document.getElementById("mqttConnectForm").addEventListener("submit", async func
           alert(JSON.stringify({ status: "Connected", message: `Connected to MQTT Broker at ${brokerIp}` }));
           document.getElementById("connection-status").textContent = "Status: Connected";
           document.getElementById("connection-status").style.color = "green";
-          window.location.href = "/socket";  // Redirect to socket page
+          window.location.href = "/settings";  // Redirect to socket page
       } else {
           alert(JSON.stringify({ status: "Not Connected", message: "Connection failed. Please try again." }));
           document.getElementById("connection-status").textContent = "Status: Not Connected";

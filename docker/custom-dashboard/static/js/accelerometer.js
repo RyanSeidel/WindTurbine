@@ -1,15 +1,13 @@
 // Initial Accelerometer Data and Settings
 let accData = []; // Start with an empty dataset
-const accMaxDataPoints = 7; // Maximum number of points before resetting
-const accInterval = 2000; // Interval for adding new points (2 seconds)
+const accMaxDataPoints = 6; // Maximum number of points before resetting
+const accInterval = 2000; // Interval for adding new points (1 seconds)
 
 // Set dimensions and margins
 const accMargin = { top: 30, right: 70, bottom: 50, left: 70 };
 const accContainerWidth = document.querySelector(".accelerometer-chart").offsetWidth;
-// Set dimensions matching CSS
-const accWidth = containerWidth - accMargin.left - accMargin.right;
+const accWidth = accContainerWidth - accMargin.left - accMargin.right;
 const accHeight = 200 - accMargin.top - accMargin.bottom;
-
 
 // Create SVG container
 const accSVG = d3
@@ -49,9 +47,9 @@ const accXAxis = accChartGroup.append("g")
   .attr("transform", `translate(0,${accHeight})`)
   .call(
     d3.axisBottom(accX)
-      .ticks(accMaxDataPoints) // Show one tick for each data point
-      .tickSize(-accHeight) // Extend tick lines as grid lines
-      .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : "")) // Show every alternate tick
+      .ticks(accMaxDataPoints)
+      .tickSize(-accHeight)
+      .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : ""))
   )
   .selectAll("text")
   .attr("fill", "#ddd")
@@ -60,7 +58,7 @@ const accXAxis = accChartGroup.append("g")
 // Style grid lines for X-axis
 accChartGroup.selectAll(".x-axis .tick line")
   .attr("stroke", "#444")
-  .attr("stroke-dasharray", "2,2"); // Dashed grid lines
+  .attr("stroke-dasharray", "2,2");
 
 // Add X-axis label
 accChartGroup.append("text")
@@ -106,25 +104,23 @@ const accMagnitudeLine = accChartGroup.append("path")
   .attr("stroke", "#00FF9F")
   .attr("stroke-width", 2);
 
+// Tooltip setup
+const acctooltip = d3
+  .select(".accelerometer-chart")
+  .append("div")
+  .style("position", "absolute")
+  .style("background", "#222")
+  .style("color", "#fff")
+  .style("padding", "5px 10px")
+  .style("border-radius", "5px")
+  .style("pointer-events", "none")
+  .style("opacity", 0);
+
 // Update chart function
 function updateAccChart() {
-  // Simulate accelerometer data (replace with actual data)
-  const newTime = new Date();
-  const accXData = (Math.random() - 0.5) * 40; // Replace with accelerometer X data
-  const accYData = (Math.random() - 0.5) * 40; // Replace with accelerometer Y data
-  const accZData = (Math.random() - 0.5) * 40; // Replace with accelerometer Z data
-
-  const magnitude = Math.sqrt(accXData ** 2 + accYData ** 2 + accZData ** 2); // Calculate magnitude
-
-  accData.push({ time: newTime, magnitude });
-
-  // Remove oldest point if exceeding accMaxDataPoints
-  if (accData.length > accMaxDataPoints+1) {
-    accData.shift();
-  }
-
   // Update scales
   accX.domain([accData[0].time, new Date(accData[0].time.getTime() + accMaxDataPoints * accInterval)]);
+
 
   // Update X-axis dynamically
   accChartGroup.select(".x-axis")
@@ -137,15 +133,13 @@ function updateAccChart() {
         .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : ""))
     );
 
-
-
   // Style grid lines for X-axis
   accChartGroup.selectAll(".x-axis .tick line")
     .attr("stroke", "#444")
     .attr("stroke-dasharray", "2,2");
 
   accChartGroup.selectAll(".x-axis .tick text")
-    .attr("fill", "#ddd") // Keep consistent white color
+    .attr("fill", "#ddd")
     .attr("font-size", "10px");
 
   // Update Y-axis
@@ -158,7 +152,52 @@ function updateAccChart() {
     .transition()
     .duration(500)
     .attr("d", accLine);
+
+  // Add circles for data points
+  const circles = accChartGroup.selectAll(".data-point").data(accData);
+
+  circles
+    .enter()
+    .append("circle")
+    .attr("class", "data-point")
+    .attr("r", 4)
+    .attr("fill", "#00FF9F")
+    .merge(circles)
+    .attr("cx", (d) => accX(d.time))
+    .attr("cy", (d) => accY(d.magnitude))
+    .on("mouseover", (event, d) => {
+      acctooltip
+        .style("opacity", 1)
+        .html(`Time: ${d.time.toLocaleTimeString()} <br>Magnitude: ${d.magnitude.toFixed(2)}`)
+        .style("left", `${event.pageX + 10}px`)
+        .style("top", `${event.pageY - 20}px`);
+    })
+    .on("mouseout", () => {
+      acctooltip.style("opacity", 0);
+    });
+
+  circles.exit().remove();
 }
 
-// Start real-time updates
-setInterval(updateAccChart, accInterval); // Update every 2 seconds
+// Socket.IO listener for accelerometer data
+socket.on("accelerometer_data", (data) => {
+  console.log("Accelerometer data received: ", data); // Debugging log
+
+  // Parse accelerometer data
+  const [ax, ay, az] = data.accelerometer.split(",").map(Number); // Split and convert to numbers
+
+  // Calculate magnitude
+  const magnitude = Math.sqrt(ax ** 2 + ay ** 2 + az ** 2);
+
+  // Add new data point
+  const newTime = new Date();
+  accData.push({ time: newTime, magnitude });
+
+  // Remove oldest point if exceeding accMaxDataPoints
+  if (accData.length > accMaxDataPoints + 7) {
+    accData.shift();
+  }
+
+  // Update chart with new data
+  updateAccChart();
+});

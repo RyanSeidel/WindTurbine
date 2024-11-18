@@ -131,13 +131,13 @@ function updateOrientationDisplay(heading, roll, pitch) {
 }
 // Socket.IO listener for temperature data
 socket.on('temperature_data', (data) => {
-    console.log("Temperature data received: ", data);  // Debugging log
+    //console.log("Temperature data received: ", data);  // Debugging log
     updateTemperatureDisplay(data.temperature); // Update the display
 });
 
 // Socket.IO listener for orientation data
 socket.on('orientation_data', (data) => {
-    console.log("Orientation data received: ", data);  // Debugging log
+    //console.log("Orientation data received: ", data);  // Debugging log
     const [heading, roll, pitch] = data.orientation.split(','); // Extract values
     updateOrientationDisplay(heading, roll, pitch); // Update the display
 });
@@ -153,7 +153,7 @@ function updateMagnetometerDisplay(mx, my, mz) {
 }
 // Socket.IO listener for magnetometer data
 socket.on('magnetometer_data', (data) => {
-    console.log("Magnetometer data received: ", data);  // Debugging log
+    //console.log("Magnetometer data received: ", data);  // Debugging log
     const [mx, my, mz] = data.magnetometer.split(',').map(Number); // Split and convert to numbers
     updateMagnetometerDisplay(mx, my, mz); // Update the display
 });
@@ -167,7 +167,7 @@ function updateAccelerometerDisplay(ax, ay, az) {
 
 // Socket.IO listener for accelerometer data
 socket.on('accelerometer_data', (data) => {
-    console.log("Accelerometer data received: ", data);  // Debugging log
+    //console.log("Accelerometer data received: ", data);  // Debugging log
     const [ax, ay, az] = data.accelerometer.split(',').map(Number); // Split and convert to numbers
     updateAccelerometerDisplay(ax, ay, az); // Update the display
 });
@@ -182,7 +182,7 @@ function updateGyroscopeDisplay(gx, gy, gz) {
 
 // Socket.IO listener for magnetometer data
 socket.on('gyroscope_data', (data) => {
-    console.log("gyroscope data received: ", data);  // Debugging log
+    //console.log("gyroscope data received: ", data);  // Debugging log
     const [gx, gy, gz] = data.gyroscope.split(',').map(Number); // Split and convert to numbers
     updateGyroscopeDisplay(gx, gy, gz); // Update the display
 });
@@ -196,7 +196,7 @@ function updateLinearAccelerationDisplay(lx, ly, lz) {
 
 // Socket.IO listener for linear acceleration data
 socket.on('linear_acceleration_data', (data) => {
-    console.log("Linear acceleration data received: ", data);  // Debugging log
+    //console.log("Linear acceleration data received: ", data);  // Debugging log
     const [lx, ly, lz] = data.linear_acceleration.split(',').map(Number); // Split and convert to numbers
     updateLinearAccelerationDisplay(lx, ly, lz); // Update the display
 });
@@ -209,13 +209,13 @@ function updateGravityDisplay(grx, gry, grz) {
 
 // Socket.IO listener for gravity data
 socket.on('gravity_data', (data) => {
-    console.log("Gravity data received: ", data);  // Debugging log
+    //console.log("Gravity data received: ", data);  // Debugging log
     const [grx, gry, grz] = data.gravity.split(',').map(Number); // Split and convert to numbers
     updateGravityDisplay(grx, gry, grz); // Update the display
 });
 
 
-// Connecting BMEO055 Sensor to move a 3D object!! using Three.js
+
 
 
 // Voltage Sensor Ina260
