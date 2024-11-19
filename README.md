@@ -7,7 +7,7 @@
 - [Raspberry Pi Setup](#RaspberryPi)
 - [Dashboard Setup](#Dashboard)
 - [ROS/RViz Setup](#RViz)
-- [Conclusion and Future Works](#Conclusion-and-Future Works)
+- [Conclusion and Future Works](#Conclusion-and-Future-Works)
 - [Contributing](#contributing)
 - [License](#license)
 
