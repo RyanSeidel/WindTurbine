@@ -1,18 +1,18 @@
 # Wind Turbine Digital Twins
 
-- Dashboard to monitor a wind turbine
-- Model for Predictions
-- How to use multiple sensors
-
 ## Table of Contents
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Abstract](#abstract)
 - [Raspberry Pi Setup](#RaspberryPi)
 - [Dashboard Setup](#Dashboard)
 - [ROS/RViz Setup](#RViz)
+- [Conclusion and Future Works](#Conclusion)
 - [Contributing](#contributing)
 - [License](#license)
+
+
+## Abstract 
+Digital twins refer to virtual recreations of real-world objects that can mirror the operation and condition of physical systems and can also be used for real-time monitoring and analysis. Wind turbines are often located in caustic environments that increase the risk of wear and tear to mechanical systems that can lead to expensive downtime and safety risks. Digital twin technology offers advantages over traditional monitoring techniques that lack the ability to identify specific problems in real time, needed to address concerns quickly. The present project attempted to build a digital twin of a wind turbine making use of IoT sensors that allowed for live data collection, detection of damage, and assessment of risk. Using Raspberry Pi, an inexpensive mini-computer with extensive support for software and hardware, the system used in the project was able to integrate a variety of tools including Hall Effect Sensors, BNO055 sensors, and INA260 sensors for real-time monitoring and control. This approach included the use of MQTT for communication, InfluxDB for storing data, and visualization using a Flask-based dashboard. For the 3D model, RViz and ROS were used to generate 3D point cloud models using an Xbox Kinect 360.
+
 
 ## Introduction
 Some introductory text here.
@@ -172,6 +172,11 @@ To use this project, you must install the following dependencies:
 
 - **Angular Servo**
   - [Setup Video](https://www.youtube.com/watch?v=40tZQPd3z8g&t=351s)
+ 
+## Conclusion
+
+**Conclusion and Future Works**
+Our client envisioned a project that would bring their wind turbine operations to life through a digital twin capable of responding in real time to sensor data. They wanted to track critical aspects like RPM, orientation, voltage, current, and environmental conditions, providing a detailed and dynamic view of the turbine's performance. Beyond simple monitoring, their aim was to use this data to make informed decisions during emergencies and evaluate risks in damaged structures, ensuring both safety and efficiency in challenging scenarios. They also saw the potential for AI algorithms to play a significant role in improving how the turbine operates and ensuring proactive maintenance to prevent costly downtime and safety issues. By achieving this, the client hoped to take a big step forward in managing wind turbines efficiently while exploring innovative approaches to maintenance and performance optimization.
 
 
 
