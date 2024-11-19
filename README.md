@@ -183,6 +183,9 @@ To use this project, you must install the following dependencies:
 
 Our client envisioned a project that would bring their wind turbine operations to life through a digital twin capable of responding in real time to sensor data. They wanted to track critical aspects like RPM, orientation, voltage, current, and environmental conditions, providing a detailed and dynamic view of the turbine's performance. Beyond simple monitoring, their aim was to use this data to make informed decisions during emergencies and evaluate risks in damaged structures, ensuring both safety and efficiency in challenging scenarios. They also saw the potential for AI algorithms to play a significant role in improving how the turbine operates and ensuring proactive maintenance to prevent costly downtime and safety issues. By achieving this, the client hoped to take a big step forward in managing wind turbines efficiently while exploring innovative approaches to maintenance and performance optimization.
 
+## License
+TAMUCC A&M Corpus Christi
+
 
 
 
