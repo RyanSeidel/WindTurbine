@@ -2,6 +2,8 @@
 
 ## Table of Contents
 - [Abstract](#abstract)
+- [Usage](#usage)
+- [How We Created the Digital Twin](#How We Created the Digital Twin)
 - [Raspberry Pi Setup](#RaspberryPi)
 - [Dashboard Setup](#Dashboard)
 - [ROS/RViz Setup](#RViz)
@@ -14,8 +16,12 @@
 Digital twins refer to virtual recreations of real-world objects that can mirror the operation and condition of physical systems and can also be used for real-time monitoring and analysis. Wind turbines are often located in caustic environments that increase the risk of wear and tear to mechanical systems that can lead to expensive downtime and safety risks. Digital twin technology offers advantages over traditional monitoring techniques that lack the ability to identify specific problems in real time, needed to address concerns quickly. The present project attempted to build a digital twin of a wind turbine making use of IoT sensors that allowed for live data collection, detection of damage, and assessment of risk. Using Raspberry Pi, an inexpensive mini-computer with extensive support for software and hardware, the system used in the project was able to integrate a variety of tools including Hall Effect Sensors, BNO055 sensors, and INA260 sensors for real-time monitoring and control. This approach included the use of MQTT for communication, InfluxDB for storing data, and visualization using a Flask-based dashboard. For the 3D model, RViz and ROS were used to generate 3D point cloud models using an Xbox Kinect 360.
 
 
-## Introduction
-Some introductory text here.
+## Usage
+images of the projeccts!!
+
+
+## How We Created the Digital Twin
+We developed the wind turbine's digital twin by combining a Raspberry Pi 5 with a variety of sensors and tools to enable real-time monitoring, control, and visualization. A Hall Effect Sensor tracked the turbine’s RPM, while a BNO055 Sensor captured critical alignment data, including yaw, roll, and pitch. To monitor the turbine’s electrical performance, we used an INA260 Sensor to measure voltage and current. An Angular Servo was integrated to adjust the turbine’s orientation, ensuring it stayed aligned with the wind direction for optimal operation. To handle data flow, we used an MQTT Broker for real-time communication, and sensor data was stored in InfluxDB for further analysis. The entire system was containerized using Docker, ensuring consistency and portability. A custom-built Flask dashboard brought everything together, providing an intuitive interface where live sensor data could be visualized, making it easy to monitor the turbine’s performance in real time. A 3D model of the turbine was created using LiDAR data from an Xbox Kinect 360, processed through RViz and ROS to generate a point cloud. This model was synchronized with real-time sensor data, enabling the digital twin to reflect the turbine’s behavior dynamically. The integration of IoT sensors, real-time communication, and 3D visualization tools created a functional digital twin, providing actionable insights for predictive maintenance and enhanced operational control. This setup serves as a robust foundation for future optimization through AI and machine learning applications.
 
 # RaspberryPi
 
