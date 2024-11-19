@@ -149,7 +149,7 @@ To use this project, you must install the following dependencies:
    - `roslaunch freenect_launch freenect.launch`
    - To test the program, run:
      - `roslaunch pointcloud_filter filter_kinect.launch`  
-       *(This is the custom code for filtering point clouds.)*
+<em>PointCloud_Filter is a program that reduces the amount of point cloud data to provide a cleaner representation of your model, removing unnecessary data such as the wall behind the object. </em>
 
 ### RViz Configuration
 
