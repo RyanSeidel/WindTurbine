@@ -3,7 +3,7 @@
 ## Table of Contents
 - [Abstract](#abstract)
 - [Usage](#usage)
-- [How We Created the Digital Twin](#How We Created the Digital Twin)
+- [How_We_Created_the_Digital_Twin](#How We Created the Digital Twin)
 - [Raspberry Pi Setup](#RaspberryPi)
 - [Dashboard Setup](#Dashboard)
 - [ROS/RViz Setup](#RViz)
