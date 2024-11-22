@@ -120,9 +120,75 @@ fetch('/api/data')
 // BME Sensor
 // Function to update the temperature display
 // Function to update the temperature display
+
+function updateDirectionDisplay(direction) {
+    document.getElementById('wind-dir').textContent = direction; 
+}
+
+const reverseDirectionMap = {
+    1: "N", 2: "NE", 3: "E", 4: "SE",
+    5: "S", 6: "SW", 7: "W", 8: "NW"
+};
+
+// Listen for 'direction_data' event
+socket.on('direction_data', (data) => {
+    // Extract the numeric label for direction
+    const directionNumeric = data.direction;
+
+    // Convert the numeric label back to a direction string
+    const direction = reverseDirectionMap[directionNumeric] || "Unknown";
+
+    // Log or display the direction
+    console.log(`Direction: ${direction} (${directionNumeric})`);
+
+    // Update the display (assuming updateSpeedDisplay updates speed or direction)
+    updateDirectionDisplay(direction);
+});
+
+function updateSpeedDisplay(speed) {
+    document.getElementById('wind-speed').textContent = speed; 
+}
+
+socket.on('speed_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updateSpeedDisplay(data.speed); // Update the display
+});
+
+function updatePressureDisplay(press) {
+    document.getElementById('wind-pres').textContent = press; 
+}
+
+socket.on('pressure_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updatePressureDisplay(data.pressure); // Update the display
+});
+
+
+function updateHumidityDisplay(humidity) {
+    document.getElementById('wind-hum').textContent = humidity; 
+}
+
+socket.on('humidity_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updateHumidityDisplay(data.humidity); // Update the display
+});
+
+
+function updateAltitudeDisplay(altitude) {
+    document.getElementById('wind-alt').textContent = altitude; 
+}
+
+socket.on('altitude_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updateAltitudeDisplay(data.altitude); // Update the display
+});
+
+
 function updateTemperatureDisplay(temp) {
     document.getElementById('temp-value').textContent = temp; 
 }
+
+
 // Function to update the orientation display
 function updateOrientationDisplay(heading, roll, pitch) {
     document.getElementById('heading').textContent = heading; 

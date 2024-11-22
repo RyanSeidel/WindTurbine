@@ -37,7 +37,12 @@ MQTT_TOPICS = {
     'voltage': 'wind_turbine/volt',
     'power': 'wind_turbine/power',
     'current': 'wind_turbine/current',
-    'servo': 'wind_turbine/servo'
+    'servo': 'wind_turbine/servo',
+    'speed': 'wind_turbine/speed',
+    'direction': 'wind_turbine/direction',
+    'pressure': 'wind_turbine/pressure',
+    'humidity': 'wind_turbine/humidity',
+    'altitude': 'wind_turbine/altitude'
 }
 
 # Initialize MQTT client
@@ -231,6 +236,26 @@ def on_message(client, userdata, msg):
         # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
         
         socketio.emit('servo_data', {'servo': float(payload)})
+
+    elif topic == MQTT_TOPICS['speed']:
+        print(f"Speed Payload: {payload}", flush=True)  # Debug: Print the payload
+        socketio.emit('speed_data', {'speed': float(payload)})
+
+    elif topic == MQTT_TOPICS['direction']:
+        print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
+        socketio.emit('direction_data', {'direction': int(payload)})
+
+    elif topic == MQTT_TOPICS['pressure']:
+        print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
+        socketio.emit('pressure_data', {'pressure': float(payload)})
+
+    elif topic == MQTT_TOPICS['humidity']:
+       
+        socketio.emit('humidity_data', {'humidity': float(payload)})
+
+    elif topic == MQTT_TOPICS['altitude']:
+        
+        socketio.emit('altitude_data', {'altitude': float(payload)})
 
     print(f"Received message: {payload} on topic {topic}", flush=True)
     

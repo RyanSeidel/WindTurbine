@@ -10,6 +10,9 @@ const containerWidth = document.querySelector(".weather-chart").offsetWidth;
 const width = containerWidth - margin.left - margin.right;
 const height = 200 - margin.top - margin.bottom;
 
+let latestWindSpeed = 0; // Placeholder for the latest wind speed
+let latestPressure = 0; // Placeholder for the latest pressure
+
 // Create SVG container
 const svg = d3
   .select(".weather-chart")
@@ -39,12 +42,12 @@ const x = d3
 
 const yWindSpeed = d3
   .scaleLinear()
-  .domain([0, 50]) // Example domain for Wind Speed
+  .domain([0, 3]) // Example domain for Wind Speed
   .range([height, 0]);
 
 const yPressure = d3
   .scaleLinear()
-  .domain([1000, 1020]) // Example domain for Pressure
+  .domain([1020, 1024]) // Example domain for Pressure
   .range([height, 0]);
 
 // Add X-axis
@@ -81,8 +84,9 @@ chartGroup.append("g")
   .attr("class", "y-axis-wind")
   .call(
     d3.axisLeft(yWindSpeed)
-    .ticks(5)
-    .tickSize(-width)
+      .tickValues(d3.range(0, 3, 0.3)) // Option 1: Explicit ticks at 0.5 intervals
+      //.ticks(10) // Option 2: Auto-generate ticks with finer granularity
+      .tickSize(-width)
   )
   .selectAll("text")
   .attr("fill", "#ddd")
@@ -97,7 +101,10 @@ chartGroup.selectAll(".y-axis-wind .tick text")
 chartGroup.append("g")
   .attr("class", "y-axis-pressure")
   .attr("transform", `translate(${width}, 0)`)
-  .call(d3.axisRight(yPressure).ticks(5))
+  .call(
+    d3.axisRight(yPressure)
+      .tickValues(d3.range(1020, 1024, 0.5)) // Generate ticks at intervals of 0.5
+  )
   .selectAll("text")
   .attr("fill", "#ddd")
   .attr("font-size", "10px");
@@ -161,55 +168,111 @@ const tooltip = d3
   .style("pointer-events", "none")
   .style("font-size", "12px");
 
+// Debugging: Log latest wind speed and pressure updates
+socket.on('speed_data', (data) => {
+  latestWindSpeed = parseFloat(data.speed);
+
+});
+
+socket.on('pressure_data', (data) => {
+  latestPressure = parseFloat(data.pressure);
+
+});
+
+
+// Update Chart Function
 // Update Chart Function
 function updateChart() {
-  // Generate new data point
+  // Generate new data point using the latest wind speed and pressure
   const newTime = new Date();
-  const newWindSpeed = Math.random() * 50; // Random wind speed
-  const newPressure = 1000 + Math.random() * 20; // Random pressure
+  const newWindSpeed = latestWindSpeed; // Latest wind speed from socket
+  const newPressure = latestPressure;  // Latest pressure from socket
+
+  // Add the new data point to the dataset
   weatherData.push({ time: newTime, windSpeed: newWindSpeed, pressure: newPressure });
 
-// Remove oldest point if exceeding maxDataPoints
-if (weatherData.length > maxDataPoints+1) {
-  weatherData.shift();
-}
+  // Remove the oldest data point if exceeding maxDataPoints
+  if (weatherData.length > maxDataPoints + 1) {
+    weatherData.shift();
+  }
 
-  // Update scales
+  // Dynamically adjust Y-axis domains
+  const windSpeedExtent = d3.extent(weatherData, d => d.windSpeed);
+  const pressureExtent = d3.extent(weatherData, d => d.pressure);
+
+  yWindSpeed.domain([
+    Math.floor(windSpeedExtent[0] - 1), // 2 units below the min wind speed
+    Math.ceil(windSpeedExtent[1] + 1),  // 2 units above the max wind speed
+  ]);
+
+  yPressure.domain([
+    Math.floor(pressureExtent[0] - 1),  // 2 units below the min pressure
+    Math.ceil(pressureExtent[1] + 1),  // 2 units above the max pressure
+  ]);
+
+  // Update X-axis scale dynamically based on new data
   x.domain([weatherData[0].time, new Date(weatherData[0].time.getTime() + maxDataPoints * interval)]);
+
+  // Update Y-axes
+  chartGroup.select(".y-axis-wind")
+    .transition()
+    .duration(500)
+    .call(
+      d3.axisLeft(yWindSpeed)
+        .tickValues(d3.range(Math.floor(windSpeedExtent[0] - 1), Math.ceil(windSpeedExtent[1] + 1), 0.3)) // Ticks every 0.5
+    )
+    .selectAll("text")
+    .attr("fill", "#ddd") // Force tick text color during updates
+    .attr("font-size", "10px");
+
+  chartGroup.select(".y-axis-pressure")
+    .transition()
+    .duration(500)
+    .call(
+      d3.axisRight(yPressure)
+        .tickValues(d3.range(Math.floor(pressureExtent[0] - 1), Math.ceil(pressureExtent[1] + 1), 0.3)) // Ticks every 0.5
+    )
+    .selectAll("text")
+    .attr("fill", "#ddd") // Force tick text color during updates
+    .attr("font-size", "10px");
 
   
 
   // Update X-axis dynamically
-chartGroup.select(".x-axis")
-.transition()
-.duration(500)
-.call(
-  d3.axisBottom(x)
-    .ticks(maxDataPoints) // Show one tick for each data point
-    .tickSize(-height) // Extend tick lines as grid lines
-    .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : "")) // Show every alternate tick
-);
+  chartGroup.select(".x-axis")
+    .transition()
+    .duration(500)
+    .call(
+      d3.axisBottom(x)
+        .ticks(maxDataPoints)
+        .tickSize(-height)
+        .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : "")) // Alternate tick format
+    );
 
-// Style grid lines for X-axis
-chartGroup.selectAll(".x-axis .tick line")
-.attr("stroke", "#444")
-.attr("stroke-dasharray", "2,2"); // Dashed grid lines
+  chartGroup.selectAll(".y-axis-wind y-axis-pressure .tick text")
+    .attr("fill", "#ddd")
+    .attr("font-size", "10px");
 
+  // Style X-axis grid lines
+  chartGroup.selectAll(".x-axis .tick line")
+    .attr("stroke", "#444")
+    .attr("stroke-dasharray", "2,2");
 
-  // Update lines
+  // Update wind speed line
   windSpeedLine
     .datum(weatherData)
     .transition()
     .duration(500)
     .attr("d", lineWindSpeed);
 
+  // Update pressure line
   pressureLine
     .datum(weatherData)
     .transition()
     .duration(500)
     .attr("d", linePressure);
 
-  // Update dots
+  // Update wind speed dots
   const windDots = chartGroup.selectAll(".dot-wind").data(weatherData);
   windDots
     .enter()
@@ -224,6 +287,7 @@ chartGroup.selectAll(".x-axis .tick line")
     .attr("cy", d => yWindSpeed(d.windSpeed));
   windDots.exit().remove();
 
+  // Update pressure dots
   const pressureDots = chartGroup.selectAll(".dot-pressure").data(weatherData);
   pressureDots
     .enter()
@@ -238,7 +302,7 @@ chartGroup.selectAll(".x-axis .tick line")
     .attr("cy", d => yPressure(d.pressure));
   pressureDots.exit().remove();
 
-  // Update Tooltip on dots
+  // Update Tooltip for wind speed
   chartGroup.selectAll(".dot-wind")
     .on("mouseover", (event, d) => {
       tooltip
@@ -254,6 +318,7 @@ chartGroup.selectAll(".x-axis .tick line")
       tooltip.style("display", "none");
     });
 
+  // Update Tooltip for pressure
   chartGroup.selectAll(".dot-pressure")
     .on("mouseover", (event, d) => {
       tooltip
@@ -271,4 +336,4 @@ chartGroup.selectAll(".x-axis .tick line")
 }
 
 // Start real-time updates
-setInterval(updateChart, interval); // Update every 2 seconds
+setInterval(updateChart, interval);

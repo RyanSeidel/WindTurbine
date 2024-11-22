@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 # MQTT Broker Configuration
 MQTT_BROKER = "192.168.1.208"  # Replace with your broker's IP address
 MQTT_PORT = 1883               # MQTT port, usually 1883
-MQTT_TOPIC = "wind_turbine/rpm" # Topic to subscribe to
+MQTT_TOPIC = "wind_turbine/3" # Topic to subscribe to
 
 # Define the callback for when the client connects to the broker
 def on_connect(client, userdata, flags, rc):

@@ -13,7 +13,7 @@ query_api = client.query_api()
 
 # Define measurements to retrieve
 measurements = {
-    "rpm": ["value"],
+    "rpm": ["value", "blade_1", "blade_2", "blade_3"],
     "orientation": ["heading", "roll", "pitch"],
     "temperature": ["value"],
     "magnetometer": ["mx", "my", "mz"],
@@ -24,7 +24,12 @@ measurements = {
     "voltage": ["value"],
     "current": ["value"],
     "power": ["value"],
-    "servo": ["value"]
+    "servo": ["value"],
+    "speed": ["value"],
+    "direction": ["value"],  # Add for wind direction
+    "pressure": ["value"],  # Add for atmospheric pressure
+    "humidity": ["value"],  # Add for relative humidity
+    "altitude": ["value"]   # Add for altitude
 }
 
 # Retrieve data and store in a DataFrame
@@ -53,4 +58,4 @@ client.close()
 df = pd.DataFrame(data).ffill().bfill()
 
 # Optionally, save data locally to avoid re-querying InfluxDB
-df.to_csv("wind_turbine_data3.csv")
+df.to_csv("wind_turbine_data10min.csv")
