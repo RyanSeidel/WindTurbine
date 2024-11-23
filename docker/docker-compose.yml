@@ -1,16 +1,4 @@
 services:
-  node-red:
-    image: nodered/node-red
-    container_name: node-red
-    ports:
-      - "1880:1880"
-    volumes:
-      - ./node-red-data:/data
-    environment:
-      - TZ=America/New_York
-    networks:
-      - my_network
-
   influxdb:
     image: influxdb:latest
     container_name: influxdb
@@ -38,8 +26,18 @@ services:
       - ./custom-dashboard:/app
     networks:
       - my_network
-
-
+  mqtt-prediction:
+    build:
+      context: ./mqtt-prediction
+    container_name: mqtt-prediction
+    volumes:
+      - ./mqtt-prediction:/app
+    networks:
+      - my_network
+    environment:
+      - MQTT_BROKER=host.docker.internal
+      - MQTT_PORT=1883
+      - MODEL_FILENAME=wind_turbine_model.pkl
 networks:
   my_network:
     driver: bridge

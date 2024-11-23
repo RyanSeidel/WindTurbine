@@ -63,206 +63,51 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode()
-    
-    
+     
     # Emit data based on topic
     if topic == MQTT_TOPICS['rpm']:
-        # payload_value = float(payload)
-        # point = Point("rpm").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
         socketio.emit('rpm_data', {'latest_rpm': float(payload)})
     elif topic == MQTT_TOPICS['temperature']:
-        # payload_value = float(payload)
-        # point = Point("temperature").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        socketio.emit('temperature_data', {'temperature': float(payload)})
-        
-    elif topic == MQTT_TOPICS['orientation']:
-        # Split the payload by commas
-        parts = payload.split(',')
-        heading = float(parts[0].strip())
-        roll = float(parts[1].strip())
-        pitch = float(parts[2].strip())
-        
-        # Create a point for InfluxDB with each value as a field
-        point = (
-            Point("orientation")
-            .field("heading", heading)
-            .field("roll", roll)
-            .field("pitch", pitch)
-            .time(int(time.time() * 1000), write_precision="ms")
-        )
-        
-        # Write to InfluxDB
-        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        print(f"Orientation data written to InfluxDB: Heading={heading}, Roll={roll}, Pitch={pitch}", flush=True)
-           
+        socketio.emit('temperature_data', {'temperature': float(payload)})      
+    elif topic == MQTT_TOPICS['orientation']:          
         socketio.emit('orientation_data', {'orientation': payload})
-    elif topic == MQTT_TOPICS['magnetometer']:
-        
-        # # Split the payload by commas
-        # parts = payload.split(',')
-        # mx = float(parts[0].strip())
-        # my = float(parts[1].strip())
-        # mz = float(parts[2].strip())
-        
-        #         # Create a point for InfluxDB with each value as a field
-        # point = (
-        #     Point("magnetometer")
-        #     .field("mx", mx)
-        #     .field("my", my)
-        #     .field("mz", mz)
-        #     .time(int(time.time() * 1000), write_precision="ms")
-        # )
-        
-        # # Write to InfluxDB
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        # print(f"Magnetometer data written to InfluxDB: mx={mx}, my={my}, mz={mz}", flush=True)
-        
-        socketio.emit('magnetometer_data', {'magnetometer': payload})
-        
-    elif topic == MQTT_TOPICS['gyroscope']:
-        
-        # # Split the payload by commas
-        # parts = payload.split(',')
-        # gx = float(parts[0].strip())
-        # gy = float(parts[1].strip())
-        # gz = float(parts[2].strip())
-        
-        #         # Create a point for InfluxDB with each value as a field
-        # point = (
-        #     Point("gyroscope")
-        #     .field("gx", gx)
-        #     .field("gy", gy)
-        #     .field("gz", gz)
-        #     .time(int(time.time() * 1000), write_precision="ms")
-        # )
-        
-        # # Write to InfluxDB
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        # print(f"Gyroscope data written to InfluxDB: mx={gx}, my={gy}, mz={gz}", flush=True)
-        
+    elif topic == MQTT_TOPICS['magnetometer']:     
+        socketio.emit('magnetometer_data', {'magnetometer': payload})      
+    elif topic == MQTT_TOPICS['gyroscope']:       
         socketio.emit('gyroscope_data', {'gyroscope': payload})
-    elif topic == MQTT_TOPICS['accelerometer']:
-        
-        # # Split the payload by commas
-        # parts = payload.split(',')
-        # ax = float(parts[0].strip())
-        # ay = float(parts[1].strip())
-        # az = float(parts[2].strip())
-        
-        #         # Create a point for InfluxDB with each value as a field
-        # point = (
-        #     Point("accelerometer")
-        #     .field("ax", ax)
-        #     .field("ay", ay)
-        #     .field("az", az)
-        #     .time(int(time.time() * 1000), write_precision="ms")
-        # )
-        
-        # # Write to InfluxDB
-        # # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        # print(f"Accelerometer data written to InfluxDB: mx={ax}, my={ay}, mz={az}", flush=True)
-        
+    elif topic == MQTT_TOPICS['accelerometer']:              
         socketio.emit('accelerometer_data', {'accelerometer': payload})
-    elif topic == MQTT_TOPICS['linear_acceleration']:
-        
-        #         # Split the payload by commas
-        # parts = payload.split(',')
-        # lx = float(parts[0].strip())
-        # ly = float(parts[1].strip())
-        # lz = float(parts[2].strip())
-        
-        #         # Create a point for InfluxDB with each value as a field
-        # point = (
-        #     Point("linear_acceleration")
-        #     .field("lx", lx)
-        #     .field("ly", ly)
-        #     .field("lz", lz)
-        #     .time(int(time.time() * 1000), write_precision="ms")
-        # )
-        
-        # # Write to InfluxDB
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        # print(f"Linear Acceleration data written to InfluxDB: mx={lx}, my={ly}, mz={lz}", flush=True)
-        
+    elif topic == MQTT_TOPICS['linear_acceleration']:        
         socketio.emit('linear_acceleration_data', {'linear_acceleration': payload})
-    elif topic == MQTT_TOPICS['gravity']:
-        
-        #         # Split the payload by commas
-        # parts = payload.split(',')
-        # grx = float(parts[0].strip())
-        # gry = float(parts[1].strip())
-        # grz = float(parts[2].strip())
-        
-        #         # Create a point for InfluxDB with each value as a field
-        # point = (
-        #     Point("gravity")
-        #     .field("grx", grx)
-        #     .field("gry", gry)
-        #     .field("grz", grz)
-        #     .time(int(time.time() * 1000), write_precision="ms")
-        # )
-        
-        # # Write to InfluxDB
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        #print(f"Gravity data written to InfluxDB: mx={grx}, my={gry}, mz={grz}", flush=True)
-        
+    elif topic == MQTT_TOPICS['gravity']:       
         socketio.emit('gravity_data', {'gravity': payload})
     elif topic == MQTT_TOPICS['calibration']:
         socketio.emit('calibration_data', {'calibration': payload})
-    elif topic == MQTT_TOPICS['voltage']:
-        # payload_value = float(payload)
-        # point = Point("voltage").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
-        #write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        
+    elif topic == MQTT_TOPICS['voltage']:       
         socketio.emit('voltage_data', {'voltage': float(payload)})
     elif topic == MQTT_TOPICS['power']:
-        # payload_value = float(payload)
-        # point = Point("power").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
-        #write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        
         socketio.emit('power_data', {'power': float(payload)})
-    elif topic == MQTT_TOPICS['current']:
-        # payload_value = float(payload)
-        # point = Point("current").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        
-        socketio.emit('current_data', {'current': float(payload)})
-        
+    elif topic == MQTT_TOPICS['current']:    
+        socketio.emit('current_data', {'current': float(payload)})        
     elif topic == MQTT_TOPICS['servo']:
-        # payload_value = float(payload)
-        # point = Point("current").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
-        # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
-        
         socketio.emit('servo_data', {'servo': float(payload)})
-
     elif topic == MQTT_TOPICS['speed']:
         print(f"Speed Payload: {payload}", flush=True)  # Debug: Print the payload
         socketio.emit('speed_data', {'speed': float(payload)})
-
     elif topic == MQTT_TOPICS['direction']:
         print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
         socketio.emit('direction_data', {'direction': int(payload)})
-
     elif topic == MQTT_TOPICS['pressure']:
         print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
         socketio.emit('pressure_data', {'pressure': float(payload)})
-
-    elif topic == MQTT_TOPICS['humidity']:
-       
+    elif topic == MQTT_TOPICS['humidity']:     
         socketio.emit('humidity_data', {'humidity': float(payload)})
-
-    elif topic == MQTT_TOPICS['altitude']:
-        
+    elif topic == MQTT_TOPICS['altitude']:      
         socketio.emit('altitude_data', {'altitude': float(payload)})
-
     print(f"Received message: {payload} on topic {topic}", flush=True)
     
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message  # Attach on_message callback
-
-
 
 @app.route('/')
 def dashboard():
@@ -275,9 +120,6 @@ def analysis():
 @app.route('/settings')
 def settings():
     return render_template('settings.html')
-
-
-
 
 @app.route('/connect-mqtt', methods=['POST'])
 def connect_mqtt():
