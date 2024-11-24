@@ -12,6 +12,29 @@ MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))  # Default MQTT port
 PUBLISH_TOPIC = os.getenv("PUBLISH_TOPIC", "wind_turbine/predictions")  # MQTT topic to publish to
 PUBLISH_INTERVAL = int(os.getenv("PUBLISH_INTERVAL", 5))  # Publish interval in seconds
 
+# Topics under wind_turbine namespace
+MQTT_TOPICS = {
+    'rpm': 'wind_turbine/rpm',
+    'orientation': 'wind_turbine/orientation',
+    'temperature': 'wind_turbine/temperature',
+    'magnetometer': 'wind_turbine/magnetometer',
+    'gyroscope': 'wind_turbine/gyroscope',
+    'accelerometer': 'wind_turbine/accelerometer',
+    'linear_acceleration': 'wind_turbine/linear_acceleration',
+    'gravity': 'wind_turbine/gravity',
+    'calibration': 'wind_turbine/calibration',
+    'voltage': 'wind_turbine/volt',
+    'power': 'wind_turbine/power',
+    'current': 'wind_turbine/current',
+    'servo': 'wind_turbine/servo',
+    'speed': 'wind_turbine/speed',
+    'direction': 'wind_turbine/direction',
+    'pressure': 'wind_turbine/pressure',
+    'humidity': 'wind_turbine/humidity',
+    'altitude': 'wind_turbine/altitude'
+}
+
+
 # Initialize the MQTT client
 client = mqtt.Client()
 

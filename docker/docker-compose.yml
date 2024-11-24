@@ -23,10 +23,12 @@ services:
     - FLASK_ENV=development
     - FLASK_DEBUG=1
     - BROKER_2=mosquitto
+    - RASP_BROKER=192.168.0.100
     volumes:
       - ./custom-dashboard:/app
     networks:
       - my_network
+
   mosquitto:
     image: eclipse-mosquitto:latest
     container_name: mosquitto
@@ -46,6 +48,7 @@ services:
       - my_network
     environment:
       - MQTT_BROKER=mosquitto  # Pointing to the Mosquitto container
+      - RASP_BROKER=192.168.0.100
       - MQTT_PORT=1883
       - PUBLISH_TOPIC=wind_turbine/predictions
       - PUBLISH_INTERVAL=5

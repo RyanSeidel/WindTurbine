@@ -6,6 +6,9 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import joblib
 
+
+# This is only for RPM and Voltage 
+
 # List of CSV files for all 8 directions
 data_files = [
     'wind_turbine_datasouth.csv',

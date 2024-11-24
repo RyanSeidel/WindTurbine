@@ -86,7 +86,7 @@ body {
   border: 2px solid #333;
   padding: 20px;
   max-width: 300px;
-  height: 375px;
+  height: 400px;
   box-sizing: border-box;
 }
 
@@ -141,8 +141,8 @@ body {
 .monitor-row {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Space between each unit */
-    margin-top: 10px;
+    gap: 10px; /* Space between each unit */
+    margin-top: 5px;
     font-size: 1em;
 }
 
@@ -154,49 +154,60 @@ body {
 
 .orientation-container {
   width: 700px; /* Limits maximum width for larger screens */
-  height: 375px; /* Adjusts height automatically based on content */
-  padding: 20px;
+  height: 400px; /* Adjusts height automatically based on content */
+  padding: 10px;
   border-radius: 8px;
   text-align: center; /* Aligns all text inside the container to the left */
   border: 1px solid #ddd;
   background-color: #ddd;
   box-sizing: border-box;
-
-
 }
 
+.column {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Horizontally center items */
+}
+
+/* Style the button */
+.view-btn {
+  width: 200px; /* Match the width of the 3D model container */
+  height: 40px;
+  margin-top: 10px; /* Space between the container and button */
+  padding: 10px;
+  font-weight: bold;
+  border: 1px solid #333;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-btn:hover {
+  background-color: #777; /* Highlight effect on hover */
+}
 
 .ori-inside{
-  border: 1px solid #ddd;
-  background-color: #ddd;
   box-sizing: border-box;
   display: flex;
   text-align: left;
   flex-wrap: wrap; /* Enables wrapping of child elements */
   gap: 20px;
-  margin-top: 10px;
-  
+  padding: 10px;
 }
 
 
 /* 3D Model Container */
 .model-container {
   width: 275px; /* Optional: Limit the maximum width */
-  height: auto; /* Adjust height dynamically based on aspect ratio */
+  height: 275px; /* Adjust height dynamically based on aspect ratio */
   aspect-ratio: 1; /* Maintain a square aspect ratio */
   background-color: #1a1a1a;
   border: 2px solid #333; /* Border to distinguish the model container */
 }
 
-/* Ensure the container resizes with the parent */
-/* Ensure the container resizes with the parent */
-#3d-model-container {
-  max-width: 700px; /* Optional: Limit maximum width */
-  max-height: 500px; /* Optional: Limit maximum height */
-  aspect-ratio: 16 / 9; /* Maintain a widescreen aspect ratio */
-  border: 2px solid #333; /* Optional: Add a border for visibility */
-  background-color: #1a1a1a; /* Background for the container */
-}
+
 
 .orientation-container div {
   margin-bottom: 10px; /* Adds space between each section */

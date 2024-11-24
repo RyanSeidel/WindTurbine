@@ -86,8 +86,8 @@ loader.load(
 );
 
 // Add Axes Helper (optional for debugging orientation)
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 
 // Create arrow helpers for gyroscope and magnetometer
 const gyroArrow = new THREE.ArrowHelper(
@@ -105,6 +105,14 @@ const magnetoArrow = new THREE.ArrowHelper(
     0x0000ff                    // Color (blue for magnetometer)
 );
 scene.add(magnetoArrow);
+
+const accelerometerArrow = new THREE.ArrowHelper(
+    new THREE.Vector3(0, 0, 1), // Initial direction
+    new THREE.Vector3(0, 0, 0), // Origin
+    2,                          // Length
+    0x00ff00                    // Color (green for accelerometer)
+);
+scene.add(accelerometerArrow);
 
 // Animation loop
 let lastFrameTime = performance.now(); // Track the last frame time
@@ -136,6 +144,43 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
+// View mode state
+let currentView = 'default'; // Possible values: 'default', 'isometric', 'top-down'
+
+// Function to switch views
+function switchCameraView() {
+    if (currentView === 'default') {
+        // Switch to isometric view
+        const isoAngle = Math.PI / 4; // 45 degrees
+        const isoHeightAngle = Math.atan(Math.sqrt(2)); // ~35.26 degrees
+        const distance = 10;
+
+        camera.position.set(
+            distance * Math.cos(isoAngle),
+            distance * Math.sin(isoAngle),
+            distance * Math.sin(isoHeightAngle)
+        );
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        currentView = 'isometric';
+        document.getElementById("switch-view-btn").innerText = "Switch to Top-Down View";
+    } else if (currentView === 'isometric') {
+        // Switch to top-down view
+        camera.position.set(0, 10, 0); // Directly above the scene
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        currentView = 'top-down';
+        document.getElementById("switch-view-btn").innerText = "Switch to Default View";
+    } else if (currentView === 'top-down') {
+        // Switch back to default view
+        camera.position.set(0, 0, 5); // Default perspective
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        currentView = 'default';
+        document.getElementById("switch-view-btn").innerText = "Switch to Isometric View";
+    }
+}
+
+// Add event listener to button
+document.getElementById("switch-view-btn").addEventListener("click", switchCameraView);
 
 // Variables to store current and target rotation
 let targetRotation = { x: 0, y: 0, z: 0 };
@@ -170,6 +215,23 @@ function updateMagnetometerDisplay(mx, my, mz) {
     magnetoArrow.setLength(magnetoLength);
 }
 
+// Update accelerometer display
+function updateAccelerometerDisplay(ax, ay, az) {
+    const accelDirection = new THREE.Vector3(ax, ay, az).normalize();
+    const accelMagnitude = new THREE.Vector3(ax, ay, az).length();
+
+    accelerometerArrow.setDirection(accelDirection);
+    accelerometerArrow.setLength(accelMagnitude);
+
+    // Optionally, adjust the turbine position slightly to simulate vibration effects
+    if (turbine) {
+        turbine.position.x += ax * 0.01;
+        turbine.position.y += ay * 0.01;
+        turbine.position.z += az * 0.01;
+    }
+}
+
+
 // Socket.IO for real-time data
 const socket = io();
 
@@ -192,6 +254,12 @@ socket.on('gyroscope_data', (data) => {
     //console.log("Gyroscope data received: ", data);  // Debugging log
     const [gx, gy, gz] = data.gyroscope.split(',').map(Number); // Parse data
     updateGyroscopeDisplay(gx, gy, gz);
+});
+
+socket.on('accelerometer_data', (data) => {
+    //console.log("Accelerometer data received: ", data);  // Debugging log
+    const [ax, ay, az] = data.accelerometer.split(',').map(Number); // Split and convert to numbers
+    updateAccelerometerDisplay(ax, ay, az); // Update the display
 });
 
 // Dynamically update RPM and recalculate angular velocity
