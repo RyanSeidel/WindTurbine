@@ -20,9 +20,14 @@ INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET", "WindTurbine")
 influx_client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
 write_api = influx_client.write_api(write_options=SYNCHRONOUS)  # This line initializes write_api
 
-# MQTT Configuration
+# MQTT Configuration for Raspberry Pi
 MQTT_BROKER = os.getenv("MQTT_BROKER", "192.168.1.208")  # Replace with your MQTT broker address
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
+
+# Model Prediction
+BROKER_2 = os.getenv("BROKER_2", "mosquitto")
+PREDICTION_TOPIC = "wind_turbine/predictions"
+
 # Topics under wind_turbine namespace
 MQTT_TOPICS = {
     'rpm': 'wind_turbine/rpm',
@@ -48,6 +53,9 @@ MQTT_TOPICS = {
 # Initialize MQTT client
 mqtt_client = mqtt.Client()
 
+model_client = mqtt.Client()
+
+
 # MQTT on_connect callback to confirm connection
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -58,6 +66,12 @@ def on_connect(client, userdata, flags, rc):
         print("Subscribed to all wind_turbine topics", flush=True)
     else:
         print(f"Failed to connect, return code {rc}", flush=True)
+
+# Model connect  
+def on_prediction_message(client, userdata, msg):
+    print(f"Received message on topic {msg.topic}: {msg.payload.decode()}", flush=True)
+    # Additional logic for handling messages can go here
+    socketio.emit('prediction_data', {'message': msg.payload.decode()})
     
 # MQTT on_message callback to handle incoming messages for each topic
 def on_message(client, userdata, msg):
@@ -109,6 +123,17 @@ def on_message(client, userdata, msg):
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message  # Attach on_message callback
 
+model_client.on_message = on_prediction_message
+
+try:
+    model_client.connect(BROKER_2, MQTT_PORT, 60)
+    print(f"Attempting to connect to {BROKER_2}:{MQTT_PORT}")
+    model_client.subscribe(PREDICTION_TOPIC)
+    print(f"Subscribed to {PREDICTION_TOPIC}")
+    model_client.loop_start()
+except Exception as e:
+    print(f"Error connecting or subscribing: {e}")
+    
 @app.route('/')
 def dashboard():
     return render_template('dashboard.html')
@@ -154,27 +179,6 @@ def connect_mqtt():
         return jsonify({"status": "Failed", "error": "No broker IP provided"}), 400
     
     
-@app.route('/predict', methods=['GET', 'POST'])
-def predict():
-    if request.method == 'POST':
-        # Get user inputs from form
-        wind_speed = float(request.form.get('wind_speed'))
-        wind_direction = float(request.form.get('wind_direction'))
-        temperature = float(request.form.get('temperature'))
-        orientation = float(request.form.get('orientation'))
-
-        # Call the LSTM prediction function
-        predicted_rpm, predicted_volts = predict_rpm_volts(wind_speed, wind_direction, temperature, orientation)
-
-        # Return the results as JSON or render them in a template
-        return jsonify({
-            "predicted_rpm": predicted_rpm,
-            "predicted_volts": predicted_volts
-        })
-
-    # Display the prediction form if GET request
-    return render_template('predict_form.html')
-
 
 @socketio.on('connect')
 def handle_connect():

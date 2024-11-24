@@ -22,10 +22,20 @@ services:
     environment:
     - FLASK_ENV=development
     - FLASK_DEBUG=1
+    - BROKER_2=mosquitto
     volumes:
       - ./custom-dashboard:/app
     networks:
       - my_network
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    networks:
+      - my_network
+    ports:
+      - "1883:1883"  # Exposes MQTT broker to localhost and containers
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
   mqtt-prediction:
     build:
       context: ./mqtt-prediction
@@ -35,10 +45,12 @@ services:
     networks:
       - my_network
     environment:
-      - MQTT_BROKER=host.docker.internal
+      - MQTT_BROKER=mosquitto  # Pointing to the Mosquitto container
       - MQTT_PORT=1883
-      - MODEL_FILENAME=wind_turbine_model.pkl
+      - PUBLISH_TOPIC=wind_turbine/predictions
+      - PUBLISH_INTERVAL=5
 networks:
   my_network:
+    name: docker_my_network
     driver: bridge
 

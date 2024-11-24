@@ -4,6 +4,10 @@ FROM python:3.9-slim
 # Set the working directory
 WORKDIR /app
 
+# Install Mosquitto utilities (optional, useful for debugging MQTT)
+RUN apt-get update && apt-get install -y --no-install-recommends mosquitto-clients && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Copy the requirements file and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -11,10 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the Python script and model
 COPY . .
 
-# Set environment variables
-ENV MQTT_BROKER=127.0.0.1
-ENV MQTT_PORT=1883
-ENV MODEL_FILENAME=wind_turbine_model.pkl
+# Expose MQTT port (optional, mostly for clarity)
+EXPOSE 1883
 
-# Command to run the Python script
+# Command to run the MQTT publishing script
 CMD ["python", "mqtt_prediction.py"]
