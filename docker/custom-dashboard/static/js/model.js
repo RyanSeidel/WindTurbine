@@ -223,12 +223,6 @@ function updateAccelerometerDisplay(ax, ay, az) {
     accelerometerArrow.setDirection(accelDirection);
     accelerometerArrow.setLength(accelMagnitude);
 
-    // Optionally, adjust the turbine position slightly to simulate vibration effects
-    if (turbine) {
-        turbine.position.x += ax * 0.01;
-        turbine.position.y += ay * 0.01;
-        turbine.position.z += az * 0.01;
-    }
 }
 
 

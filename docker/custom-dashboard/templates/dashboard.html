@@ -71,12 +71,6 @@
    
       
 
-      <li class="nav-item">
-        <a href="settings" class="nav-link">
-          <i class="fa-solid fa-gear spin-on-hover"></i>
-          <span class="link-text">Settings</span>
-        </a>
-      </li>
 
       <li class="nav-item">
         <a href="#" class="nav-link">
@@ -214,9 +208,9 @@
               <div id="WindPres"><strong>Wind Pressure:</strong> <span id="wind-pres">0</span> hPa</div>
               <div id="WindHumidity"><strong>Humidity:</strong> <span id="wind-hum">0</span> %RH</div>
               <div id="WindAltitude"><strong>Altitude:</strong> <span id="wind-alt">0</span> m</div>
-              <div id="magnetometer"><strong>Magnetometer:</strong> mx: <span id="mx">0</span> my: <span id="my">0</span> mz: <span id="mz">0</span></div>
-              <div id="gyroscope"><strong>Gyroscope:</strong> gx: <span id="gx">0</span> gy: <span id="gy">0</span> gz: <span id="gz">0</span></div>
-              <div id="accelerometer"><strong>Accelerometer:</strong> ax: <span id="ax">0</span> ay: <span id="ay">0</span> az: <span id="az">0</span></div>
+              <div id="magnetometer"><i class="fa-solid fa-square" style="color: #0000ff;"></i><strong> Magnetometer:</strong> mx: <span id="mx">0</span> my: <span id="my">0</span> mz: <span id="mz">0</span></div>
+              <div id="gyroscope"><i class="fa-solid fa-square" style="color: #ff0000"></i><strong> Gyroscope:</strong> gx: <span id="gx">0</span> gy: <span id="gy">0</span> gz: <span id="gz">0</span></div>
+              <div id="accelerometer"><i class="fa-solid fa-square" style="color: #00ff00;"></i><strong> Accelerometer:</strong> ax: <span id="ax">0</span> ay: <span id="ay">0</span> az: <span id="az">0</span></div>
               <div id="linear_acceleration"><strong>Linear Acceleration:</strong> lx: <span id="lx">0</span> ly: <span id="ly">0</span> lz: <span id="lz">0</span></div>
               <div id="gravity"><strong>Gravity:</strong> <span id="gravity-values">grx: 0 gry: 0 grz: 0</span></div>
               </div>
@@ -264,9 +258,8 @@
   </div>
 
   <div class="gravlinear-container">
-    <div class="gravlinear-chart"></div>
+    <div class="orientation-chart"></div>
   </div>
-
 
 </div>
 </div>

@@ -299,7 +299,7 @@ socket.on('gravity_data', (data) => {
 
 const margin = { top: 10, right: 10, bottom: 30, left: 40 };
 const width = 400 - margin.left - margin.right;  // Adjust width to fit container
-const height = (500 / 3) - margin.top - margin.bottom;  // Divide height by 3 for each chart
+const height = (475 / 3) - margin.top - margin.bottom;  // Divide height by 3 for each chart
 
 
     // Function to create a chart
