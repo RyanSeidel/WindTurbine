@@ -38,7 +38,7 @@ for measurement, fields in measurements.items():
     for field in fields:
         query = f'''
         from(bucket: "{INFLUXDB_BUCKET}")
-        |> range(start: -10m)
+        |> range(start: -1m)
         |> filter(fn: (r) => r["_measurement"] == "{measurement}")
         |> filter(fn: (r) => r["_field"] == "{field}")
         '''
@@ -58,4 +58,4 @@ client.close()
 df = pd.DataFrame(data).ffill().bfill()
 
 # Optionally, save data locally to avoid re-querying InfluxDB
-df.to_csv("wind_turbine_data10min.csv")
+df.to_csv("wind_turbine_NorthWest_45_Degree_LowFan.csv")

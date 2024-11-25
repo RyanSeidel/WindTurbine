@@ -12,6 +12,9 @@ import joblib
 # List of CSV files for all 8 directions
 data_files = [
     'wind_turbine_datasouth.csv',
+    'wind_turbine_data2minSW2FAN.csv',
+    'wind_turbine_data1SWLowFan.csv',
+    'wind_turbine_data1SWZero.csv'
 ]
 
 # Load and combine all datasets
