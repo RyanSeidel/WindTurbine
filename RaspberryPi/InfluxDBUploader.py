@@ -8,8 +8,8 @@ import time
 # Blade angles (in degrees)
 BLADE_ANGLES = {
     'blade_1': 60,
-    'blade_2': 60,
-    'blade_3': 60
+    'blade_2': 45,
+    'blade_3': 45
 }
 
 # InfluxDB Configuration
