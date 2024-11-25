@@ -3,6 +3,7 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from flask_socketio import SocketIO
 import paho.mqtt.client as mqtt
+import logging
 import os
 import time
 
@@ -24,7 +25,7 @@ RASP_BROKER = os.getenv("RASP_BROKER")  # Ensure this is always set in the envir
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))  # Defaults to 1883 if not set
 
 # Model Prediction
-BROKER_2 = os.getenv("BROKER_2", "mosquitto")
+MQTT_BROKER = os.getenv("MQTT_BROKER")
 PREDICTION_TOPIC = "wind_turbine/predictions"
 
 # Topics under wind_turbine namespace
@@ -46,14 +47,14 @@ MQTT_TOPICS = {
     'direction': 'wind_turbine/direction',
     'pressure': 'wind_turbine/pressure',
     'humidity': 'wind_turbine/humidity',
-    'altitude': 'wind_turbine/altitude'
+    'altitude': 'wind_turbine/altitude',
+    'predictions': 'wind_turbine/predictions'
 }
 
 # Initialize MQTT client
 mqtt_client = mqtt.Client()
 
-model_client = mqtt.Client()
-
+prediction_client = mqtt.Client()
 
 # MQTT on_connect callback to confirm connection
 def on_connect(client, userdata, flags, rc):
@@ -65,13 +66,8 @@ def on_connect(client, userdata, flags, rc):
         print("Subscribed to all wind_turbine topics", flush=True)
     else:
         print(f"Failed to connect, return code {rc}", flush=True)
-
-# Model connect  
-def on_prediction_message(client, userdata, msg):
-    print(f"Received message on topic {msg.topic}: {msg.payload.decode()}", flush=True)
-    # Additional logic for handling messages can go here
-    socketio.emit('prediction_data', {'message': msg.payload.decode()})
-    
+        
+ 
 # MQTT on_message callback to handle incoming messages for each topic
 def on_message(client, userdata, msg):
     topic = msg.topic
@@ -80,7 +76,7 @@ def on_message(client, userdata, msg):
     # Emit data based on topic
     if topic == MQTT_TOPICS['rpm']:
         socketio.emit('rpm_data', {'latest_rpm': float(payload)})
-        print(f"Socket.IO: Emitted 'rpm_data' with value {float(payload)}", flush=True)
+        #print(f"Socket.IO: Emitted 'rpm_data' with value {float(payload)}", flush=True)
     elif topic == MQTT_TOPICS['temperature']:
         socketio.emit('temperature_data', {'temperature': float(payload)})      
     elif topic == MQTT_TOPICS['orientation']:          
@@ -106,43 +102,64 @@ def on_message(client, userdata, msg):
     elif topic == MQTT_TOPICS['servo']:
         socketio.emit('servo_data', {'servo': float(payload)})
     elif topic == MQTT_TOPICS['speed']:
-        print(f"Speed Payload: {payload}", flush=True)  # Debug: Print the payload
+        #print(f"Speed Payload: {payload}", flush=True)  # Debug: Print the payload
         socketio.emit('speed_data', {'speed': float(payload)})
     elif topic == MQTT_TOPICS['direction']:
-        print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
+        #print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
         socketio.emit('direction_data', {'direction': int(payload)})
     elif topic == MQTT_TOPICS['pressure']:
-        print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
+        #print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
         socketio.emit('pressure_data', {'pressure': float(payload)})
     elif topic == MQTT_TOPICS['humidity']:     
         socketio.emit('humidity_data', {'humidity': float(payload)})
     elif topic == MQTT_TOPICS['altitude']:      
         socketio.emit('altitude_data', {'altitude': float(payload)})
-    print(f"Received message: {payload} on topic {topic}", flush=True)
+    elif topic == MQTT_TOPICS['altitude']:      
+        socketio.emit('altitude_data', {'altitude': float(payload)})
+    elif topic == MQTT_TOPICS['predictions']:      
+        # Example payload: "Predicted RPM: 61.33, Voltage: 1.94"
+        print(f"{payload}", flush=True)  # Debug: Print the payload
     
+        # Split the payload string to extract RPM and Voltage
+        try:
+            parts = payload.split(',')
+            rpm_part = parts[0].split(':')[-1].strip()
+            voltage_part = parts[1].split(':')[-1].strip()
+        
+            # Convert to float
+            predicted_rpm = float(rpm_part)
+            predicted_voltage = float(voltage_part)
+        
+            # Emit the data separately via Socket.IO
+            socketio.emit('predicted_rpm', {'rpm': predicted_rpm})
+            socketio.emit('predicted_voltage', {'voltage': predicted_voltage})
+        
+            print(f"Emitted RPM: {predicted_rpm}, Voltage: {predicted_voltage}", flush=True)
+        except Exception as e:
+            print(f"Error parsing predictions payload: {e}", flush=True)
+    #print(f"Received message: {payload} on topic {topic}", flush=True)
+ 
 mqtt_client.on_connect = on_connect
-mqtt_client.on_message = on_message  # Attach on_message callback
+mqtt_client.on_message = on_message  
 
-model_client.on_message = on_prediction_message
+# Attach callbacks to the prediction client
+prediction_client.on_connect = on_connect
+prediction_client.on_message = on_message
 
+# # ----- CONNECT BOTH CLIENTS -----
 try:
-    # Attempt to connect to the MQTT broker
+    #Connect to Raspberry Pi MQTT broker
     mqtt_client.connect(RASP_BROKER, MQTT_PORT, 60)
-    print(f"Attempting to connect to {RASP_BROKER}:{MQTT_PORT}")
-    
-    # Start the MQTT loop
     mqtt_client.loop_start()
-except Exception as e:
-    print(f"Error connecting to MQTT broker: {e}")
+    logging.info("Raspberry Pi MQTT client started.")
 
-try:
-    model_client.connect(BROKER_2, MQTT_PORT, 60)
-    print(f"Attempting to connect to {BROKER_2}:{MQTT_PORT}")
-    model_client.subscribe(PREDICTION_TOPIC)
-    print(f"Subscribed to {PREDICTION_TOPIC}")
-    model_client.loop_start()
+    # Connect to Mosquitto MQTT broker
+    prediction_client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    prediction_client.loop_start()
+    logging.info("Mosquitto MQTT client started.")
 except Exception as e:
-    print(f"Error connecting or subscribing: {e}")
+    logging.error(f"Error connecting to MQTT brokers: {e}")
+    
     
 @app.route('/')
 def dashboard():
@@ -153,11 +170,6 @@ def analysis():
     return render_template('analysis.html')
  
 
-@socketio.on('connect')
-def handle_connect():
-    print("Client connected")
-    # Start a background task to fetch and emit data
-    #socketio.start_background_task(fetch_and_emit_data)
 
 
 

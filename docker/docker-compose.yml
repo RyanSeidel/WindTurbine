@@ -22,7 +22,7 @@ services:
     environment:
     - FLASK_ENV=development
     - FLASK_DEBUG=1
-    - BROKER_2=mosquitto
+    - MQTT_BROKER=mosquitto
     - RASP_BROKER=192.168.1.208
     - blade_1=60
     - blade_2=60

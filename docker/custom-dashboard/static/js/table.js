@@ -1,11 +1,14 @@
 const socket = io(); // Initialize Socket.IO
+
 // Data for real-time and prediction
 let data = [
   { metric: "Orientation", realTime: "Heading: 0, Roll: 0, Pitch: 0", prediction: "Heading: 1, Roll: 0, Pitch: 1" },
   { metric: "Temp", realTime: "0", prediction: "0.2" },
-  { metric: "Wind Direction", realTime: "0", prediction: "1" },
-  { metric: "Wind Pressure", realTime: "0", prediction: "0.1" },
-  { metric: "Wind Speed", realTime: "0 mph", prediction: "1 mph" },
+  { metric: "RPM", realTime: "0", prediction: "0"},
+  { metric: "Voltage", realTime: "0", prediction: "0"},
+  { metric: "Wind Direction", realTime: "N", prediction: "NE" },
+  { metric: "Wind Pressure", realTime: "0 hPa", prediction: "0.1 hPa" },
+  { metric: "Wind Speed", realTime: "0 m/s", prediction: "1 m/s" },
   { metric: "Magnetometer", realTime: "mx: 0, my: 0, mz: 0", prediction: "mx: 1, my: 0.5, mz: 0.3" },
   { metric: "Gyroscope", realTime: "gx: 0, gy: 0, gz: 0", prediction: "gx: 1, gy: 1, gz: 1" },
   { metric: "Accelerometer", realTime: "ax: 0, ay: 0, az: 0", prediction: "ax: 1, ay: 0.5, az: 0.3" },
@@ -55,11 +58,35 @@ const updateTableMetric = (metric, newValue) => {
   }
 };
 
+const updateTablePrediction = (metric, newPrediction) => {
+  const index = data.findIndex((row) => row.metric === metric);
+  if (index >= 0) {
+    data[index].prediction = newPrediction;
+    // Update the corresponding table cell
+    d3.select(`tr[data-index="${index}"] td:nth-child(3)`).text(newPrediction);
+  }
+};
+
+socket.on('predicted_rpm', function (data) {
+  const predictedRpmValue = `${data.rpm.toFixed(2)} RPM`;
+  updateTablePrediction("RPM", predictedRpmValue);
+});
+
+socket.on('predicted_voltage', function (data) {
+  const predictedVoltValue = `${data.voltage.toFixed(2)} V`; // Correct the data reference and label
+  updateTablePrediction("Voltage", predictedVoltValue); // Update the "Voltage" row in the table
+});
+
 // Socket.IO listeners to update table in real-time
 socket.on("gravity_data", (data) => {
   const [grx, gry, grz] = data.gravity.split(",").map(Number);
   const gravityText = `grx: ${grx.toFixed(2)}, gry: ${gry.toFixed(2)}, grz: ${grz.toFixed(2)}`;
   updateTableMetric("Gravity", gravityText);
+});
+
+socket.on('rpm_data', function(data) {
+  const rpmValue = data.latest_rpm;
+  updateTableMetric("RPM", rpmValue);
 });
 
 socket.on("linear_acceleration_data", (data) => {
@@ -85,13 +112,11 @@ socket.on("accelerometer_data", (data) => {
   updateTableMetric("Accelerometer", accelText);
 });
 
-
 socket.on("gyroscope_data", (data) => {
   const [gx, gy, gz] = data.gyroscope.split(",").map(Number);
   const gyroscopeText = `gx: ${gx.toFixed(2)}, gy: ${gy.toFixed(2)}, gz: ${gz.toFixed(2)}`;
   updateTableMetric("Gyroscope", gyroscopeText);
 });
-
 
 socket.on("orientation_data", (data) => {
   const [heading, roll, pitch] = data.orientation.split(",").map((v) => parseFloat(v).toFixed(2));
@@ -99,15 +124,32 @@ socket.on("orientation_data", (data) => {
   updateTableMetric("Orientation", orientationText);
 });
 
-// Selection with Graph
-document.getElementById("start-button").addEventListener("click", () => {
-  const realTimeMetric = document.getElementById("real-time-metric").value;
-  const predictionMetric = document.getElementById("prediction-metric").value;
+// Wind Speed Listener
+socket.on("speed_data", (data) => {
+  const windSpeedText = `${data.speed.toFixed(2)} m/s`;
+  updateTableMetric("Wind Speed", windSpeedText);
+});
 
-  if (realTimeMetric && predictionMetric) {
-    console.log(`Comparing Real-Time: ${realTimeMetric} with Prediction: ${predictionMetric}`);
-    // Add logic to update graph or display comparison
-  } else {
-    alert("Please select both metrics.");
-  }
+// Wind Direction Listener
+const reverseDirectionMap = {
+  1: "N",
+  2: "NE",
+  3: "E",
+  4: "SE",
+  5: "S",
+  6: "SW",
+  7: "W",
+  8: "NW",
+};
+
+socket.on("direction_data", (data) => {
+  const directionNumeric = data.direction;
+  const direction = reverseDirectionMap[directionNumeric] || "Unknown";
+  updateTableMetric("Wind Direction", direction);
+});
+
+// Pressure Listener
+socket.on("pressure_data", (data) => {
+  const pressureText = `${data.pressure.toFixed(2)} hPa`;
+  updateTableMetric("Wind Pressure", pressureText);
 });
