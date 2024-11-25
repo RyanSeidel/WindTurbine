@@ -51,7 +51,7 @@ services:
       - my_network
     environment:
       - MQTT_BROKER=mosquitto  # Pointing to the Mosquitto container
-      - RASP_BROKER=192.168.0.100
+      - RASP_BROKER=192.168.1.208
       - MQTT_PORT=1883
       - PUBLISH_TOPIC=wind_turbine/predictions
       - PUBLISH_INTERVAL=5
