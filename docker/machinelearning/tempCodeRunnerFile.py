@@ -1,2 +1,1 @@
-
-    'wind_turbine_North_1Blade45_Turn45_LowFan.csv',
+'wind_turbine_NorthWest_45_Degree_HighFan.csv',

@@ -15,14 +15,14 @@ data_files = [
     'wind_turbine_North_Zero_Degree_HighFan.csv',
     'wind_turbine_North_Zero_Degree_LowFan.csv',
     'wind_turbine_North_Zero_Degree_NoFan.csv',
-    'wind_turbine_North_45_Degree_HighFan.csv',
-    'wind_turbine_North_45_Degree_LowFan.csv',
-    'wind_turbine_North_45_Degree_NoFan.csv',
-    'wind_turbine_North_90_Degree_HighFan.csv',
-    'wind_turbine_North_90_Degree_LowFan.csv',
-    'wind_turbine_North_90_Degree_NoFan.csv',
+    # 'wind_turbine_North_45_Degree_HighFan.csv',
+    # 'wind_turbine_North_45_Degree_LowFan.csv',
+    # 'wind_turbine_North_45_Degree_NoFan.csv',
+    # 'wind_turbine_North_90_Degree_HighFan.csv',
+    # 'wind_turbine_North_90_Degree_LowFan.csv',
+    # 'wind_turbine_North_90_Degree_NoFan.csv',
     
-    # North Blades Alternate
+    #  North Blades Alternate
     # 'wind_turbine_North_1Blade45_HighFan.csv',
     # 'wind_turbine_North_1Blade45_LowFan.csv',
     # 'wind_turbine_North_1Blade45_Turn45_HighFan.csv',
@@ -47,8 +47,8 @@ data_files = [
     'wind_turbine_East_Zero_Degree_NoFan.csv',
     
     # North West
-    'wind_turbine_NorthWest_45_Degree_HighFan.csv',
-    'wind_turbine_NorthWest_45_Degree_LowFan.csv',
+    # 'wind_turbine_NorthWest_45_Degree_HighFan.csv',
+    # 'wind_turbine_NorthWest_45_Degree_LowFan.csv',
     'wind_turbine_NorthWest_Zero_Degree_NoFan.csv',
     'wind_turbine_NorthWest_Zero_Degree_HighFan.csv',
     'wind_turbine_NorthWest_Zero_Degree_LowFan.csv',
@@ -57,10 +57,10 @@ data_files = [
     'wind_turbine_South_Zero_Degree_LowFan.csv',
     'wind_turbine_South_Zero_Degree_HighFan.csv',
     'wind_turbine_South_Zero_Degree_NoFan.csv',
-    'wind_turbine_South_45_Degree_LowFan.csv',
-    'wind_turbine_South_45_Degree_HighFan.csv',
-    'wind_turbine_South_90_Degree_HighFan.csv',
-    'wind_turbine_South_90_Degree_LowFan.csv',
+    # 'wind_turbine_South_45_Degree_LowFan.csv',
+    # 'wind_turbine_South_45_Degree_HighFan.csv',
+    # 'wind_turbine_South_90_Degree_HighFan.csv',
+    # 'wind_turbine_South_90_Degree_LowFan.csv',
     
     #SouthEast
     'wind_turbine_SouthEast_Zero_Degree_NoFan.csv',
@@ -75,9 +75,9 @@ data_files = [
     'wind_turbine_SouthWest_Zero_Degree_HighFan.csv',
     
     #NorthEast 
-    # 'wind_turbine_NorthEast_Zero_Degree_HighFan.csv',
-    # 'wind_turbine_NorthEast_Zero_Degree_LowFan.csv',
-    # 'wind_turbine_NorthEast_Zero_Degree_NoFan.csv',
+    'wind_turbine_NorthEast_Zero_Degree_HighFan.csv',
+    'wind_turbine_NorthEast_Zero_Degree_LowFan.csv',
+    'wind_turbine_NorthEast_Zero_Degree_NoFan.csv'
 ]
 
 # Load and combine all datasets
