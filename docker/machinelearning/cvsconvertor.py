@@ -58,4 +58,4 @@ client.close()
 df = pd.DataFrame(data).ffill().bfill()
 
 # Optionally, save data locally to avoid re-querying InfluxDB
-df.to_csv("wind_turbine_North_2Blade45_LowFan.csv")
+df.to_csv("wind_turbine_DANGER.csv")

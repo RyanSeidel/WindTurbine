@@ -15,66 +15,64 @@ data_files = [
     'wind_turbine_North_Zero_Degree_HighFan.csv',
     'wind_turbine_North_Zero_Degree_LowFan.csv',
     'wind_turbine_North_Zero_Degree_NoFan.csv',
-    # 'wind_turbine_North_45_Degree_HighFan.csv',
-    # 'wind_turbine_North_45_Degree_LowFan.csv',
-    # 'wind_turbine_North_45_Degree_NoFan.csv',
-    # 'wind_turbine_North_90_Degree_HighFan.csv',
-    # 'wind_turbine_North_90_Degree_LowFan.csv',
-    # 'wind_turbine_North_90_Degree_NoFan.csv',
+#     'wind_turbine_North_45_Degree_HighFan.csv',
+#     'wind_turbine_North_45_Degree_LowFan.csv',
+#     'wind_turbine_North_45_Degree_NoFan.csv',
+#     'wind_turbine_North_90_Degree_HighFan.csv',
+#     'wind_turbine_North_90_Degree_LowFan.csv',
+#     'wind_turbine_North_90_Degree_NoFan.csv',
     
-    #  North Blades Alternate
-    # 'wind_turbine_North_1Blade45_HighFan.csv',
-    # 'wind_turbine_North_1Blade45_LowFan.csv',
-    # 'wind_turbine_North_1Blade45_Turn45_HighFan.csv',
-    # 'wind_turbine_North_1Blade45_Turn45_LowFan.csv',
-    # 'wind_turbine_North_2Blade45_HighFan.csv',
-    # 'wind_turbine_North_2Blade45_LowFan.csv',
-    # 'wind_turbine_North_2Blade45_Turn45_HighFan.csv',
-    # 'wind_turbine_North_2Blade45_Turn45_LowFan.csv',
-    # 'wind_turbine_North_3Blade45_Turn45_HighFan.csv',
-    # 'wind_turbine_North_3Blade45_Turn45_LowFan.csv',
-    # 'wind_turbine_North_Blade45_HighFan.csv',
-    # 'wind_turbine_North_Blade45_LowFan.csv',
+#     #  North Blades Alternate
+#     # 'wind_turbine_North_1Blade45_HighFan.csv',
+#     # 'wind_turbine_North_1Blade45_LowFan.csv',
+#     # 'wind_turbine_North_1Blade45_Turn45_HighFan.csv',
+#     # 'wind_turbine_North_1Blade45_Turn45_LowFan.csv',
+#     # 'wind_turbine_North_2Blade45_HighFan.csv',
+#     # 'wind_turbine_North_2Blade45_LowFan.csv',
+#     # 'wind_turbine_North_2Blade45_Turn45_HighFan.csv',
+#     # 'wind_turbine_North_2Blade45_Turn45_LowFan.csv',
+#     # 'wind_turbine_North_3Blade45_Turn45_HighFan.csv',
+#     # 'wind_turbine_North_3Blade45_Turn45_LowFan.csv',
+#     # 'wind_turbine_North_Blade45_HighFan.csv',
+#     # 'wind_turbine_North_Blade45_LowFan.csv',
      
-    # West
+#     # West
     'wind_turbine_West_Zero_Degree_NoFan.csv',
     'wind_turbine_West_Zero_Degree_LowFan.csv',
     'wind_turbine_West_Zero_Degree_HighFan.csv',
     
-    # East
+#     # East
     'wind_turbine_East_Zero_Degree_HighFan.csv',
     'wind_turbine_East_Zero_Degree_LowFan.csv',
     'wind_turbine_East_Zero_Degree_NoFan.csv',
     
-    # North West
-    # 'wind_turbine_NorthWest_45_Degree_HighFan.csv',
-    # 'wind_turbine_NorthWest_45_Degree_LowFan.csv',
+#     # North West
     'wind_turbine_NorthWest_Zero_Degree_NoFan.csv',
     'wind_turbine_NorthWest_Zero_Degree_HighFan.csv',
     'wind_turbine_NorthWest_Zero_Degree_LowFan.csv',
     
-    #South
+#     #South
     'wind_turbine_South_Zero_Degree_LowFan.csv',
     'wind_turbine_South_Zero_Degree_HighFan.csv',
     'wind_turbine_South_Zero_Degree_NoFan.csv',
-    # 'wind_turbine_South_45_Degree_LowFan.csv',
-    # 'wind_turbine_South_45_Degree_HighFan.csv',
-    # 'wind_turbine_South_90_Degree_HighFan.csv',
-    # 'wind_turbine_South_90_Degree_LowFan.csv',
+#     # 'wind_turbine_South_45_Degree_LowFan.csv',
+#     # 'wind_turbine_South_45_Degree_HighFan.csv',
+#     # 'wind_turbine_South_90_Degree_HighFan.csv',
+#     # 'wind_turbine_South_90_Degree_LowFan.csv',
     
-    #SouthEast
+#     #SouthEast
     'wind_turbine_SouthEast_Zero_Degree_NoFan.csv',
     'wind_turbine_SouthEast_Zero_Degree_HighFan.csv',
     'wind_turbine_SouthEast_Zero_Degree_LowFan.csv',
-    # 'wind_turbine_SouthEast_45_Degree_LowFan.csv',
-    # 'wind_turbine_SouthEast_90_Degree_HighFan.csv',
+#     # 'wind_turbine_SouthEast_45_Degree_LowFan.csv',
+#     # 'wind_turbine_SouthEast_90_Degree_HighFan.csv',
     
-    #SouthWest
+#     #SouthWest
     'wind_turbine_SouthWest_Zero_Degree_NoFan.csv',
     'wind_turbine_SouthWest_Zero_Degree_LowFan.csv',
-    'wind_turbine_SouthWest_Zero_Degree_HighFan.csv',
+    'wind_turbine_SouthWest_Zero_Degree_HighFan1.csv',
     
-    #NorthEast 
+#     #NorthEast 
     'wind_turbine_NorthEast_Zero_Degree_HighFan.csv',
     'wind_turbine_NorthEast_Zero_Degree_LowFan.csv',
     'wind_turbine_NorthEast_Zero_Degree_NoFan.csv'
