@@ -9,7 +9,7 @@ import joblib
 # THIS IS IMPORTANT BC IT GETS YOU STARTED CREATING THE MODEL
 
 # Load the CSV
-file_name = 'wind_turbine_datasouth.csv'
+file_name = 'wind_turbine_North_All.csv'
 data = pd.read_csv(file_name)
 
 # Verify column names
@@ -21,8 +21,7 @@ data['rps_value'] = data['rpm_value'] / 60  # Convert RPM to RPS
 # Features (X) and Targets (y)
 X = data[['speed_value', 'direction_value', 'pressure_value', 'servo_value', 'humidity_value',
           'orientation_heading', 'orientation_roll', 'orientation_pitch', 'temperature_value',
-          'rpm_blade_1', 'rpm_blade_2', 'rpm_blade_3', 'current_value', 'power_value','magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
-          'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz', 'accelerometer_ax',	'accelerometer_ay',	'accelerometer_az', 'linear_acceleration_lx', 'linear_acceleration_ly',	'linear_acceleration_lz', 'gravity_grx', 'gravity_gry', 'gravity_grz', 'altitude_value'
+          'rpm_blade_1', 'rpm_blade_2', 'rpm_blade_3'
 ]]
 y = data[['rps_value', 'voltage_value']]  # Use 'rps_value' instead of 'rpm_value'
 

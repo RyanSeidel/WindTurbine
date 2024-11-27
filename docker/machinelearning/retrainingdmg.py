@@ -12,70 +12,57 @@ import joblib
 # List of CSV files for all 8 directions
 data_files = [
     # North Directions!
-    'wind_turbine_North_Zero_Degree_HighFan.csv',
-    'wind_turbine_North_Zero_Degree_LowFan.csv',
-    'wind_turbine_North_Zero_Degree_NoFan.csv',
+    # 'wind_turbine_North_Zero_Degree_HighFan.csv',
+    # 'wind_turbine_North_Zero_Degree_LowFan.csv',
+    # 'wind_turbine_North_Zero_Degree_NoFan.csv',
+    'wind_turbine_North_All.csv',
 #     'wind_turbine_North_45_Degree_HighFan.csv',
 #     'wind_turbine_North_45_Degree_LowFan.csv',
 #     'wind_turbine_North_45_Degree_NoFan.csv',
 #     'wind_turbine_North_90_Degree_HighFan.csv',
 #     'wind_turbine_North_90_Degree_LowFan.csv',
 #     'wind_turbine_North_90_Degree_NoFan.csv',
+        
+    # West
+    # 'wind_turbine_West_Zero_Degree_NoFan.csv',
+    # 'wind_turbine_West_Zero_Degree_LowFan.csv',
+    # 'wind_turbine_West_Zero_Degree_HighFan.csv',
+    'wind_turbine_West_Zero_Degree_All.csv'
     
-#     #  North Blades Alternate
-#     # 'wind_turbine_North_1Blade45_HighFan.csv',
-#     # 'wind_turbine_North_1Blade45_LowFan.csv',
-#     # 'wind_turbine_North_1Blade45_Turn45_HighFan.csv',
-#     # 'wind_turbine_North_1Blade45_Turn45_LowFan.csv',
-#     # 'wind_turbine_North_2Blade45_HighFan.csv',
-#     # 'wind_turbine_North_2Blade45_LowFan.csv',
-#     # 'wind_turbine_North_2Blade45_Turn45_HighFan.csv',
-#     # 'wind_turbine_North_2Blade45_Turn45_LowFan.csv',
-#     # 'wind_turbine_North_3Blade45_Turn45_HighFan.csv',
-#     # 'wind_turbine_North_3Blade45_Turn45_LowFan.csv',
-#     # 'wind_turbine_North_Blade45_HighFan.csv',
-#     # 'wind_turbine_North_Blade45_LowFan.csv',
-     
-#     # West
-    'wind_turbine_West_Zero_Degree_NoFan.csv',
-    'wind_turbine_West_Zero_Degree_LowFan.csv',
-    'wind_turbine_West_Zero_Degree_HighFan.csv',
+    # East
+    # 'wind_turbine_East_Zero_Degree_HighFan.csv',
+    # 'wind_turbine_East_Zero_Degree_LowFan.csv',
+    # 'wind_turbine_East_Zero_Degree_NoFan.csv',
     
-#     # East
-    'wind_turbine_East_Zero_Degree_HighFan.csv',
-    'wind_turbine_East_Zero_Degree_LowFan.csv',
-    'wind_turbine_East_Zero_Degree_NoFan.csv',
+    # North West
+    # 'wind_turbine_NorthWest_Zero_Degree_NoFan.csv',
+    # 'wind_turbine_NorthWest_Zero_Degree_HighFan.csv',
+    # 'wind_turbine_NorthWest_Zero_Degree_LowFan.csv',
     
-#     # North West
-    'wind_turbine_NorthWest_Zero_Degree_NoFan.csv',
-    'wind_turbine_NorthWest_Zero_Degree_HighFan.csv',
-    'wind_turbine_NorthWest_Zero_Degree_LowFan.csv',
+    #South
+    # 'wind_turbine_South_Zero_Degree_LowFan.csv',
+    # 'wind_turbine_South_Zero_Degree_HighFan.csv',
+    # 'wind_turbine_South_Zero_Degree_NoFan.csv',
+    # 'wind_turbine_South_45_Degree_HighFan.csv',
+    # 'wind_turbine_South_90_Degree_HighFan.csv',
+    # 'wind_turbine_South_90_Degree_LowFan.csv',
     
-#     #South
-    'wind_turbine_South_Zero_Degree_LowFan.csv',
-    'wind_turbine_South_Zero_Degree_HighFan.csv',
-    'wind_turbine_South_Zero_Degree_NoFan.csv',
-#     # 'wind_turbine_South_45_Degree_LowFan.csv',
-#     # 'wind_turbine_South_45_Degree_HighFan.csv',
-#     # 'wind_turbine_South_90_Degree_HighFan.csv',
-#     # 'wind_turbine_South_90_Degree_LowFan.csv',
+    #SouthEast
+    # 'wind_turbine_SouthEast_Zero_Degree_NoFan.csv',
+    # 'wind_turbine_SouthEast_Zero_Degree_HighFan.csv',
+    # 'wind_turbine_SouthEast_Zero_Degree_LowFan.csv',
+    # 'wind_turbine_SouthEast_45_Degree_LowFan.csv',
+    # 'wind_turbine_SouthEast_90_Degree_HighFan.csv',
     
-#     #SouthEast
-    'wind_turbine_SouthEast_Zero_Degree_NoFan.csv',
-    'wind_turbine_SouthEast_Zero_Degree_HighFan.csv',
-    'wind_turbine_SouthEast_Zero_Degree_LowFan.csv',
-#     # 'wind_turbine_SouthEast_45_Degree_LowFan.csv',
-#     # 'wind_turbine_SouthEast_90_Degree_HighFan.csv',
+    #SouthWest
+    # 'wind_turbine_SouthWest_Zero_Degree_NoFan.csv',
+    # 'wind_turbine_SouthWest_Zero_Degree_LowFan.csv',
+    # 'wind_turbine_SouthWest_Zero_Degree_HighFan1.csv',
     
-#     #SouthWest
-    'wind_turbine_SouthWest_Zero_Degree_NoFan.csv',
-    'wind_turbine_SouthWest_Zero_Degree_LowFan.csv',
-    'wind_turbine_SouthWest_Zero_Degree_HighFan1.csv',
-    
-#     #NorthEast 
-    'wind_turbine_NorthEast_Zero_Degree_HighFan.csv',
-    'wind_turbine_NorthEast_Zero_Degree_LowFan.csv',
-    'wind_turbine_NorthEast_Zero_Degree_NoFan.csv'
+    #NorthEast 
+    # 'wind_turbine_NorthEast_Zero_Degree_HighFan.csv',
+    # 'wind_turbine_NorthEast_Zero_Degree_LowFan.csv',
+    # 'wind_turbine_NorthEast_Zero_Degree_NoFan.csv'
 ]
 
 # Load and combine all datasets
@@ -96,8 +83,7 @@ X = data[['speed_value', 'servo_value', 'direction_value', 'pressure_value', 'hu
 # Downcast to smaller numerical types
 X = X.astype({
     'speed_value': 'float16',
-    'servo_value': 'float32',
-    'direction_value': 'int16',
+    'direction_value': 'int8',
     'pressure_value': 'float32',
     'servo_value': 'int8',  # Assuming values like 0-255
     'humidity_value': 'float32',
@@ -142,6 +128,11 @@ y_pred = multi_model.predict(X_test)
 mse_rps = mean_squared_error(y_test['rps_value'], y_pred[:, 0])
 
 print(f"Mean Squared Error for RPS: {mse_rps}")
+
+# Evaluate Training Error
+y_train_pred = multi_model.predict(X_train)
+train_mse = mean_squared_error(y_train['rps_value'], y_train_pred[:, 0])
+print(f"Training MSE: {train_mse}")
 
 
 # Plot Feature Importance
