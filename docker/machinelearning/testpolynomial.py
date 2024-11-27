@@ -13,11 +13,12 @@ test_wind_speeds = [0, 5, 6, 7]
 # Create a dataframe for testing (repeat values to match test_wind_speeds length)
 test_data = pd.DataFrame({
     'speed_value': test_wind_speeds,                # Wind speeds you want to test
-    'servo_value': [90] * len(test_wind_speeds),    # Repeat values to match test_wind_speeds length
-    'direction_value': [1] * len(test_wind_speeds),  
-    'orientation_heading': [270] * len(test_wind_speeds),
+    'servo_value': [0] * len(test_wind_speeds),    # Repeat values to match test_wind_speeds length
+    'direction_value': [2] * len(test_wind_speeds),  
+    'orientation_heading': [135] * len(test_wind_speeds),
     'orientation_roll': [1] * len(test_wind_speeds),
     'orientation_pitch': [-1] * len(test_wind_speeds),
+    'alignment_category': [0] * len(test_wind_speeds),
 })
 
 # Apply scaling and polynomial transformation
