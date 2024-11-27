@@ -18,6 +18,7 @@ test_data = pd.DataFrame({
     'orientation_heading': [270] * len(test_wind_speeds),
     'orientation_roll': [1] * len(test_wind_speeds),
     'orientation_pitch': [-1] * len(test_wind_speeds),
+    'alignment_category': [0] * len(test_wind_speeds),
 })
 
 # Apply scaling and polynomial transformation

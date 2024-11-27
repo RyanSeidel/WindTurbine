@@ -14,7 +14,7 @@ data_files = [
         # North Directions!        
 
     'AllDataUpdated3_filtered_data.csv', 
-    # 'East_90Degree_HighFan.csv',
+    'All_90Degree_HighFan.csv'
     
 
 ]
@@ -28,7 +28,7 @@ data['rps_value'] = data['rpm_value'] / 60  # Convert RPM to RPS
 
 # Select relevant features and the target
 X = data[['speed_value', 'servo_value', 'direction_value', 
-          'orientation_heading', 'orientation_roll', 'orientation_pitch']]
+          'orientation_heading', 'orientation_roll', 'orientation_pitch', 'alignment_category']]
 
 y = data['rps_value']  # Use 'rps_value' instead of 'rpm_value'
 
@@ -103,7 +103,8 @@ test_data = pd.DataFrame({
     'direction_value': [X['direction_value'].mode()[0]] * len(speed_values),  # Most common value
     'orientation_heading': [X['orientation_heading'].mean()] * len(speed_values),  # Fixed mean value
     'orientation_roll': [X['orientation_roll'].mean()] * len(speed_values),  # Fixed mean value
-    'orientation_pitch': [X['orientation_pitch'].mean()] * len(speed_values)  # Fixed mean value
+    'orientation_pitch': [X['orientation_pitch'].mean()] * len(speed_values),  # Fixed mean value
+    'alignment_category': [X['alignment_category'].mode()[0]] * len(speed_values)  # Most common alignment state
 })
 
 # Standardize the full test data

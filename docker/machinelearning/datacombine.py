@@ -14,7 +14,6 @@ direction_to_degrees = {
 
 # List of CSV files to combine
 data_files = [
-    'AllDataUpdated3_filtered_data.csv', 
     'wind_turbine_North_90_Degree_HighFan.csv',
     'West_90Degree_HighFan.csv',
     'SouthEast_90Degree_HighFan.csv',
@@ -28,16 +27,15 @@ data_files = [
 # Load and combine all datasets
 data = pd.concat([pd.read_csv(f) for f in data_files], ignore_index=True)
 
-# Convert direction_value to degrees using the mapping
+# Map the direction values to degrees based on your mapping
 data['direction_degrees'] = data['direction_value'].map(direction_to_degrees)
 
-# Compute alignment efficiency
-data['alignment_efficiency'] = 1 - (abs(data['orientation_heading'] - data['direction_degrees']) / 360)
-data['alignment_efficiency'] = data['alignment_efficiency'].clip(lower=0)  # Ensure no negative values
+# Add the alignment category column with a fixed value of 2
+data['alignment_category'] = 2
 
 # Save updated dataset to a new file for verification (optional)
-data.to_csv('AllDataWithAlignmentEfficiency.csv', index=False)
+data.to_csv('AllDataWith90Degree.csv', index=False)
 
 # Print confirmation and check a few rows
-print("Alignment efficiency added to dataset.")
-print(data[['direction_value', 'direction_degrees', 'orientation_heading', 'alignment_efficiency']].head())
+print("Datasets combined and alignment category added.")
+print(data[['direction_value', 'direction_degrees', 'alignment_category']].head())
