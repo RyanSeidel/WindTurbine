@@ -1,34 +1,35 @@
 import pandas as pd
 
-# Load dataset
-file_path = 'AllDataUpdated3_filtered_data.csv'  # Replace with your file path
-data = pd.read_csv(file_path)
+# List of CSV files to load
+data_files = [
+    #SouthEast
+    'AllDataUpdated3_filtered_data.csv',
+]
 
-# Define a function to compute the alignment category
-def calculate_alignment_category(row):
-    orientation = row['orientation_heading']
-    servo = row['servo_value']
-    
-    # Calculate the raw difference
-    difference = abs(orientation - servo)
-    
-    # Handle wraparound cases (e.g., 350° vs. 10° should be 20° difference)
-    difference = min(difference, 360 - difference)
-    
-    # Assign alignment categories
-    if difference == 0:
-        return 0  # Fully aligned
-    elif difference <= 45:  # Within 45° is partially aligned
-        return 1
-    else:  # Greater than 45° is fully misaligned
-        return 2
+# Load all datasets into one DataFrame
+combined_data = pd.concat([pd.read_csv(f) for f in data_files], ignore_index=True)
 
-# Apply the function row-wise to calculate alignment_category
-data['alignment_category'] = data.apply(calculate_alignment_category, axis=1)
+# Define the conditions
+conditions = [
+    (combined_data['rpm_value'] == 0),
+    combined_data['rpm_value'].between(40, 50),
+    combined_data['rpm_value'].between(58, 61),
+]
 
-# Save the updated dataset to a new CSV file (optional)
-data.to_csv('AllDataWithAlignmentCategory.csv', index=False)
+# Check for each direction if at least one row satisfies the conditions
+directions = combined_data['direction_value'].unique()  # Get all unique directions
+all_directions_valid = True  # Assume all directions are valid initially
 
-# Print confirmation and check the updated DataFrame
-print("Alignment category added to dataset.")
-print(data[['orientation_heading', 'servo_value', 'alignment_category']].head())
+for direction in range(1, 9):  # Loop through all directions (1 to 8)
+    direction_data = combined_data[combined_data['direction_value'] == direction]
+    if not any(
+        direction_data[condition].shape[0] > 0 for condition in conditions
+    ):
+        print(f"Direction {direction} does not satisfy the conditions.")
+        all_directions_valid = False
+
+# Final confirmation
+if all_directions_valid:
+    print("Yes, all directions have at least one RPM value in the specified ranges.")
+else:
+    print("No, some directions are missing the required RPM values.")
