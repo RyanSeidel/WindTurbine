@@ -2,14 +2,16 @@ import pandas as pd
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import numpy as np
 import joblib
 
+# Voltage is done bc we can just take predictions RPM and generate it
+
 # Load the datasets
 data_files = [
-    'AllDataUpdated3_filtered_data.csv'
+    'AllDataUpdated3_with_fan_mode_updated.csv',  # in front of fa
 ]
 
 # Combine datasets
@@ -17,8 +19,7 @@ data = pd.concat([pd.read_csv(f) for f in data_files], ignore_index=True)
 print(f"Combined dataset contains {data.shape[0]} rows.")
 
 # Select features and target
-X = data[['rpm_value', 'speed_value', 'servo_value', 
-          'orientation_heading', 'orientation_roll', 'orientation_pitch']]
+X = data[['rpm_value']]
 y = data['voltage_value']  # Voltage as the target
 
 # Train-test split
@@ -54,15 +55,27 @@ joblib.dump(voltage_model, 'voltage_wind_turbine_model.pkl')
 print("Updated model saved as voltage_wind_turbine_model.pkl.")
 
 # Predictions
-y_pred = voltage_model.predict(X_test_poly)
+y_pred_train = voltage_model.predict(X_train_poly)
+y_pred_test = voltage_model.predict(X_test_poly)
 
 # Evaluate the model
-mse_train = mean_squared_error(y_train, voltage_model.predict(X_train_poly))
-mse_test = mean_squared_error(y_test, y_pred)
+mse_train = mean_squared_error(y_train, y_pred_train)
+mse_test = mean_squared_error(y_test, y_pred_test)
+r2_train = r2_score(y_train, y_pred_train)
+r2_test = r2_score(y_test, y_pred_test)
+
+# Convert R² to accuracy percentage
+accuracy_train = r2_train * 100
+accuracy_test = r2_test * 100
+
+print(f"Training Accuracy: {accuracy_train:.2f}%")
+print(f"Testing Accuracy: {accuracy_test:.2f}%")
+
 
 print(f"Training MSE: {mse_train}")
 print(f"Testing MSE: {mse_test}")
 print(f"Training RMSE: {np.sqrt(mse_train)}, Testing RMSE: {np.sqrt(mse_test)}")
+
 
 # Cross-validation
 cv_scores = cross_val_score(voltage_model, X_train_poly, y_train, cv=5, scoring='neg_mean_squared_error')
@@ -70,14 +83,9 @@ mean_cv_mse = -np.mean(cv_scores)
 print(f"Cross-Validation Mean MSE: {mean_cv_mse}")
 
 # Specific RPM Values for Voltage Prediction
-specific_rpm_values = [30, 48, 60]
+specific_rpm_values = [0, 55, 60]
 test_data = pd.DataFrame({
     'rpm_value': specific_rpm_values,
-    'speed_value': [X['speed_value'].mean()] * len(specific_rpm_values),  # Fixed mean value
-    'servo_value': [X['servo_value'].mean()] * len(specific_rpm_values),
-    'orientation_heading': [X['orientation_heading'].mean()] * len(specific_rpm_values),
-    'orientation_roll': [X['orientation_roll'].mean()] * len(specific_rpm_values),
-    'orientation_pitch': [X['orientation_pitch'].mean()] * len(specific_rpm_values)
 })
 
 # Standardize the specific test data
@@ -96,19 +104,14 @@ for rpm, voltage in zip(specific_rpm_values, specific_voltage_predictions):
 plt.scatter(X['rpm_value'], y, label='Actual', alpha=0.5)
 plt.scatter(specific_rpm_values, specific_voltage_predictions, color='red', label='Predicted for Specific RPM')
 rpm_values = np.linspace(X['rpm_value'].min(), X['rpm_value'].max(), 100)  # Generate 100 RPM values
-test_data = pd.DataFrame({
-    'rpm_value': rpm_values,
-    'speed_value': [X['speed_value'].mean()] * len(rpm_values),
-    'servo_value': [X['servo_value'].mean()] * len(rpm_values),
-    'orientation_heading': [X['orientation_heading'].mean()] * len(rpm_values),
-    'orientation_roll': [X['orientation_roll'].mean()] * len(rpm_values),
-    'orientation_pitch': [X['orientation_pitch'].mean()] * len(rpm_values)
+test_data_fit = pd.DataFrame({
+    'rpm_value': rpm_values
 })
 
 # Standardize and Predict for Fit Line
-test_data_scaled = scaler.transform(test_data)
-test_data_poly = poly.transform(test_data_scaled)
-rpm_voltage_predictions = voltage_model.predict(test_data_poly)
+test_data_fit_scaled = scaler.transform(test_data_fit)
+test_data_fit_poly = poly.transform(test_data_fit_scaled)
+rpm_voltage_predictions = voltage_model.predict(test_data_fit_poly)
 
 # Plot Polynomial Fit
 plt.plot(rpm_values, rpm_voltage_predictions, label='Polynomial Fit', color='blue')
