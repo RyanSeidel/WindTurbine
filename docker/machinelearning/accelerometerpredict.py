@@ -10,21 +10,58 @@ import joblib
 
 # Load dataset
 data_files = [
-    'wind_turbine_NorthWest_HighFan.csv',
-    'wind_turbine_NorthWest_Zero_Degree_LowFan.csv'
+    
+    # 97 Percent
+    # 'wind_60_HighFanVib.csv',
+    # 'wind_60_NoFanVib.csv',
+    # 'wind_60_2HighFanVib.csv',
+    # 'wind_60_45Degree_1HighFanVib.csv',
+    # 'wind_60_45Degree_2HighFanVib.csv',
+    # 'wind_60_45DegreeNoFanVib.csv'
+    
+    # 97 Percent
+    # 'wind_45_1HighFanVib.csv',
+    # 'wind_45_2HighFanVib.csv',
+    # 'wind_45_45Degree_1HighFanVib.csv',
+    # 'wind_45_45Degree_2HighFanVib.csv',
+    # 'wind_45_NoFanVib.csv'
+            
+    # 88 Percent
+    # 'wind_30_1HighFanVib.csv',
+    # 'wind_30_2HighFanVib.csv',
+    # 'wind_30_45Degree_1HighFanVib.csv',
+    # 'wind_30_45Degree_2HighFanVib.csv',
+    # 'wind_30_NoFanVib.csv'
+    
+    # 96 Percent Accuracy
+    'wind_15_HighFanVib.csv',
+    'wind_15_2HighFanVib.csv',
+    'wind_15_45Degree_1HighFanVib.csv',
+    'wind_15_45Degree_2HighFanVib.csv',
+    'wind_15_NoFanVib.csv'
+       
 
 ]
 data = pd.concat([pd.read_csv(f) for f in data_files], ignore_index=True)
 print(f"Combined dataset contains {data.shape[0]} rows.")
 
-# Select features and targets
-X = data[['speed_value', 
-          'orientation_heading', 'orientation_roll', 'orientation_pitch',
-          'linear_acceleration_lx', 'linear_acceleration_ly', 'linear_acceleration_lz',
-          'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz', 'magnetometer_mx', 
-          'magnetometer_my', 'magnetometer_mz']]
+# Add magnitude as a new column (if not already added)
+data['accel_magnitude'] = np.sqrt(
+    data['accelerometer_ax']**2 +
+    data['accelerometer_ay']**2 +
+    data['accelerometer_az']**2
+)
 
-y = data[['accelerometer_ax', 'accelerometer_ay', 'accelerometer_az']]  # Individual components
+# Features (excluding magnitude)
+X = data[['speed_value', 'rpm_value', 'blade_60', 'blade_45', 'blade_30',
+          'linear_acceleration_lx', 'linear_acceleration_ly', 'linear_acceleration_lz',
+          'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz', 'gravity_grx', 'gravity_gry', 'gravity_grz',
+          'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
+          'alignment_0', 'alignment_45', 
+          'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az']]  # Do not include magnitude
+
+# Target variable: Acceleration Magnitude
+y = data[['accel_magnitude']]
 
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -35,7 +72,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Save the scaler for future use
-joblib.dump(scaler, 'scaler_accel_gyro_components.pkl')
+joblib.dump(scaler, '15BladeModel_gyro_components.pkl')
 
 # Create Polynomial Features
 poly_degree = 1 # Linear relationship for now
@@ -44,7 +81,7 @@ X_train_poly = poly.fit_transform(X_train_scaled)
 X_test_poly = poly.transform(X_test_scaled)
 
 # Save the polynomial feature transformer for future use
-joblib.dump(poly, 'poly_features_accel_gyro_components.pkl')
+joblib.dump(poly, '15BladeModelVibration.pkl')
 
 # Train Multi-Output Polynomial Regression Model
 try:
@@ -60,7 +97,7 @@ except FileNotFoundError:
     print("Training complete.")
 
 # Save the Updated Model
-joblib.dump(poly_model, 'polynomial_accel_gyro_components_model.pkl')
+joblib.dump(poly_model, '15BladeModel_components_model.pkl')
 print("Updated model saved as polynomial_accel_gyro_components_model.pkl.")
 
 # Predict on Train and Test Data
@@ -84,54 +121,86 @@ print(f"Training RMSE: {np.sqrt(mse_train)}, Testing RMSE: {np.sqrt(mse_test)}")
 print(f"Training R² Score: {r2_train:.4f} ({accuracy_train:.2f}%)")
 print(f"Testing R² Score: {r2_test:.4f} ({accuracy_test:.2f}%)")
 
-# Visualize Predictions vs Actuals for Accelerometer Ax
-plt.scatter(y_test['accelerometer_ax'], y_test_pred[:, 0], alpha=0.5)
-plt.plot([y_test['accelerometer_ax'].min(), y_test['accelerometer_ax'].max()],
-         [y_test['accelerometer_ax'].min(), y_test['accelerometer_ax'].max()], color='red', linestyle='--')
-plt.xlabel("Actual Accelerometer Ax")
-plt.ylabel("Predicted Accelerometer Ax")
-plt.title("Actual vs Predicted Accelerometer Ax")
+# Visualize Predictions vs Actuals for Accelerometer Magnitude
+plt.scatter(y_test, y_test_pred, alpha=0.5)
+plt.plot([y_test.min(), y_test.max()],
+         [y_test.min(), y_test.max()], color='red', linestyle='--')
+plt.xlabel("Actual Acceleration Magnitude")
+plt.ylabel("Predicted Acceleration Magnitude")
+plt.title("Actual vs Predicted Acceleration Magnitude")
 plt.show()
+
+
 
 # Predict on Specific Speed Values
 speed_values = [0, 5, 10, 15]
 test_data = pd.DataFrame({
     'speed_value': speed_values,
-    'orientation_heading': [X['orientation_heading'].mean()] * len(speed_values),
-    'orientation_roll': [X['orientation_roll'].mean()] * len(speed_values),
-    'orientation_pitch': [X['orientation_pitch'].mean()] * len(speed_values),
+    'rpm_value': [X['rpm_value'].mean()] * len(speed_values),
+    'blade_60': [1] * len(speed_values),
+    'blade_45': [0] * len(speed_values),
+    'blade_30': [0] * len(speed_values),
     'linear_acceleration_lx': [X['linear_acceleration_lx'].mean()] * len(speed_values),
     'linear_acceleration_ly': [X['linear_acceleration_ly'].mean()] * len(speed_values),
     'linear_acceleration_lz': [X['linear_acceleration_lz'].mean()] * len(speed_values),
     'gyroscope_gx': [X['gyroscope_gx'].mean()] * len(speed_values),
     'gyroscope_gy': [X['gyroscope_gy'].mean()] * len(speed_values),
     'gyroscope_gz': [X['gyroscope_gz'].mean()] * len(speed_values),
-    'magnetometer_mx': [X['gyroscope_gx'].mean()] * len(speed_values),
-    'magnetometer_my': [X['gyroscope_gy'].mean()] * len(speed_values),
-    'magnetometer_mz': [X['gyroscope_gz'].mean()] * len(speed_values)
+    'gravity_grx': [X['gravity_grx'].mean()] * len(speed_values),
+    'gravity_gry': [X['gravity_gry'].mean()] * len(speed_values),
+    'gravity_grz': [X['gravity_grz'].mean()] * len(speed_values),
+    'magnetometer_mx': [X['magnetometer_mx'].mean()] * len(speed_values),
+    'magnetometer_my': [X['magnetometer_my'].mean()] * len(speed_values),
+    'magnetometer_mz': [X['magnetometer_mz'].mean()] * len(speed_values),
+    'alignment_0': [X['alignment_0'].mean()] * len(speed_values),
+    'alignment_45': [X['alignment_45'].mean()] * len(speed_values),
+    'accelerometer_ax': [X['accelerometer_ax'].mean()] * len(speed_values),
+    'accelerometer_ay': [X['accelerometer_ay'].mean()] * len(speed_values),
+    'accelerometer_az': [X['accelerometer_az'].mean()] * len(speed_values),
 })
 
-# Standardize the test data
-test_data_scaled = scaler.transform(test_data)
 
-# Apply polynomial transformation
+# Standardize and transform the test data
+test_data_scaled = scaler.transform(test_data)
 test_data_poly = poly.transform(test_data_scaled)
 
-# Predict individual components
+# Predict acceleration magnitude
 predictions = poly_model.predict(test_data_poly)
 
-# Display predictions
-predicted_data = pd.DataFrame(predictions, columns=['Accelerometer Ax', 'Accelerometer Ay', 'Accelerometer Az'])
-predicted_data['Speed Value'] = speed_values
+# Calculate actual magnitude from test data
+test_data['accel_magnitude'] = np.sqrt(
+    test_data['accelerometer_ax']**2 +
+    test_data['accelerometer_ay']**2 +
+    test_data['accelerometer_az']**2
+)
+
+# Calculate residuals for anomalies
+new_residuals = np.abs(predictions.flatten() - test_data['accel_magnitude'].values)
+
+# Calculate residuals for the test data
+residuals = np.abs(y_test.values.flatten() - y_test_pred.flatten())
+
+# Check for anomalies
+threshold = np.mean(residuals) + 3 * np.std(residuals)  # Ensure threshold is defined
+anomalies = new_residuals > threshold
+
+# Display predictions with anomaly flags
+predicted_data = pd.DataFrame({
+    'Predicted Acceleration Magnitude': predictions.flatten(),
+    'Speed Value': speed_values,
+    'Actual Acceleration Magnitude': test_data['accel_magnitude'].values,
+    'Residuals': new_residuals,
+    'Is Anomaly': anomalies,
+})
 print(predicted_data)
 
-# Plot the predictions
+# Plot predictions with anomaly markers
 plt.figure(figsize=(8, 6))
-for i, label in enumerate(['Accelerometer Ax', 'Accelerometer Ay', 'Accelerometer Az']):
-    plt.plot(speed_values, predictions[:, i], label=label, marker='o')
+plt.plot(speed_values, predictions, label="Predicted Acceleration Magnitude", marker='o')
+plt.scatter(speed_values, predictions, c=anomalies, cmap="coolwarm", label="Anomalies")
 plt.xlabel('Speed Value')
-plt.ylabel('Accelerometer Components')
-plt.title('Predicted Accelerometer Components vs Speed')
+plt.ylabel('Acceleration Magnitude')
+plt.title('Predicted Acceleration Magnitude vs Speed (with Anomalies)')
 plt.legend()
 plt.grid(True)
 plt.show()

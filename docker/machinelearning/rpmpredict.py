@@ -9,16 +9,8 @@ import numpy as np
 import joblib
 
 # Load dataset
-data_files = [
-    'AllDataUpdated3_with_fan_mode_updated.csv', # in front of fan
-    'wind_60Degree_AllUpdate.csv',
-    # im missing 15, 30, 45 for front view
-              'wind_45Degree_AllUpdate.csv',
-              'wind_45Degree_AllLow.csv',
-              'wind_30Degree_AllUpdate.csv',
-              'wind_30Degree_AllLow.csv', 
-              'wind_15Degree_AllUpdate.csv',
-              'wind_15Degree_AllLow.csv',   
+data_files = [  
+    'Combine_All_RPM_data.csv',
               
               ]  # Add your dataset paths here
 data = pd.concat([pd.read_csv(f) for f in data_files], ignore_index=True)

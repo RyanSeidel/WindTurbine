@@ -11,7 +11,7 @@ import joblib
 
 # Load the datasets
 data_files = [
-    'AllDataUpdated3_with_fan_mode_updated.csv',  # in front of fa
+    'AllDataUpdated3_with_fan_mode_updated.csv'  # in front of fa
 ]
 
 # Combine datasets
