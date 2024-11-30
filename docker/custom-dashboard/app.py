@@ -3,6 +3,7 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from flask_socketio import SocketIO
 import paho.mqtt.client as mqtt
+import numpy as np
 import logging
 import os
 import time
@@ -48,7 +49,7 @@ MQTT_TOPICS = {
     'pressure': 'wind_turbine/pressure',
     'humidity': 'wind_turbine/humidity',
     'altitude': 'wind_turbine/altitude',
-    'predictions': 'wind_turbine/predictions'
+    'predictedRPS': 'rps_predictions'
 }
 
 # Initialize MQTT client
@@ -116,28 +117,20 @@ def on_message(client, userdata, msg):
         socketio.emit('altitude_data', {'altitude': float(payload)})
     elif topic == MQTT_TOPICS['altitude']:      
         socketio.emit('altitude_data', {'altitude': float(payload)})
-    elif topic == MQTT_TOPICS['predictions']:      
-        # Example payload: "Predicted RPM: 61.33, Voltage: 1.94"
-        print(f"{payload}", flush=True)  # Debug: Print the payload
-    
-        # Split the payload string to extract RPM and Voltage
+    elif topic == MQTT_TOPICS['predictedRPS']:      
+        # Example payload: "{'predictedRPS': np.float64(2.492183260094821)}"
         try:
-            parts = payload.split(',')
-            rpm_part = parts[0].split(':')[-1].strip()
-            voltage_part = parts[1].split(':')[-1].strip()
+            # Parse the payload
+            data = eval(payload, {"np": np})  # Allow eval to recognize 'np'
+            predicted_rps = data.get('predictedRPS', 0.0)
         
-            # Convert to float
-            predicted_rpm = float(rpm_part)
-            predicted_voltage = float(voltage_part)
+            # Convert to RPM
+            predicted_rpm = predicted_rps * 60
         
-            # Emit the data separately via Socket.IO
-            socketio.emit('predicted_rpm', {'rpm': predicted_rpm})
-            socketio.emit('predicted_voltage', {'voltage': predicted_voltage})
-        
-            print(f"Emitted RPM: {predicted_rpm}, Voltage: {predicted_voltage}", flush=True)
+            # Log and display the formatted output
+            print(f"Predicted RPS: {predicted_rps:.2f}, Converted RPM: {predicted_rpm:.2f}", flush=True)
         except Exception as e:
-            print(f"Error parsing predictions payload: {e}", flush=True)
-    #print(f"Received message: {payload} on topic {topic}", flush=True)
+            print(f"Error processing predictedRPS payload: {e}", flush=True)
  
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message  
@@ -160,6 +153,43 @@ try:
 except Exception as e:
     logging.error(f"Error connecting to MQTT brokers: {e}")
     
+@app.route('/submit_prediction', methods=['POST'])
+def submit_prediction():
+    try:
+        # Parse JSON payload
+        data = request.get_json()
+        logging.info(f"Received data: {data}")  # Log the received data
+
+        # Extract form values
+        wind_speed = float(data.get('windSpeed', 0))
+        wind_direction = data.get('windDirection', 'N')
+        orientation = int(data.get('orientation', 0))
+        blade_angle = int(data.get('blade1', 15))
+
+        # Mapping for wind directions to numeric values
+        wind_direction_mapping = {
+            'N': 0, 'NE': 45, 'E': 90, 'SE': 135,
+            'S': 180, 'SW': 225, 'W': 270, 'NW': 315
+        }
+        wind_direction_numeric = wind_direction_mapping.get(wind_direction, 0)
+
+        logging.info(f"Parsed windSpeed: {wind_speed}, windDirection: {wind_direction_numeric}, orientation: {orientation}, bladeAngle: {blade_angle}")
+
+        # Prepare payload and publish to MQTT
+        payload = {
+            'windSpeed': wind_speed,
+            'windDirection': wind_direction_numeric,
+            'orientation': orientation,
+            'bladeAngle': blade_angle
+        }
+        prediction_client.publish('rpsinputform', str(payload))
+        logging.info(f"Published prediction data: {payload}")
+
+        return jsonify({'status': 'success', 'message': 'Prediction data sent via MQTT!'})
+    except Exception as e:
+        logging.error(f"Error in /submit_prediction: {e}")
+        return jsonify({'status': 'error', 'message': 'Failed to send prediction data'}), 500
+
     
 @app.route('/')
 def dashboard():

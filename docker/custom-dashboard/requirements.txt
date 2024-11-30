@@ -5,5 +5,6 @@ Werkzeug==2.2.3
 Flask-SocketIO==5.3.3     # Flask extension for real-time communication
 influxdb-client==1.30.0   # Client for InfluxDB interactions
 paho-mqtt==1.6.1          # MQTT client for Python
+numpy==1.26.0               # Numerical computing library (required for predictions)
 
  

@@ -1,223 +1,148 @@
 import os
 import time
 import logging
-import pandas as pd
 import paho.mqtt.client as mqtt
+import pandas as pd
 import joblib
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Load environment variables or use defaults
-MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")
+# MQTT Configuration
+MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")  # Default: Mosquitto broker
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-RASP_BROKER = os.getenv("RASP_BROKER")
-PUBLISH_TOPIC = os.getenv("PUBLISH_TOPIC", "wind_turbine/predictions")
+RPS_INPUT_TOPIC = "rpsinputform"  # Topic for listening to form data
+PREDICTION_TOPIC = "rps_predictions"  # Topic for publishing predictions
 
-# Topics under wind_turbine namespace
-MQTT_TOPICS = {
-    'speed': 'wind_turbine/speed',
-    'direction': 'wind_turbine/direction',
-    'pressure': 'wind_turbine/pressure',
-    'servo': 'wind_turbine/servo',
-    'humidity': 'wind_turbine/humidity',
-    'temperature': 'wind_turbine/temperature',
-    'rpm': 'wind_turbine/rpm',
-    'orientation': 'wind_turbine/orientation',
-    'magnetometer': 'wind_turbine/magnetometer',
-    'gyroscope': 'wind_turbine/gyroscope',
-    'accelerometer': 'wind_turbine/accelerometer',
-    'linear_acceleration': 'wind_turbine/linear_acceleration',
-    'gravity': 'wind_turbine/gravity',
-    'altitude': 'wind_turbine/altitude',
-    'current': 'wind_turbine/current',
-    'power': 'wind_turbine/power',
-}
+# Load Pre-trained Models and Scalers
+MODEL_FILE = "model/linear_regression_model.pkl"
+SCALER_FILE = "model/scaler.pkl"
+VOLTAGE_MODEL_FILE = "model/voltage_wind_turbine_model.pkl"
+VOLTAGE_SCALER_FILE = "model/voltage_scaler.pkl"
+VOLTAGE_POLY_FILE = "model/voltage_poly_features.pkl"
 
-# Initialize the MQTT clients
-main_client = mqtt.Client()
-rasp_client = mqtt.Client()
-
-# Load Pre-trained Model
-MODEL_FILE = 'wind_turbine_model.pkl'
 try:
-    model = joblib.load(MODEL_FILE)
-    logging.info(f"Loaded pre-trained model from {MODEL_FILE}.")
-except FileNotFoundError:
-    logging.error(f"Model file {MODEL_FILE} not found. Please train the model first.")
+    linear_model = joblib.load(MODEL_FILE)
+    scaler = joblib.load(SCALER_FILE)
+    voltage_model = joblib.load(VOLTAGE_MODEL_FILE)
+    voltage_scaler = joblib.load(VOLTAGE_SCALER_FILE)
+    voltage_poly = joblib.load(VOLTAGE_POLY_FILE)
+    logging.info("Loaded pre-trained models and scalers.")
+except FileNotFoundError as e:
+    logging.error(f"Model or scaler file not found: {e}")
     exit()
 
-# Data storage
-columns = [
-    'speed_value', 'direction_value', 'pressure_value', 'servo_value',
-    'humidity_value', 'orientation_heading', 'orientation_roll', 'orientation_pitch',
-    'temperature_value', 'rpm_blade_1', 'rpm_blade_2', 'rpm_blade_3',
-    'current_value', 'power_value', 'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
-    'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz', 'accelerometer_ax', 'accelerometer_ay',
-    'accelerometer_az', 'linear_acceleration_lx', 'linear_acceleration_ly',
-    'linear_acceleration_lz', 'gravity_grx', 'gravity_gry', 'gravity_grz', 'altitude_value'
-]
+# Initialize MQTT client
+mqtt_client = mqtt.Client()
 
-# Initialize data with default values from the environment
-data = {col: [None] for col in columns}
-data['rpm_blade_1'] = [float(os.getenv('blade_1', 0))]
-data['rpm_blade_2'] = [float(os.getenv('blade_2', 0))]
-data['rpm_blade_3'] = [float(os.getenv('blade_3', 0))]
-
-df = pd.DataFrame(data)
-
-# MQTT callback functions
+# MQTT Callback Functions
 def on_connect(client, userdata, flags, rc):
-    """Callback for when a client connects to the broker."""
+    """Callback for when the client connects to the broker."""
     if rc == 0:
-        logging.info(f"Connected to MQTT broker.")
-        # Subscribe to all relevant topics
-        for topic in MQTT_TOPICS.values():
-            client.subscribe(topic)
-            logging.info(f"Subscribed to topic: {topic}")
+        logging.info("Connected to MQTT broker.")
+        mqtt_client.subscribe(RPS_INPUT_TOPIC)
+        logging.info(f"Subscribed to topic: {RPS_INPUT_TOPIC}")
     else:
         logging.error(f"Failed to connect to MQTT broker. Return code: {rc}")
 
 def on_message(client, userdata, msg):
-    """Callback for when a message is received."""
+    """Callback for handling received messages."""
     topic = msg.topic
     payload = msg.payload.decode()
-    logging.info(f"Received message from topic {topic}: {payload}")
-    update_dataframe(topic, payload)
-    
-    # Make prediction and publish it
-    make_and_publish_prediction()
+    if topic == RPS_INPUT_TOPIC:
+        logging.info(f"Received message on {topic}: {payload}")
+        process_rps_input(payload)
 
-def update_dataframe(topic, payload):
-    """Update the DataFrame with new data."""
-    global df
-    if topic == MQTT_TOPICS['accelerometer']:
-        ax, ay, az = map(float, payload.split(','))
-        df.at[0, 'accelerometer_ax'] = ax
-        df.at[0, 'accelerometer_ay'] = ay
-        df.at[0, 'accelerometer_az'] = az
-        logging.info(f"Updated Accelerometer values: {ax}, {ay}, {az}")
+def process_rps_input(payload):
+    """Process the received form data."""
+    try:
+        # Parse the payload (assuming JSON-like data)
+        data = eval(payload)  # Use `json.loads(payload)` if JSON format is ensured
 
-    elif topic == MQTT_TOPICS['speed']:
-        speed_value = float(payload)
-        df.at[0, 'speed_value'] = speed_value
-        logging.info(f"Updated Speed value in DataFrame: {speed_value}")
+        # Extract the relevant values
+        wind_speed = data.get("windSpeed", 0)
+        wind_direction = data.get("windDirection", 0)
+        blade_angle = data.get("bladeAngle", 15)
+        orientation = data.get("orientation", 0)
 
-    elif topic == MQTT_TOPICS['direction']:
-        direction_value = int(payload)
-        df.at[0, 'direction_value'] = direction_value
-        logging.info(f"Updated Direction value in DataFrame: {direction_value}")
+        # Define direction mappings for `orientation_heading` and `servo_value`
+        direction_mapping = {
+            0: {"orientation_heading": 360, "servo_value": 0},  # North
+            45: {"orientation_heading": 315, "servo_value": 45},  # Northeast
+            90: {"orientation_heading": 270, "servo_value": 90},  # East
+            135: {"orientation_heading": 225, "servo_value": 135},  # Southeast
+            180: {"orientation_heading": 180, "servo_value": 180},  # South
+            225: {"orientation_heading": 135, "servo_value": 225},  # Southwest
+            270: {"orientation_heading": 90, "servo_value": 270},  # West
+            315: {"orientation_heading": 45, "servo_value": 315},  # Northwest
+        }
 
-    elif topic == MQTT_TOPICS['pressure']:
-        pressure_value = float(payload)
-        df.at[0, 'pressure_value'] = pressure_value
-        logging.info(f"Updated Pressure value in DataFrame: {pressure_value}")
+        # Use the wind direction to get the corresponding values
+        mapped_values = direction_mapping.get(wind_direction, {"orientation_heading": 360, "servo_value": 0})
+        orientation_heading = mapped_values["orientation_heading"]
+        servo_value = mapped_values["servo_value"]
 
-    elif topic == MQTT_TOPICS['servo']:
-        servo_value = int(payload)
-        df.at[0, 'servo_value'] = servo_value
-        logging.info(f"Updated Servo value in DataFrame: {servo_value}")
+        # Handle alignment based on orientation
+        alignment_0 = 1 if orientation == 0 else 0
+        alignment_1 = 1 if orientation == 45 else 0
+        alignment_2 = 0  # Default to 0 for simplicity (add more if needed)
 
-    elif topic == MQTT_TOPICS['humidity']:
-        humidity_value = float(payload)
-        df.at[0, 'humidity_value'] = humidity_value
-        logging.info(f"Updated Humidity value in DataFrame: {humidity_value}")
+        # Prepare data for RPS prediction
+        test_data = pd.DataFrame({
+            "speed_value": [wind_speed],
+            "blade_60": [1 if blade_angle == 60 else 0],
+            "blade_45": [1 if blade_angle == 45 else 0],
+            "blade_30": [1 if blade_angle == 30 else 0],
+            "blade_15": [1 if blade_angle == 15 else 0],
+            "alignment_0": [alignment_0],
+            "alignment_1": [alignment_1],
+            "alignment_2": [alignment_2],
+            "orientation_heading": [orientation_heading],
+            "orientation_roll": [0],
+            "orientation_pitch": [0],
+            "servo_value": [servo_value],
+        })
 
-    elif topic == MQTT_TOPICS['temperature']:
-        temperature_value = float(payload)
-        df.at[0, 'temperature_value'] = temperature_value
-        logging.info(f"Updated Temperature value in DataFrame: {temperature_value}")
+        # Standardize the data
+        test_data_scaled = scaler.transform(test_data)
 
-    elif topic == MQTT_TOPICS['orientation']:
-        heading, roll, pitch = map(float, payload.split(','))
-        df.at[0, 'orientation_heading'] = heading
-        df.at[0, 'orientation_roll'] = roll
-        df.at[0, 'orientation_pitch'] = pitch
-        logging.info(f"Updated Orientation values: Heading={heading}, Roll={roll}, Pitch={pitch}")
+        # Predict RPS
+        predicted_rps = linear_model.predict(test_data_scaled)[0]
+        
+        # Convert RPS to RPM
+        predicted_rpm = predicted_rps * 60
 
-    elif topic == MQTT_TOPICS['magnetometer']:
-        mx, my, mz = map(float, payload.split(','))
-        df.at[0, 'magnetometer_mx'] = mx
-        df.at[0, 'magnetometer_my'] = my
-        df.at[0, 'magnetometer_mz'] = mz
-        logging.info(f"Updated Magnetometer values: mx={mx}, my={my}, mz={mz}")
+        # Prepare data for voltage prediction
+        voltage_test_data = pd.DataFrame({"rpm_value": [predicted_rpm]})
+        voltage_test_data_scaled = voltage_scaler.transform(voltage_test_data)
+        voltage_test_data_poly = voltage_poly.transform(voltage_test_data_scaled)
 
-    elif topic == MQTT_TOPICS['gyroscope']:
-        gx, gy, gz = map(float, payload.split(','))
-        df.at[0, 'gyroscope_gx'] = gx
-        df.at[0, 'gyroscope_gy'] = gy
-        df.at[0, 'gyroscope_gz'] = gz
-        logging.info(f"Updated Gyroscope values: gx={gx}, gy={gy}, gz={gz}")
+        # Predict Voltage
+        predicted_voltage = voltage_model.predict(voltage_test_data_poly)[0]
 
-    elif topic == MQTT_TOPICS['linear_acceleration']:
-        lx, ly, lz = map(float, payload.split(','))
-        df.at[0, 'linear_acceleration_lx'] = lx
-        df.at[0, 'linear_acceleration_ly'] = ly
-        df.at[0, 'linear_acceleration_lz'] = lz
-        logging.info(f"Updated Linear Acceleration values: lx={lx}, ly={ly}, lz={lz}")
+        # Log and publish the predictions
+        prediction_payload = {
+            "predictedRPS": predicted_rps,
+            "predictedVoltage": predicted_voltage
+        }
+        mqtt_client.publish(PREDICTION_TOPIC, str(prediction_payload))
+        logging.info(f"Published prediction: {prediction_payload}")
 
-    elif topic == MQTT_TOPICS['gravity']:
-        grx, gry, grz = map(float, payload.split(','))
-        df.at[0, 'gravity_grx'] = grx
-        df.at[0, 'gravity_gry'] = gry
-        df.at[0, 'gravity_grz'] = grz
-        logging.info(f"Updated Gravity values: grx={grx}, gry={gry}, grz={grz}")
-
-    elif topic == MQTT_TOPICS['altitude']:
-        altitude_value = float(payload)
-        df.at[0, 'altitude_value'] = altitude_value
-        logging.info(f"Updated Altitude value in DataFrame: {altitude_value}")
-
-    elif topic == MQTT_TOPICS['current']:
-        current_value = float(payload)
-        df.at[0, 'current_value'] = current_value
-        logging.info(f"Updated Current value in DataFrame: {current_value}")
-
-    elif topic == MQTT_TOPICS['power']:
-        power_value = float(payload)
-        df.at[0, 'power_value'] = power_value
-        logging.info(f"Updated Power value in DataFrame: {power_value}")
-
-    print(df)
-    #logging.info(f"Full DataFrame row:\n{df.iloc[0].to_dict()}")
-    
-def make_and_publish_prediction():
-    """Make predictions using the model and publish them to MQTT."""
-    global df
-    if df.isnull().values.any():
-        logging.warning("Incomplete data, skipping prediction.")
-        return
-
-    # Prepare data for prediction
-    input_data = df.astype('float32')  # Ensure correct data type
-    prediction = model.predict(input_data)
-
-    # Convert prediction to RPM (if needed)
-    predicted_rpm = prediction[0][0] * 60  # Example: Convert from RPS to RPM
-    predicted_voltage = prediction[0][1]
-
-    # Publish predictions
-    main_client.publish(PUBLISH_TOPIC, f"Predicted RPM: {predicted_rpm:.2f}, Voltage: {predicted_voltage:.2f}")
-    logging.info(f"Published predictions: RPM={predicted_rpm:.2f}, Voltage={predicted_voltage:.2f}")
+    except Exception as e:
+        logging.error(f"Error processing payload: {e}")
 
 # Main function
 def main():
     try:
-        # Attach callbacks to rasp_client
-        rasp_client.on_connect = on_connect
-        rasp_client.on_message = on_message
+        # Attach callbacks
+        mqtt_client.on_connect = on_connect
+        mqtt_client.on_message = on_message
 
-        # Connect rasp_client to the Raspberry Pi MQTT broker
-        logging.info(f"Connecting to Raspberry Pi MQTT broker at {RASP_BROKER}:{MQTT_PORT}...")
-        rasp_client.connect(RASP_BROKER, MQTT_PORT, 60)
-        rasp_client.loop_start()  # Start the subscriber loop
-        logging.info("Raspberry Pi MQTT client loop started.")
-
-        # Connect and start main_client for publishing predictions
-        logging.info(f"Connecting to Main MQTT broker at {MQTT_BROKER}:{MQTT_PORT}...")
-        main_client.connect(MQTT_BROKER, MQTT_PORT, 60)
-        main_client.loop_start()  # Start the publisher loop
-        logging.info("Main MQTT client loop started.")
+        # Connect to the MQTT broker
+        logging.info(f"Connecting to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}...")
+        mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
+        mqtt_client.loop_start()  # Start the loop to process messages
+        logging.info("MQTT client loop started.")
 
         # Keep the script running
         while True:
@@ -226,15 +151,10 @@ def main():
     except KeyboardInterrupt:
         logging.info("Stopped by user.")
     finally:
-        # Graceful shutdown of both clients
-        rasp_client.loop_stop()
-        rasp_client.disconnect()
-        logging.info("Disconnected from Raspberry Pi MQTT broker.")
-
-        main_client.loop_stop()
-        main_client.disconnect()
-        logging.info("Disconnected from Main MQTT broker.")
+        # Gracefully disconnect the client
+        mqtt_client.loop_stop()
+        mqtt_client.disconnect()
+        logging.info("Disconnected from MQTT broker.")
 
 if __name__ == "__main__":
     main()
-

@@ -34,11 +34,11 @@ data_files = [
     # 'wind_30_NoFanVib.csv'
     
     # 96 Percent Accuracy
-    'wind_15_HighFanVib.csv',
-    'wind_15_2HighFanVib.csv',
-    'wind_15_45Degree_1HighFanVib.csv',
-    'wind_15_45Degree_2HighFanVib.csv',
-    'wind_15_NoFanVib.csv'
+    # 'wind_15_HighFanVib.csv',
+    # 'wind_15_2HighFanVib.csv',
+    # 'wind_15_45Degree_1HighFanVib.csv',
+    # 'wind_15_45Degree_2HighFanVib.csv',
+    # 'wind_15_NoFanVib.csv'
        
 
 ]
