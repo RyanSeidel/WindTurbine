@@ -24,6 +24,9 @@ MQTT_TOPICS = {
     'accelerometer': 'wind_turbine/accelerometer',
     'linear_acceleration': 'wind_turbine/linear_acceleration',
     'gravity': 'wind_turbine/gravity',
+    'voltage': 'wind_turbine/volt',
+    'power': 'wind_turbine/power',
+    'current': 'wind_turbine/current'
 }
 
 # Initialize the MQTT clients
@@ -32,9 +35,22 @@ rasp_client = mqtt.Client()
 
 # Load Pre-trained Models
 try:
-    scaler = joblib.load('60BladeModel_gyro_components.pkl')
-    poly = joblib.load('60BladeModelVibration.pkl')
-    poly_model = joblib.load('60BladeModel_components_model.pkl')
+  # 97 Percent Score
+    scaler60 = joblib.load('60BladeModel_gyro_components.pkl')
+    poly60 = joblib.load('60BladeModelVibration.pkl')
+    poly_model60 = joblib.load('60BladeModel_components_model.pkl')
+  # 96.7 Percent Score
+    scaler45 = joblib.load('45BladeModel_gyro_components.pkl')
+    poly45 = joblib.load('45BladeModelVibration.pkl')
+    poly_model45 = joblib.load('45BladeModel_components_model.pkl')
+  # 88 Percent Score
+    scaler30 = joblib.load('30BladeModel_gyro_components.pkl')
+    poly30 = joblib.load('30BladeModelVibration.pkl')
+    poly_model30 = joblib.load('30BladeModel_components_model.pkl')
+  # 96 Percent Score
+    scaler15 = joblib.load('15BladeModel_gyro_components.pkl')
+    poly15 = joblib.load('15BladeModelVibration.pkl')
+    poly_model15 = joblib.load('15BladeModel_components_model.pkl')
     logging.info("Loaded pre-trained models.")
 except FileNotFoundError as e:
     logging.error(f"Error loading models: {e}")
@@ -49,9 +65,9 @@ columns = [
     'gravity_grx', 'gravity_gry', 'gravity_grz',
     'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
     'alignment_0', 'alignment_45', 
-    'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az'
+    'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az',
+    'power_value', 'current_value', 'voltage_value'
 ]
-
 
 df = pd.DataFrame([{col: None for col in columns}])
 
@@ -110,6 +126,15 @@ def update_dataframe(topic, payload):
             df.at[0, 'linear_acceleration_lx'] = lx
             df.at[0, 'linear_acceleration_ly'] = ly
             df.at[0, 'linear_acceleration_lz'] = lz
+        elif topic == MQTT_TOPICS['power']:
+            power = float(payload)  # Payload is a single value
+            df.at[0, 'power_value'] = power
+        elif topic == MQTT_TOPICS['voltage']:
+            voltage = float(payload)  # Payload is a single value
+            df.at[0, 'voltage_value'] = voltage
+        elif topic == MQTT_TOPICS['current']:
+            current = float(payload)  # Payload is a single value
+            df.at[0, 'current_value'] = current
         
 
         # Add static or default values for missing features
@@ -159,14 +184,34 @@ def make_and_publish_prediction():
     
         # Ensure all feature names match those used during training
         input_data = input_features.astype('float32')
-    
-        # Standardize and transform the input features
-        input_data_scaled = scaler.transform(input_data)
-        input_data_poly = poly.transform(input_data_scaled)
-
-        # Predict acceleration magnitude
-        predictions = poly_model.predict(input_data_poly)
-
+        
+        blade = 60 # example
+        
+        if blade == 60:
+          # Standardize and transform the input features
+          input_data_scaled = scaler60.transform(input_data)
+          input_data_poly = poly60.transform(input_data_scaled)
+          # Predict acceleration magnitude
+          predictions = poly_model60.predict(input_data_poly)
+        elif blade == 45:
+          # Standardize and transform the input features
+          input_data_scaled = scaler45.transform(input_data)
+          input_data_poly = poly45.transform(input_data_scaled)
+          # Predict acceleration magnitude
+          predictions = poly_model45.predict(input_data_poly)
+        elif blade == 30:
+          # Standardize and transform the input features
+          input_data_scaled = scaler30.transform(input_data)
+          input_data_poly = poly30.transform(input_data_scaled)
+          # Predict acceleration magnitude
+          predictions = poly_model30.predict(input_data_poly)       
+        elif blade == 15:
+          # Standardize and transform the input features
+          input_data_scaled = scaler15.transform(input_data)
+          input_data_poly = poly15.transform(input_data_scaled)
+          # Predict acceleration magnitude
+          predictions = poly_model15.predict(input_data_poly)
+          
         # Calculate the actual acceleration magnitude from accelerometer data
         accel_magnitude = np.sqrt(
           df.at[0, 'accelerometer_ax']**2 +

@@ -52,13 +52,15 @@ data['accel_magnitude'] = np.sqrt(
     data['accelerometer_az']**2
 )
 
+
 # Features (excluding magnitude)
 X = data[['speed_value', 'rpm_value', 
           'linear_acceleration_lx', 'linear_acceleration_ly', 'linear_acceleration_lz',
           'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz', 'gravity_grx', 'gravity_gry', 'gravity_grz',
-          'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
+          'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz', 
           'alignment_0', 'alignment_45', 
-          'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az']]  # Do not include magnitude
+          'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az',
+          'power_value', 'current_value', 'voltage_value']]  # Do not include magnitude
 
 # Target variable: Acceleration Magnitude
 y = data[['accel_magnitude']]
