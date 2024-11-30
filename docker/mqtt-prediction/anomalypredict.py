@@ -9,6 +9,9 @@ import joblib
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
+# Load blade configuration from environment variables
+blade_1 = int(os.environ.get('blade_1', 0))
+
 # Load environment variables or use defaults
 MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
@@ -36,21 +39,21 @@ rasp_client = mqtt.Client()
 # Load Pre-trained Models
 try:
   # 97 Percent Score
-    scaler60 = joblib.load('60BladeModel_gyro_components.pkl')
-    poly60 = joblib.load('60BladeModelVibration.pkl')
-    poly_model60 = joblib.load('60BladeModel_components_model.pkl')
+    scaler60 = joblib.load('model/60BladeModel_gyro_components.pkl')
+    poly60 = joblib.load('model/60BladeModelVibration.pkl')
+    poly_model60 = joblib.load('model/60BladeModel_components_model.pkl')
   # 96.7 Percent Score
-    scaler45 = joblib.load('45BladeModel_gyro_components.pkl')
-    poly45 = joblib.load('45BladeModelVibration.pkl')
-    poly_model45 = joblib.load('45BladeModel_components_model.pkl')
+    scaler45 = joblib.load('model/45BladeModel_gyro_components.pkl')
+    poly45 = joblib.load('model/45BladeModelVibration.pkl')
+    poly_model45 = joblib.load('model/45BladeModel_components_model.pkl')
   # 88 Percent Score
-    scaler30 = joblib.load('30BladeModel_gyro_components.pkl')
-    poly30 = joblib.load('30BladeModelVibration.pkl')
-    poly_model30 = joblib.load('30BladeModel_components_model.pkl')
+    scaler30 = joblib.load('model/30BladeModel_gyro_components.pkl')
+    poly30 = joblib.load('model/30BladeModelVibration.pkl')
+    poly_model30 = joblib.load('model/30BladeModel_components_model.pkl')
   # 96 Percent Score
-    scaler15 = joblib.load('15BladeModel_gyro_components.pkl')
-    poly15 = joblib.load('15BladeModelVibration.pkl')
-    poly_model15 = joblib.load('15BladeModel_components_model.pkl')
+    scaler15 = joblib.load('model/15BladeModel_gyro_components.pkl')
+    poly15 = joblib.load('model/15BladeModelVibration.pkl')
+    poly_model15 = joblib.load('model/15BladeModel_components_model.pkl')
     logging.info("Loaded pre-trained models.")
 except FileNotFoundError as e:
     logging.error(f"Error loading models: {e}")
@@ -150,8 +153,8 @@ def update_dataframe(topic, payload):
         # pd.set_option('display.colheader_justify', 'center')  # Align headers
 
         # Print the entire DataFrame
-        logging.info(f"Entire DataFrame:\n{df}")
-        print(f"Entire DataFrame:\n{df}")  # For quick debugging in terminal
+        # logging.info(f"Entire DataFrame:\n{df}")
+        # print(f"Entire DataFrame:\n{df}")  # For quick debugging in terminal
     except Exception as e:
         logging.error(f"Error updating DataFrame: {e}")
     
@@ -184,33 +187,37 @@ def make_and_publish_prediction():
     
         # Ensure all feature names match those used during training
         input_data = input_features.astype('float32')
-        
-        blade = 60 # example
-        
-        if blade == 60:
+               
+        if blade_1 == 60:
+          logging.info(f"Blade is 60")
           # Standardize and transform the input features
           input_data_scaled = scaler60.transform(input_data)
           input_data_poly = poly60.transform(input_data_scaled)
           # Predict acceleration magnitude
           predictions = poly_model60.predict(input_data_poly)
-        elif blade == 45:
+        elif blade_1 == 45:
+          logging.info(f"Blade is 45")
           # Standardize and transform the input features
           input_data_scaled = scaler45.transform(input_data)
           input_data_poly = poly45.transform(input_data_scaled)
           # Predict acceleration magnitude
           predictions = poly_model45.predict(input_data_poly)
-        elif blade == 30:
+        elif blade_1 == 30:
+          logging.info(f"Blade is 30")
           # Standardize and transform the input features
           input_data_scaled = scaler30.transform(input_data)
           input_data_poly = poly30.transform(input_data_scaled)
           # Predict acceleration magnitude
           predictions = poly_model30.predict(input_data_poly)       
-        elif blade == 15:
+        elif blade_1 == 15:
+          logging.info(f"Blade is 15")
           # Standardize and transform the input features
           input_data_scaled = scaler15.transform(input_data)
           input_data_poly = poly15.transform(input_data_scaled)
           # Predict acceleration magnitude
           predictions = poly_model15.predict(input_data_poly)
+        else:
+          logging.info(f"Blade is 0")
           
         # Calculate the actual acceleration magnitude from accelerometer data
         accel_magnitude = np.sqrt(
