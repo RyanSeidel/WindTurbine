@@ -2,4 +2,4 @@ paho-mqtt
 pandas
 joblib
 scikit-learn
-xgboost
+numpy

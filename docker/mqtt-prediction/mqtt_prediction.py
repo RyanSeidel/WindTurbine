@@ -3,6 +3,7 @@ import time
 import logging
 import paho.mqtt.client as mqtt
 import pandas as pd
+import numpy as np
 import joblib
 
 # Configure logging
@@ -21,12 +22,20 @@ VOLTAGE_MODEL_FILE = "model/voltage_wind_turbine_model.pkl"
 VOLTAGE_SCALER_FILE = "model/voltage_scaler.pkl"
 VOLTAGE_POLY_FILE = "model/voltage_poly_features.pkl"
 
+ACCEL_SCALER_FILE = "model/15BladeModel_gyro_components.pkl"
+ACCEL_MODEL_FILE = "model/15BladeModel_gyro_components.pkl"
+ACCEL_POLY_FILE = "model/15BladeModel_components_model.pkl"
+
+
 try:
     linear_model = joblib.load(MODEL_FILE)
     scaler = joblib.load(SCALER_FILE)
     voltage_model = joblib.load(VOLTAGE_MODEL_FILE)
     voltage_scaler = joblib.load(VOLTAGE_SCALER_FILE)
     voltage_poly = joblib.load(VOLTAGE_POLY_FILE)
+    accel_scaler = joblib.load(ACCEL_SCALER_FILE)
+    accel_model = joblib.load(ACCEL_MODEL_FILE)
+    accel_poly = joblib.load(ACCEL_POLY_FILE)
     logging.info("Loaded pre-trained models and scalers.")
 except FileNotFoundError as e:
     logging.error(f"Model or scaler file not found: {e}")
@@ -52,6 +61,7 @@ def on_message(client, userdata, msg):
     if topic == RPS_INPUT_TOPIC:
         logging.info(f"Received message on {topic}: {payload}")
         process_rps_input(payload)
+        
 
 def process_rps_input(payload):
     """Process the received form data."""
@@ -126,16 +136,18 @@ def process_rps_input(payload):
             "predictedVoltage": predicted_voltage
         }
         mqtt_client.publish(PREDICTION_TOPIC, str(prediction_payload))
+        
         logging.info(f"Published prediction: {prediction_payload}")
 
     except Exception as e:
         logging.error(f"Error processing payload: {e}")
+        
 
 # Main function
 def main():
     try:
         # Attach callbacks
-        mqtt_client.on_connect = on_connect
+        mqtt_client.on_connect = on_connect 
         mqtt_client.on_message = on_message
 
         # Connect to the MQTT broker

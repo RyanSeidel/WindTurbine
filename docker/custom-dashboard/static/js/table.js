@@ -3,17 +3,13 @@ const socket = io(); // Initialize Socket.IO
 // Data for real-time and prediction
 let data = [
   { metric: "Orientation", realTime: "Heading: 0, Roll: 0, Pitch: 0", prediction: "Heading: 1, Roll: 0, Pitch: 1" },
-  { metric: "Temp", realTime: "0", prediction: "0.2" },
+  { metric: "Blades", realTime: "60", prediction: "60" },
+  { metric: "Wind Direction", realTime: "N", prediction: "NE" },
+  { metric: "Wind Speed", realTime: "0 m/s", prediction: "1 m/s" },
+  { metric: "Accelerometer", realTime: "ax: 0, ay: 0, az: 0", prediction: "ax: 1, ay: 0.5, az: 0.3" },
   { metric: "RPM", realTime: "0", prediction: "0"},
   { metric: "Voltage", realTime: "0", prediction: "0"},
-  { metric: "Wind Direction", realTime: "N", prediction: "NE" },
-  { metric: "Wind Pressure", realTime: "0 hPa", prediction: "0.1 hPa" },
-  { metric: "Wind Speed", realTime: "0 m/s", prediction: "1 m/s" },
-  { metric: "Magnetometer", realTime: "mx: 0, my: 0, mz: 0", prediction: "mx: 1, my: 0.5, mz: 0.3" },
-  { metric: "Gyroscope", realTime: "gx: 0, gy: 0, gz: 0", prediction: "gx: 1, gy: 1, gz: 1" },
-  { metric: "Accelerometer", realTime: "ax: 0, ay: 0, az: 0", prediction: "ax: 1, ay: 0.5, az: 0.3" },
-  { metric: "Linear Acceleration", realTime: "lx: 0, ly: 0, lz: 0", prediction: "lx: 1, ly: 0.5, lz: 0.3" },
-  { metric: "Gravity", realTime: "grx: 0, gry: 0, grz: 0", prediction: "grx: 1, gry: 0.8, grz: 0.6" },
+
 ];
 
 // Select the container

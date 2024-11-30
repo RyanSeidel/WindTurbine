@@ -12,12 +12,12 @@ import joblib
 data_files = [
     
     # 97 Percent
-    # 'wind_60_HighFanVib.csv',
-    # 'wind_60_NoFanVib.csv',
-    # 'wind_60_2HighFanVib.csv',
-    # 'wind_60_45Degree_1HighFanVib.csv',
-    # 'wind_60_45Degree_2HighFanVib.csv',
-    # 'wind_60_45DegreeNoFanVib.csv'
+    'wind_60_HighFanVib.csv',
+    'wind_60_NoFanVib.csv',
+    'wind_60_2HighFanVib.csv',
+    'wind_60_45Degree_1HighFanVib.csv',
+    'wind_60_45Degree_2HighFanVib.csv',
+    'wind_60_45DegreeNoFanVib.csv'
     
     # 97 Percent
     # 'wind_45_1HighFanVib.csv',
@@ -53,7 +53,7 @@ data['accel_magnitude'] = np.sqrt(
 )
 
 # Features (excluding magnitude)
-X = data[['speed_value', 'rpm_value', 'blade_60', 'blade_45', 'blade_30',
+X = data[['speed_value', 'rpm_value', 
           'linear_acceleration_lx', 'linear_acceleration_ly', 'linear_acceleration_lz',
           'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz', 'gravity_grx', 'gravity_gry', 'gravity_grz',
           'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
@@ -72,7 +72,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Save the scaler for future use
-joblib.dump(scaler, '15BladeModel_gyro_components.pkl')
+joblib.dump(scaler, '60BladeModel_gyro_components.pkl')
 
 # Create Polynomial Features
 poly_degree = 1 # Linear relationship for now
@@ -81,7 +81,7 @@ X_train_poly = poly.fit_transform(X_train_scaled)
 X_test_poly = poly.transform(X_test_scaled)
 
 # Save the polynomial feature transformer for future use
-joblib.dump(poly, '15BladeModelVibration.pkl')
+joblib.dump(poly, '60BladeModelVibration.pkl')
 
 # Train Multi-Output Polynomial Regression Model
 try:
@@ -97,7 +97,7 @@ except FileNotFoundError:
     print("Training complete.")
 
 # Save the Updated Model
-joblib.dump(poly_model, '15BladeModel_components_model.pkl')
+joblib.dump(poly_model, '60BladeModel_components_model.pkl')
 print("Updated model saved as polynomial_accel_gyro_components_model.pkl.")
 
 # Predict on Train and Test Data
@@ -130,16 +130,11 @@ plt.ylabel("Predicted Acceleration Magnitude")
 plt.title("Actual vs Predicted Acceleration Magnitude")
 plt.show()
 
-
-
 # Predict on Specific Speed Values
-speed_values = [0, 5, 10, 15]
+speed_values = [12]
 test_data = pd.DataFrame({
     'speed_value': speed_values,
     'rpm_value': [X['rpm_value'].mean()] * len(speed_values),
-    'blade_60': [1] * len(speed_values),
-    'blade_45': [0] * len(speed_values),
-    'blade_30': [0] * len(speed_values),
     'linear_acceleration_lx': [X['linear_acceleration_lx'].mean()] * len(speed_values),
     'linear_acceleration_ly': [X['linear_acceleration_ly'].mean()] * len(speed_values),
     'linear_acceleration_lz': [X['linear_acceleration_lz'].mean()] * len(speed_values),
@@ -156,7 +151,8 @@ test_data = pd.DataFrame({
     'alignment_45': [X['alignment_45'].mean()] * len(speed_values),
     'accelerometer_ax': [X['accelerometer_ax'].mean()] * len(speed_values),
     'accelerometer_ay': [X['accelerometer_ay'].mean()] * len(speed_values),
-    'accelerometer_az': [X['accelerometer_az'].mean()] * len(speed_values),
+    'accelerometer_az': [X['accelerometer_az'].mean()] * len(speed_values)
+
 })
 
 
@@ -179,9 +175,7 @@ new_residuals = np.abs(predictions.flatten() - test_data['accel_magnitude'].valu
 
 # Calculate residuals for the test data
 residuals = np.abs(y_test.values.flatten() - y_test_pred.flatten())
-
-# Check for anomalies
-threshold = np.mean(residuals) + 3 * np.std(residuals)  # Ensure threshold is defined
+threshold = np.mean(residuals) + 3 * np.std(residuals)  # Set dynamically
 anomalies = new_residuals > threshold
 
 # Display predictions with anomaly flags

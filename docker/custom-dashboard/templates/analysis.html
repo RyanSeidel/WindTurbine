@@ -182,46 +182,52 @@
       <div class="form-box">
         <h2>RPS Prediction Input Form</h2>
         <form id="predictionForm">
-            <!-- Wind Speed Slider -->
-            <label for="windSpeed">Wind Speed: <span id="windSpeedValue">0.0</span></label>
-            <input type="range" id="windSpeed" name="windSpeed" min="0" max="120" step="0.1" value="10">
-            <br><br>
+          <!-- Wind Speed Slider -->
+          <label for="windSpeed">Wind Speed: <span id="windSpeedValue">10.0</span></label>
+          <input type="range" id="windSpeed" name="windSpeed" min="0" max="300" step="0.1" value="10">
+          <br><br>
     
-            <!-- Wind Direction Dropdown -->
-            <label for="windDirection">Wind Direction:</label>
-            <select id="windDirection" name="windDirection" required>
-                <option value="N">North (N)</option>
-                <option value="NE">Northeast (NE)</option>
-                <option value="E">East (E)</option>
-                <option value="SE">Southeast (SE)</option>
-                <option value="S">South (S)</option>
-                <option value="SW">Southwest (SW)</option>
-                <option value="W">West (W)</option>
-                <option value="NW">Northwest (NW)</option>
-            </select>
-            <br><br>
+          <!-- Wind Speed Text Box -->
+          <label for="windSpeedInput">Enter Wind Speed (if slider is difficult):</label>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="number" id="windSpeedInput" name="windSpeedInput" min="0" max="300" step="0.1" value="10">
+            <button type="button" id="updateSliderButton" class="small-button">Update Slider</button>
+          </div>
+          <br><br>
     
-            <!-- Alignment Dropdown -->
-            <label for="orientation">Alignment (°):</label>
-            <select id="orientation" name="orientation" required>
-                <option value="0">0°</option>
-                <option value="45">45°</option>
-                <option value="90">90°</option>
-            </select>
-            <br><br>
+          <!-- Dropdowns for Wind Direction and Alignment -->
+          <label for="windDirection">Wind Direction:</label>
+          <select id="windDirection" name="windDirection" required>
+            <option value="N">North (N)</option>
+            <option value="NE">Northeast (NE)</option>
+            <option value="E">East (E)</option>
+            <option value="SE">Southeast (SE)</option>
+            <option value="S">South (S)</option>
+            <option value="SW">Southwest (SW)</option>
+            <option value="W">West (W)</option>
+            <option value="NW">Northwest (NW)</option>
+          </select>
+          <br><br>
     
-            <!-- Blade Angle Dropdown -->
-            <label for="blade1">Set all Blades Angle (°):</label>
-            <select id="blade1" name="blade1" required>
-                <option value="15">15°</option>
-                <option value="30">30°</option>
-                <option value="45">45°</option>
-                <option value="60">60°</option>
-            </select>
-            <br><br>
+          <label for="orientation">Alignment (°):</label>
+          <select id="orientation" name="orientation" required>
+            <option value="0">0°</option>
+            <option value="45">45°</option>
+            <option value="90">90°</option>
+          </select>
+          <br><br>
+    
+          <label for="blade1">Set all Blades Angle (°):</label>
+          <select id="blade1" name="blade1" required>
+            <option value="15">15°</option>
+            <option value="30">30°</option>
+            <option value="45">45°</option>
+            <option value="60">60°</option>
+          </select>
+          <br><br>
         </form>
-    </div>
-
+      </div>
+    
           
           <div class="column-container">
             <div class="table-container">
@@ -278,47 +284,66 @@
     const form = document.getElementById('predictionForm');
     const windSpeedSlider = document.getElementById('windSpeed');
     const windSpeedValue = document.getElementById('windSpeedValue');
+    const windSpeedInput = document.getElementById('windSpeedInput');
+    const updateSliderButton = document.getElementById('updateSliderButton');
 
-    // Update wind speed display when the slider changes
+    // Function to update all elements (slider, text box, and display)
+    function updateWindSpeed(value) {
+      const floatValue = parseFloat(value);
+      windSpeedValue.textContent = floatValue.toFixed(1); // Update displayed value
+      windSpeedSlider.value = floatValue; // Sync slider
+      windSpeedInput.value = floatValue; // Sync text box
+    }
+
+    // Event listener for slider input
     windSpeedSlider.addEventListener('input', () => {
-        windSpeedValue.textContent = windSpeedSlider.value;
-        submitForm(); // Automatically submit when slider is moved
+      updateWindSpeed(windSpeedSlider.value); // Update based on slider movement
+      submitForm(); // Automatically submit form
     });
 
-    // Add change event listeners to all dropdowns
+    // Event listener for "Update Slider" button
+    updateSliderButton.addEventListener('click', () => {
+      const value = windSpeedInput.value;
+      if (!isNaN(value) && value >= 0 && value <= 300) {
+        updateWindSpeed(value); // Update slider and text box
+        submitForm(); // Submit the form after button press
+      }
+    });
+
+    // Add change event listeners to dropdowns
     const dropdowns = form.querySelectorAll('select');
-    dropdowns.forEach(dropdown => {
-        dropdown.addEventListener('change', () => {
-            submitForm(); // Automatically submit when a dropdown value changes
-        });
+    dropdowns.forEach((dropdown) => {
+      dropdown.addEventListener('change', () => {
+        submitForm(); // Automatically submit when dropdown value changes
+      });
     });
 
     function submitForm() {
       const formData = new FormData(form);
       const jsonData = {};
-  
+
       // Convert form data to JSON
       formData.forEach((value, key) => {
-          jsonData[key] = key === 'windSpeed' ? parseFloat(value) : value;
+        jsonData[key] = key === 'windSpeed' ? parseFloat(value) : value;
       });
-  
+
       console.log('Submitting form data:', jsonData); // Debugging output
-  
-      // Send the data via fetch (AJAX)
+
+      // Send data via AJAX
       fetch('/submit_prediction', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(jsonData),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
       })
-          .then(response => response.json())
-          .then(data => {
-              console.log('Prediction submitted:', data);
-          })
-          .catch(error => {
-              console.error('Error submitting prediction:', error);
-          });
-  }
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Prediction submitted:', data);
+        })
+        .catch((error) => {
+          console.error('Error submitting prediction:', error);
+        });
+    }
 </script>
 </body>

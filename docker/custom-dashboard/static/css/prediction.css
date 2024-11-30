@@ -122,7 +122,68 @@ h3 {
   top: 6px; /* Adjust this value to raise the button */
 }
 
+/* Slider CSS */
 .small-buttonPredict:hover {
   background-color: var(--bg-secondary);
 }
+
+    /* Increase the size of the slider */
+    /* Increase the size of the slider */
+    #windSpeed {
+      width: 100%; /* Make the slider take the full width of the container */
+      height: 20px; /* Increase the height */
+      cursor: pointer; /* Change cursor to pointer for better UX */
+  }
+
+  /* Style the slider thumb (the draggable part) */
+  #windSpeed::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Remove default appearance */
+      width: 30px; /* Increase thumb size */
+      height: 30px;
+      background-color: #007bff; /* Blue color for the thumb */
+      border-radius: 50%; /* Make it circular */
+      cursor: pointer;
+  }
+
+  #windSpeed::-moz-range-thumb {
+      width: 30px;
+      height: 30px;
+      background-color: #007bff;
+      border-radius: 50%;
+      cursor: pointer;
+  }
+
+  #windSpeed::-ms-thumb {
+      width: 30px;
+      height: 30px;
+      background-color: #007bff;
+      border-radius: 50%;
+      cursor: pointer;
+  }
+
+  /* Style the slider track (the line) */
+  #windSpeed::-webkit-slider-runnable-track {
+      height: 10px; /* Increase track height */
+      background: #ddd; /* Light gray color for track */
+      border-radius: 5px;
+  }
+
+  #windSpeed::-moz-range-track {
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+  }
+
+  #windSpeed::-ms-track {
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+  }
+
+  /* Style the text box */
+  #windSpeedInput {
+      width: 100px; /* Set width of the text box */
+      padding: 5px; /* Add some padding */
+      font-size: 14px; /* Make the text more readable */
+  }
 

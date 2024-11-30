@@ -3,9 +3,9 @@ speed_values = [0, 5, 10, 15]
 test_data = pd.DataFrame({
     'speed_value': speed_values,
     'rpm_value': [X['rpm_value'].mean()] * len(speed_values),
-    'blade_60': [1] * len(speed_values),
-    'blade_45': [0] * len(speed_values),
-    'blade_30': [0] * len(speed_values),
+    "blade_60": [1 if blade_angle == 60 else 0],
+    "blade_45": [1 if blade_angle == 45 else 0],
+    "blade_30": [1 if blade_angle == 30 else 0],
     'linear_acceleration_lx': [X['linear_acceleration_lx'].mean()] * len(speed_values),
     'linear_acceleration_ly': [X['linear_acceleration_ly'].mean()] * len(speed_values),
     'linear_acceleration_lz': [X['linear_acceleration_lz'].mean()] * len(speed_values),
