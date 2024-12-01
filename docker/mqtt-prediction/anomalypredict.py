@@ -161,7 +161,7 @@ def update_dataframe(topic, payload):
     
 # Initialize a sliding window for residuals
 residual_window = []
-WINDOW_SIZE = 50  # Number of recent samples to consider for threshold calculation
+WINDOW_SIZE = 75  # Number of recent samples to consider for threshold calculation
 
 def update_threshold(new_residual):
     global residual_window
