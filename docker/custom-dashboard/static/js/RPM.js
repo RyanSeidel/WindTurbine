@@ -1,3 +1,31 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                           Wind Turbine Digital Twins                                                     //
+//                        By Ryan Seidel and Zac Castaneda                                                  //
+//                         Client: Dr. Jose Baca                                                            //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Description:                                                                                             //
+// 1. Real-Time Communication:                                                                              //
+// - Socket.IO for bi-directional communication between the backend and web interface.                      //
+// 2. Sensor Data Integration:                                                                              //
+// - Supports data collection from Raspberry Pi sensors (RPM, temperature, orientation,                     //
+// voltage, etc.) using the MQTT protocol.                                                                  //
+// - Visualizes environmental data such as wind speed, direction, pressure, and altitude.                   //
+// 3. Data Storage and Analysis:                                                                            //
+// - Utilizes InfluxDB for scalable time-series data storage and analysis.                                  //
+// 4. Interactive Web Dashboard:                                                                            //
+// - Features dynamic D3.js-powered gauges, graphs, and real-time updates for RPM, voltage,                 //
+// current, power, and more.                                                                                //
+// - Displays detailed telemetry including magnetometer, accelerometer, gyroscope, and orientation          //
+// data.                                                                                                    //
+// 5. Predictive Insights:                                                                                  //
+// - Enables performance predictions by integrating custom algorithms for wind turbine behavior analysis.   //
+// 6. Aesthetics and Usability:                                                                             //
+// - Fully responsive and visually engaging interface with custom styling for optimal readability and       //
+//  interactivity.                                                                                          //
+// - Neon glow effects and animations enhance visual appeal for real-time data transitions.                 //
+// This system offers a robust platform for analyzing wind turbine performance, providing actionable        //       
+// insights, and showcasing sensor data in an intuitive and interactive format.                             //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 document.addEventListener('DOMContentLoaded', function () {
 const socket = io(); // Initialize Socket.IO
 
