@@ -1,3 +1,17 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                           Wind Turbine Digital Twins                                                     //
+//                        By Ryan Seidel and Zac Castaneda                                                  //
+//                         Client: Dr. Jose Baca                                                            //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Description:                                                                                             //
+//This code creates a dynamic data table to display and update wind turbine metrics in real time, using     //
+//Socket.IO for seamless communication between the backend and frontend. The table shows real-time and      //
+//predicted values for key metrics such as orientation, wind speed, air pressure, RPM, and voltage. Built   //
+//with D3.js, the table allows efficient updates to specific rows based on incoming data streams. Real-time //
+//updates are handled through Socket.IO events, ensuring the table reflects the latest sensor readings and  //
+//predictions. The system is extensible, supporting additional metrics and data sources as needed.          //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 const socket = io(); // Initialize Socket.IO
 
 // Data for real-time and prediction

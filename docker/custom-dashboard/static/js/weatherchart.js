@@ -1,3 +1,17 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                           Wind Turbine Digital Twins                                                     //
+//                        By Ryan Seidel and Zac Castaneda                                                  //
+//                         Client: Dr. Jose Baca                                                            //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Description:                                                                                             //
+//This project implements a real-time chart to display the relationship between wind speed and air pressure. //
+//Using D3.js, the system dynamically updates a dual-axis line chart as new data is received, ensuring smooth //
+//transitions and responsive visuals. The chart features interactive tooltips to show precise values for wind //
+//speed (mph) and air pressure (hPa) at any given time. With adjustable axes and a sleek, modern design, the //
+//visualization provides a clear and engaging way to monitor environmental data in real-time.                 //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+
 // Initial Weather Data and Settings
 let currentTime = new Date(); // Current time as the starting point
 let weatherData = []; // Start with an empty dataset

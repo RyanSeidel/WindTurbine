@@ -1,3 +1,17 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#                            Wind Turbine Digital Twins                     #
+#                               By Ryan Seidel and Zac Castaneda            #
+#                          Client: Dr. Jose Baca                            #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# Description:                                                              #
+# This code implements a digital twin for a wind turbine system using      #
+# Flask as the web framework, Socket.IO for real-time data communication,   #
+# and InfluxDB for storing and analyzing sensor data. The MQTT protocol     #
+# is used for transmitting data from Raspberry Pi sensors, including RPM,  #
+# orientation, temperature, voltage, and more. A web-based dashboard        #
+# provides visualization and control of the wind turbine's performance,     #
+# enabling predictions and analysis of wind turbine behavior.               #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 from flask import Flask, render_template, jsonify, request
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS

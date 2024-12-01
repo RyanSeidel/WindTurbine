@@ -1,3 +1,5 @@
+// A short javascript that changes the color theme on the dashboard
+
 const themeMap = {
   dark: "light",
   light: "solar",
