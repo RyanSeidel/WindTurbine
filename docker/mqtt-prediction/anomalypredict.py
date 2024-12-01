@@ -3,6 +3,7 @@ import time
 import logging
 import pandas as pd
 import numpy as np
+import json  
 import paho.mqtt.client as mqtt
 import joblib
 
@@ -13,10 +14,10 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 blade_1 = int(os.environ.get('blade_1', 0))
 
 # Load environment variables or use defaults
-MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")
+MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 RASP_BROKER = os.getenv("RASP_BROKER", "192.168.1.208")
-PUBLISH_TOPIC = os.getenv("PUBLISH_TOPIC", "wind_turbine/anomaly")
+PUBLISH_TOPIC = "anomaly_predictions"
 
 # Topics under wind_turbine namespace
 MQTT_TOPICS = {
@@ -251,7 +252,7 @@ def make_and_publish_prediction():
           "Anomaly": bool(anomalies[0]),
         }
         # Publish the result
-        main_client.publish(PUBLISH_TOPIC, str(result))
+        main_client.publish(PUBLISH_TOPIC, json.dumps(result))
         logging.info(f"Published: {result}")
 
     except Exception as e:

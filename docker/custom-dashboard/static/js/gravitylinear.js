@@ -1,46 +1,49 @@
-let oriHeading = 0;
-let oriRoll = 0;
-let oriPitch = 0;
+let predictedMagnitude = 0;
+let actualMagnitude = 0;
+let residual = 0;
+let threshold = 0;
+let anomaly = false;
 
-// Initial Orientation Data and Settings
-let oriCurrentTime = new Date();
-let oriData = []; // Start with an empty dataset
-const oriMaxDataPoints = 6; // Maximum number of points before resetting
-const oriInterval = 2000; // Interval for adding new points (2 seconds)
+// Initial Anomaly Data and Settings
+let anomalyCurrentTime = new Date();
+let anomalyData = []; // Start with an empty dataset
+const anomalyMaxDataPoints = 6; // Maximum number of points before resetting
+const anomalyInterval = 2000; // Interval for adding new points (2 seconds)
 
 // Set dimensions and margins
-const oriMargin = { top: 30, right: 70, bottom: 50, left: 70 };
-const oriContainerWidth = document.querySelector(".orientation-chart").offsetWidth;
-const oriWidth = oriContainerWidth - oriMargin.left - oriMargin.right;
-const oriHeight = 200 - oriMargin.top - oriMargin.bottom;
+const anomalyMargin = { top: 30, right: 70, bottom: 50, left: 70 };
+const anomalyContainerWidth = document.querySelector(".anomaly-chart").offsetWidth;
+const anomalyWidth = anomalyContainerWidth - anomalyMargin.left - anomalyMargin.right;
+const anomalyHeight = 200 - anomalyMargin.top - anomalyMargin.bottom;
 
 // Create SVG container
-const oriSVG = d3
-  .select(".orientation-chart")
+const anomalySVG = d3
+  .select(".anomaly-chart")
   .append("svg")
-  .attr("width", oriWidth + oriMargin.left + oriMargin.right)
-  .attr("height", oriHeight + oriMargin.top + oriMargin.bottom)
+  .attr("width", anomalyWidth + anomalyMargin.left + anomalyMargin.right)
+  .attr("height", anomalyHeight + anomalyMargin.top + anomalyMargin.bottom)
   .style("background", "#1a1a1a");
 
 // Add a title to the chart
-oriSVG.append("text")
-  .attr("x", oriMargin.left)
+anomalySVG.append("text")
+  .attr("x", anomalyMargin.left)
   .attr("y", 20)
   .attr("text-anchor", "start")
   .attr("fill", "#ddd")
   .attr("font-size", "16px")
-  .text("Dynamic Orientation Data");
+  .text("Dynamic Anomaly Detection Data");
 
-// Add labels for Heading, Roll, Pitch
-const oriLabels = [
-  { label: "Heading", color: "#ff7f0e", x: 200 },
-  { label: "Roll", color: "#1f77b4", x: 270 },
-  { label: "Pitch", color: "#2ca02c", x: 305 }
+// Add labels for Predicted, Actual, Residual, and Threshold
+const anomalyLabels = [
+  { label: "Predicted", color: "#ff7f0e", x: 200 },
+  { label: "Actual", color: "#1f77b4", x: 270 },
+  { label: "Residual", color: "#2ca02c", x: 340 },
+  { label: "Threshold", color: "#d62728", x: 410 }
 ];
 
-oriLabels.forEach(({ label, color, x }) => {
-  oriSVG.append("text")
-    .attr("x", oriMargin.left + x)
+anomalyLabels.forEach(({ label, color, x }) => {
+  anomalySVG.append("text")
+    .attr("x", anomalyMargin.left + x)
     .attr("y", 20)
     .attr("text-anchor", "start")
     .attr("fill", color)
@@ -49,79 +52,73 @@ oriLabels.forEach(({ label, color, x }) => {
 });
 
 // Append group for the main chart content
-const oriChartGroup = oriSVG.append("g")
-  .attr("transform", `translate(${oriMargin.left},${oriMargin.top})`);
+const anomalyChartGroup = anomalySVG.append("g")
+  .attr("transform", `translate(${anomalyMargin.left},${anomalyMargin.top})`);
 
 // Create scales
-const oriX = d3
+const anomalyX = d3
   .scaleTime()
-  .domain([oriCurrentTime, new Date(oriCurrentTime.getTime() + oriMaxDataPoints * oriInterval)])
-  .range([0, oriWidth]);
+  .domain([anomalyCurrentTime, new Date(anomalyCurrentTime.getTime() + anomalyMaxDataPoints * anomalyInterval)])
+  .range([0, anomalyWidth]);
 
-const oriY = d3
+const anomalyY = d3
   .scaleLinear()
-  .domain([0, 360]) // Orientation is typically in degrees, ranging from 0 to 360
-  .range([oriHeight, 0]);
+  .domain([0, 15]) // Example domain for magnitude and residual
+  .range([anomalyHeight, 0]);
 
 // Add X-axis
-const oriXAxis = oriChartGroup.append("g")
+const anomalyXAxis = anomalyChartGroup.append("g")
   .attr("class", "x-axis")
-  .attr("transform", `translate(0,${oriHeight})`)
+  .attr("transform", `translate(0,${anomalyHeight})`)
   .call(
-    d3.axisBottom(oriX)
-      .ticks(oriMaxDataPoints) // Limit to 6 ticks
-      .tickSize(-oriHeight) // Extend tick lines as grid lines
+    d3.axisBottom(anomalyX)
+      .ticks(anomalyMaxDataPoints)
+      .tickSize(-anomalyHeight)
       .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : ""))
   )
   .selectAll("text")
-  .attr("fill", "#ddd") // Text color for tick labels
-  .attr("font-size", "10px"); // Font size for tick labels
-
-oriChartGroup.append("text")
-  .attr("x", oriWidth / 2)
-  .attr("y", oriHeight + 40)
-  .attr("text-anchor", "middle")
   .attr("fill", "#ddd")
-  .attr("font-size", "12px")
-  .text("Time");
+  .attr("font-size", "10px");
 
 // Add Y-axis
-oriChartGroup.append("g")
+anomalyChartGroup.append("g")
   .attr("class", "y-axis")
-  .call(d3.axisLeft(oriY).ticks(5))
+  .call(d3.axisLeft(anomalyY).ticks(5))
   .selectAll("text")
   .attr("fill", "#ddd")
   .attr("font-size", "10px");
 
 // Add Y-axis label
-oriChartGroup.append("text")
-  .attr("x", -oriHeight / 2)
+anomalyChartGroup.append("text")
+  .attr("x", -anomalyHeight / 2)
   .attr("y", -50)
   .attr("text-anchor", "middle")
   .attr("fill", "#ddd")
   .attr("font-size", "12px")
   .attr("transform", "rotate(-90)")
-  .text("Degrees (°)");
+  .text("Magnitude");
 
-const oriLineGenerators = {
-  heading: d3.line().x(d => oriX(d.time)).y(d => oriY(d.heading)),
-  roll: d3.line().x(d => oriX(d.time)).y(d => oriY(d.roll)),
-  pitch: d3.line().x(d => oriX(d.time)).y(d => oriY(d.pitch))
+// Line generators for Predicted, Actual, Residual, and Threshold
+const anomalyLineGenerators = {
+  predicted: d3.line().x(d => anomalyX(d.time)).y(d => anomalyY(d.predicted)),
+  actual: d3.line().x(d => anomalyX(d.time)).y(d => anomalyY(d.actual)),
+  residual: d3.line().x(d => anomalyX(d.time)).y(d => anomalyY(d.residual)),
+  threshold: d3.line().x(d => anomalyX(d.time)).y(d => anomalyY(d.threshold))
 };
 
-// Line generators for Heading, Roll, and Pitch
-const oriLines = {};
-["heading", "roll", "pitch"].forEach((key, index) => {
-  const colors = ["#ff7f0e", "#1f77b4", "#2ca02c"];
-  oriLines[key] = oriChartGroup.append("path")
+// Initialize lines
+const anomalyLines = {};
+["predicted", "actual", "residual", "threshold"].forEach((key, index) => {
+  const colors = ["#ff7f0e", "#1f77b4", "#2ca02c", "#d62728"];
+  anomalyLines[key] = anomalyChartGroup.append("path")
     .attr("fill", "none")
     .attr("stroke", colors[index])
     .attr("stroke-width", 2);
 });
 
 // Tooltip setup
-const oriTooltip = d3
-  .select(".orientation-chart")
+const anomalyTooltip = d3
+  .select(".anomaly-chart")
   .append("div")
   .style("position", "absolute")
   .style("background", "#222")
@@ -131,100 +128,85 @@ const oriTooltip = d3
   .style("pointer-events", "none")
   .style("opacity", 0);
 
-// Socket.IO listener for orientation data
-socket.on("orientation_data", (data) => {
-  console.log("Orientation data received: ", data);
+// Socket.IO listener for anomaly data
+socket.on("anomaly_data", (data) => {
+  console.log("Anomaly data received: ", data);
 
-  // Parse orientation data
-  const [heading, roll, pitch] = data.orientation.split(',');
-
-  // Update global variables for Heading, Roll, and Pitch
-  oriHeading = heading;
-  oriRoll = roll;
-  oriPitch = pitch;
+  // Parse anomaly data
+  predictedMagnitude = data.Predicted_Magnitude;
+  actualMagnitude = data.Actual_Magnitude;
+  residual = data.Residual;
+  threshold = data.Threshold;
+  anomaly = data.Anomaly; // Boolean
 });
 
-
-function updateOriChart() {
-  // Generate new data point with the latest orientation values
+function updateAnomalyChart() {
   const currentTime = new Date();
-  oriData.push({ time: currentTime, heading: oriHeading, roll: oriRoll, pitch: oriPitch });
-
-  // Remove oldest data point if exceeding oriMaxDataPoints
-  if (oriData.length > oriMaxDataPoints + 1) {
-    oriData.shift();
-  }
-
-  // Calculate the extent (min and max) of all data points for Heading, Roll, and Pitch
-  const allExtents = ["heading", "roll", "pitch"].flatMap(key => d3.extent(oriData, d => d[key]));
-  const overallExtent = [Math.min(...allExtents) - 10, Math.max(...allExtents) + 10];
-
-  // Update the Y-axis domain dynamically
-  oriY.domain(overallExtent);
-
-  // Update the Y-axis
-  oriChartGroup.select(".y-axis")
-    .transition()
-    .duration(500)
-    .call(d3.axisLeft(oriY).ticks(5))
-    .selectAll("text")
-    .attr("fill", "#ddd")
-    .attr("font-size", "10px");
-
-  // Update the X-axis domain
-  oriX.domain([oriData[0].time, new Date(oriData[0].time.getTime() + oriMaxDataPoints * oriInterval)]);
-
-  // Update the X-axis
-  oriChartGroup.select(".x-axis")
-    .transition()
-    .duration(500)
-    .call(
-      d3.axisBottom(oriX)
-        .ticks(oriMaxDataPoints)
-        .tickSize(-oriHeight)
-        .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : ""))
-    )
-    .selectAll("text")
-    .attr("fill", "#ddd")
-    .attr("font-size", "10px");
-
-  // Update lines for Heading, Roll, and Pitch
-  Object.keys(oriLineGenerators).forEach(key => {
-    oriLines[key]
-      .datum(oriData)
-      .transition()
-      .duration(500)
-      .attr("d", oriLineGenerators[key]);
+  anomalyData.push({
+    time: currentTime,
+    predicted: predictedMagnitude,
+    actual: actualMagnitude,
+    residual: residual,
+    threshold: threshold,
+    anomaly: anomaly
   });
 
-  // Tooltip (optional, for orientation data)
-  const circles = oriChartGroup.selectAll(".data-point").data(oriData);
+  if (anomalyData.length > anomalyMaxDataPoints + 1) {
+    anomalyData.shift();
+  }
 
-  circles
-    .enter()
+  const allExtents = ["predicted", "actual", "residual", "threshold"].flatMap(key => d3.extent(anomalyData, d => d[key]));
+  const overallExtent = [Math.min(...allExtents) - 2, Math.max(...allExtents) + 2];
+  anomalyY.domain(overallExtent);
+
+  anomalyChartGroup.select(".y-axis")
+    .transition()
+    .duration(500)
+    .call(d3.axisLeft(anomalyY).ticks(5));
+
+  anomalyX.domain([anomalyData[0].time, new Date(anomalyData[0].time.getTime() + anomalyMaxDataPoints * anomalyInterval)]);
+
+  anomalyChartGroup.select(".x-axis")
+    .transition()
+    .duration(500)
+    .call(d3.axisBottom(anomalyX).ticks(anomalyMaxDataPoints));
+
+  Object.keys(anomalyLineGenerators).forEach(key => {
+    anomalyLines[key]
+      .datum(anomalyData)
+      .transition()
+      .duration(500)
+      .attr("d", anomalyLineGenerators[key]);
+  });
+
+  const circles = anomalyChartGroup.selectAll(".data-point").data(anomalyData);
+
+  circles.enter()
     .append("circle")
     .attr("class", "data-point")
     .attr("r", 4)
     .merge(circles)
-    .attr("cx", d => oriX(d.time))
-    .attr("cy", d => oriY(d.heading)) // Use Heading for tooltip demonstration
-    .attr("fill", "#ddd")
+    .attr("cx", d => anomalyX(d.time))
+    .attr("cy", d => anomalyY(d.residual)) // Use Residual for tooltip demonstration
+    .attr("fill", d => (d.anomaly ? "#d62728" : "#2ca02c")) // Highlight anomalies in red
     .on("mouseover", (event, d) => {
-      oriTooltip
+      anomalyTooltip
         .style("opacity", 1)
         .html(
           `Time: ${d.time.toLocaleTimeString()}<br>
-          Heading: ${d.heading.toFixed(2)}°, Roll: ${d.roll.toFixed(2)}°, Pitch: ${d.pitch.toFixed(2)}°`
+          Predicted: ${d.predicted.toFixed(2)}, Actual: ${d.actual.toFixed(2)}<br>
+          Residual: ${d.residual.toFixed(2)}, Threshold: ${d.threshold.toFixed(2)}<br>
+          Anomaly: ${d.anomaly ? "Yes" : "No"}`
         )
         .style("left", `${event.pageX + 10}px`)
         .style("top", `${event.pageY - 20}px`);
     })
     .on("mouseout", () => {
-      oriTooltip.style("opacity", 0);
+      anomalyTooltip.style("opacity", 0);
     });
 
   circles.exit().remove();
 }
 
 // Update chart with new data at the specified interval
-setInterval(updateOriChart, oriInterval);
+setInterval(updateAnomalyChart, anomalyInterval);

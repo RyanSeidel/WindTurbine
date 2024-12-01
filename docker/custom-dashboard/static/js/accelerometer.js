@@ -27,9 +27,9 @@
 let accAx = 0;
 let accAy = 0;
 let accAz = 0;
-let Gx = 0;
-let Gy = 0;
-let Gz = 0;
+let Lx = 0;
+let Ly = 0;
+let Lz = 0;
 
 // Initial Accelerometer Data and Settings
 let accCurrentTime = new Date();
@@ -59,7 +59,7 @@ accSVG.append("text")
   .attr("text-anchor", "start")
   .attr("fill", "#ddd")
   .attr("font-size", "16px")
-  .text("Dynamic Accelerometer and Gyroscope Data");
+  .text("Accelerometer and Linear Accleration Data");
 
 // Add label for Ax
 // Labels for Ax, Ay, Az, Gx, Gy, Gz
@@ -67,9 +67,9 @@ const labels = [
   { label: "Ax", color: "#ff0000", x: 340 },
   { label: "Ay", color: "#00ff00", x: 365 },
   { label: "Az", color: "#0000ff", x: 390 },
-  { label: "Gx", color: "#ffff00", x: 415 },
-  { label: "Gy", color: "#ff00ff", x: 440 },
-  { label: "Gz", color: "#00ffff", x: 465 }
+  { label: "Lx", color: "#ffff00", x: 415 },
+  { label: "Ly", color: "#ff00ff", x: 440 },
+  { label: "Lz", color: "#00ffff", x: 465 }
 ];
 
 labels.forEach(({ label, color, x }) => {
@@ -185,26 +185,26 @@ socket.on("accelerometer_data", (data) => {
 
 });
 
-socket.on('gyroscope_data', (data) => {
-  //console.log("gyroscope data received: ", data);  // Debugging log
-  const [gx, gy, gz] = data.gyroscope.split(',').map(Number); // Split and convert to numbers
-  Gx = gx;
-  Gy = gy;
-  Gz = gz;
+socket.on('linear_acceleration_data', (data) => {
+  //console.log("linear_acceleration data received: ", data);  // Debugging log
+  const [lx, ly, lz] = data.linear_acceleration.split(',').map(Number); // Split and convert to numbers
+  Lx = lx;
+  Ly = ly;
+  Lz = lz;
 });
 
 function updateAccChart() {
-  // Generate new data point with the latest accelerometer and gyroscope values
+  // Generate new data point with the latest accelerometer and linear acceleration values
   const currentTime = new Date();
-  accData.push({ time: currentTime, ax: accAx, ay: accAy, az: accAz, gx: Gx, gy: Gy, gz: Gz });
+  accData.push({ time: currentTime, ax: accAx, ay: accAy, az: accAz, lx: Lx, ly: Ly, lz: Lz });
 
   // Remove oldest data point if exceeding accMaxDataPoints
   if (accData.length > accMaxDataPoints + 1) {
     accData.shift();
   }
 
-  // Calculate the extent (min and max) of all data points for accelerometer and gyroscope
-  const allExtents = ["ax", "ay", "az", "gx", "gy", "gz"].flatMap(key => d3.extent(accData, d => d[key]));
+  // Calculate the extent (min and max) of all data points for accelerometer and linear acceleration
+  const allExtents = ["ax", "ay", "az", "lx", "ly", "lz"].flatMap(key => d3.extent(accData, d => d[key]));
   const overallExtent = [Math.min(...allExtents), Math.max(...allExtents)];
 
   // Update the Y-axis domain dynamically
@@ -241,7 +241,7 @@ function updateAccChart() {
     .attr("stroke", "#444")
     .attr("stroke-dasharray", "2,2");
 
-  // Update lines for Ax, Ay, Az, Gx, Gy, and Gz
+  // Update lines for Ax, Ay, Az, Lx, Ly, and Lz
   Object.keys(lineGenerators).forEach(key => {
     lines[key]
       .datum(accData)
@@ -268,7 +268,7 @@ function updateAccChart() {
         .html(
           `Time: ${d.time.toLocaleTimeString()}<br>
           Ax: ${d.ax.toFixed(2)}, Ay: ${d.ay.toFixed(2)}, Az: ${d.az.toFixed(2)}<br>
-          Gx: ${d.gx.toFixed(2)}, Gy: ${d.gy.toFixed(2)}, Gz: ${d.gz.toFixed(2)}`
+          Lx: ${d.lx.toFixed(2)}, Ly: ${d.ly.toFixed(2)}, Lz: ${d.lz.toFixed(2)}`
         )
         .style("left", `${event.pageX + 10}px`)
         .style("top", `${event.pageY - 20}px`);
