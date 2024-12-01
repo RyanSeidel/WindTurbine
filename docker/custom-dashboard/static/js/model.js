@@ -1,3 +1,33 @@
+<<<<<<< Updated upstream
+=======
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                           Wind Turbine Digital Twins                                                              //
+//                        By Ryan Seidel and Zac Castaneda                                                           //
+//                         Client: Dr. Jose Baca                                                                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Description:                                                                                                      //
+// This script creates an interactive 3D visualization of a wind turbine model using Three.js, with real-time        // 
+// updates driven by sensor data via Socket.IO. The turbine and its components, including blades, are loaded         // 
+// from a GLB model and rendered with customizable lighting and camera settings.                                     //
+//Key features include:                                                                                              //
+//                                                                                                                   //
+//   Real-Time Sensor Data Integration: Updates orientation, gyroscope, magnetometer, and accelerometer data         //
+//   in real-time, dynamically visualized with arrow helpers for direction and magnitude.                            //
+//   Rotating Turbine Blades: The turbine blades spin based on RPM data, with the angular velocity recalculated      //
+// dynamically.                                                                                                      //
+// Camera View Control: Users can switch between default, isometric, and top-down camera views for versatile         //
+// visualization.                                                                                                    //
+// Dynamic 3D Arrows: Visual indicators for gyroscope, magnetometer, and accelerometer data adjust in direction      //
+// and length based on incoming sensor data.                                                                         //
+// Responsive Rendering: The scene adjusts to window resizing, maintaining proper aspect ratio and resolution.       //
+//  Extensibility: The code supports additional features like debugging tools (axes helper) and advanced             //
+// animations for smoother interactions.                                                                             //
+//                                                                                                                   //
+//This visualization combines real-time physics and telemetry to provide a compelling way to monitor wind turbine    //
+//performance and sensor outputs.                                                                                    //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+>>>>>>> Stashed changes
 // Basic Three.js setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);

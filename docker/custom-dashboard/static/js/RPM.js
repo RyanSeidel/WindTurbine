@@ -1,3 +1,32 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                           Wind Turbine Digital Twins                                                     //
+//                        By Ryan Seidel and Zac Castaneda                                                  //
+//                         Client: Dr. Jose Baca                                                            //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Description:                                                                                             //
+// 1. Real-Time Communication:                                                                              //
+// - Socket.IO for bi-directional communication between the backend and web interface.                      //
+// 2. Sensor Data Integration:                                                                              //
+// - Supports data collection from Raspberry Pi sensors (RPM, temperature, orientation,                     //
+// voltage, etc.) using the MQTT protocol.                                                                  //
+// - Visualizes environmental data such as wind speed, direction, pressure, and altitude.                   //
+// 3. Data Storage and Analysis:                                                                            //
+// - Utilizes InfluxDB for scalable time-series data storage and analysis.                                  //
+// 4. Interactive Web Dashboard:                                                                            //
+// - Features dynamic D3.js-powered gauges, graphs, and real-time updates for RPM, voltage,                 //
+// current, power, and more.                                                                                //
+// - Displays detailed telemetry including magnetometer, accelerometer, gyroscope, and orientation          //
+// data.                                                                                                    //
+// 5. Predictive Insights:                                                                                  //
+// - Enables performance predictions by integrating custom algorithms for wind turbine behavior analysis.   //
+// 6. Aesthetics and Usability:                                                                             //
+// - Fully responsive and visually engaging interface with custom styling for optimal readability and       //
+//  interactivity.                                                                                          //
+// - Neon glow effects and animations enhance visual appeal for real-time data transitions.                 //
+// This system offers a robust platform for analyzing wind turbine performance, providing actionable        //       
+// insights, and showcasing sensor data in an intuitive and interactive format.                             //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 document.addEventListener('DOMContentLoaded', function () {
 const socket = io(); // Initialize Socket.IO
 
@@ -119,7 +148,76 @@ fetch('/api/data')
 
 // BME Sensor
 // Function to update the temperature display
+<<<<<<< Updated upstream
 // Function to update the temperature display
+=======
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+function updateDirectionDisplay(direction) {
+    document.getElementById('wind-dir').textContent = direction; 
+}
+
+const reverseDirectionMap = {
+    1: "N", 2: "NE", 3: "E", 4: "SE",
+    5: "S", 6: "SW", 7: "W", 8: "NW"
+};
+
+// Listen for 'direction_data' event
+socket.on('direction_data', (data) => {
+    // Extract the numeric label for direction
+    const directionNumeric = data.direction;
+
+    // Convert the numeric label back to a direction string
+    const direction = reverseDirectionMap[directionNumeric] || "Unknown";
+
+    // Log or display the direction
+    console.log(`Direction: ${direction} (${directionNumeric})`);
+
+    // Update the display (assuming updateSpeedDisplay updates speed or direction)
+    updateDirectionDisplay(direction);
+});
+
+function updateSpeedDisplay(speed) {
+    document.getElementById('wind-speed').textContent = speed; 
+}
+
+socket.on('speed_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updateSpeedDisplay(data.speed); // Update the display
+});
+
+function updatePressureDisplay(press) {
+    document.getElementById('wind-pres').textContent = press; 
+}
+
+socket.on('pressure_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updatePressureDisplay(data.pressure); // Update the display
+});
+
+
+function updateHumidityDisplay(humidity) {
+    document.getElementById('wind-hum').textContent = humidity; 
+}
+
+socket.on('humidity_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updateHumidityDisplay(data.humidity); // Update the display
+});
+
+
+function updateAltitudeDisplay(altitude) {
+    document.getElementById('wind-alt').textContent = altitude; 
+}
+
+socket.on('altitude_data', (data) => {
+    //console.log("Temperature data received: ", data);  // Debugging log
+    updateAltitudeDisplay(data.altitude); // Update the display
+});
+
+
+>>>>>>> Stashed changes
 function updateTemperatureDisplay(temp) {
     document.getElementById('temp-value').textContent = temp; 
 }
@@ -141,9 +239,6 @@ socket.on('orientation_data', (data) => {
     const [heading, roll, pitch] = data.orientation.split(','); // Extract values
     updateOrientationDisplay(heading, roll, pitch); // Update the display
 });
-
-
-
 
 // Function to update the magnetometer display
 function updateMagnetometerDisplay(mx, my, mz) {
@@ -214,13 +309,23 @@ socket.on('gravity_data', (data) => {
     updateGravityDisplay(grx, gry, grz); // Update the display
 });
 
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
+<<<<<<< Updated upstream
 // Connecting BMEO055 Sensor to move a 3D object!! using Three.js
 
 
 // Voltage Sensor Ina260
     // Listen for voltage data and update the 'volt' element
     const maxDataPoints = 50;
+=======
+// Voltage Sensor Ina260 //
+
+// Listen for voltage data and update the 'volt' element
+const maxDataPoints = 50;
+>>>>>>> Stashed changes
 
     // Data storage for each metric
     const dataPoints = {

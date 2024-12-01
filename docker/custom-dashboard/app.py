@@ -1,3 +1,18 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#                            Wind Turbine Digital Twins                     #
+#                               By Ryan Seidel and Zac Castaneda            #
+#                          Client: Dr. Jose Baca                            #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# Description:                                                              #
+# This code implements a digital twin for a wind turbine system using      #
+# Flask as the web framework, Socket.IO for real-time data communication,   #
+# and InfluxDB for storing and analyzing sensor data. The MQTT protocol     #
+# is used for transmitting data from Raspberry Pi sensors, including RPM,  #
+# orientation, temperature, voltage, and more. A web-based dashboard        #
+# provides visualization and control of the wind turbine's performance,     #
+# enabling predictions and analysis of wind turbine behavior.               #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 from flask import Flask, render_template, jsonify, request
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -10,21 +25,35 @@ import time
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-# InfluxDB Configuration
+# Connect to the InfluxDB container
 INFLUXDB_URL = os.getenv("INFLUXDB_URL", "http://influxdb:8086")
 INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "iNLROvcnYQmb6CNVmUyrNuB6CG2EiKOjUrT-F13uF-x1pSYLZGcGS-rbgj9J1cS-zaUwMB6UPd8_SJgVl3KFdQ==")
 INFLUXDB_ORG = os.getenv("INFLUXDB_ORG", "TAMUCC")
 INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET", "WindTurbine")
 
-# Initialize the InfluxDB client
+# InfluxDB write API for data storage
 influx_client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
-write_api = influx_client.write_api(write_options=SYNCHRONOUS)  # This line initializes write_api
+write_api = influx_client.write_api(write_options=SYNCHRONOUS)  
 
+<<<<<<< Updated upstream
 # MQTT Configuration
 MQTT_BROKER = os.getenv("MQTT_BROKER", "192.168.1.208")  # Replace with your MQTT broker address
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 # Topics under wind_turbine namespace
 MQTT_TOPICS = {
+=======
+# MQTT Configuration for Raspberry Pi
+RASP_BROKER = os.getenv("RASP_BROKER")  # Ensure this is always set in the environment
+MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))  # Defaults to 1883 if not set
+
+# Model Prediction
+MQTT_BROKER = os.getenv("MQTT_BROKER")
+PREDICTION_TOPIC = "wind_turbine/predictions"
+
+
+# These are all the topics of all the data that we are collecting from the Raspberry Pi 5 and Weather Station (Lark)
+DATA_TOPICS = {
+>>>>>>> Stashed changes
     'rpm': 'wind_turbine/rpm',
     'orientation': 'wind_turbine/orientation',
     'temperature': 'wind_turbine/temperature',
@@ -48,7 +77,7 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!", flush=True)
         # Subscribe to all topics in MQTT_TOPICS
-        for topic in MQTT_TOPICS.values():
+        for topic in DATA_TOPICS.values():
             client.subscribe(topic)
         print("Subscribed to all wind_turbine topics", flush=True)
     else:
@@ -61,6 +90,7 @@ def on_message(client, userdata, msg):
     
     
     # Emit data based on topic
+<<<<<<< Updated upstream
     if topic == MQTT_TOPICS['rpm']:
         # payload_value = float(payload)
         # point = Point("rpm").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
@@ -203,9 +233,28 @@ def on_message(client, userdata, msg):
         # write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
         #print(f"Gravity data written to InfluxDB: mx={grx}, my={gry}, mz={grz}", flush=True)
         
+=======
+    if topic == DATA_TOPICS['rpm']:
+        socketio.emit('rpm_data', {'latest_rpm': float(payload)})
+        #print(f"Socket.IO: Emitted 'rpm_data' with value {float(payload)}", flush=True)
+    elif topic == DATA_TOPICS['temperature']:
+        socketio.emit('temperature_data', {'temperature': float(payload)})      
+    elif topic == DATA_TOPICS['orientation']:          
+        socketio.emit('orientation_data', {'orientation': payload})
+    elif topic == DATA_TOPICS['magnetometer']:     
+        socketio.emit('magnetometer_data', {'magnetometer': payload})      
+    elif topic == DATA_TOPICS['gyroscope']:       
+        socketio.emit('gyroscope_data', {'gyroscope': payload})
+    elif topic == DATA_TOPICS['accelerometer']:              
+        socketio.emit('accelerometer_data', {'accelerometer': payload})
+    elif topic == DATA_TOPICS['linear_acceleration']:        
+        socketio.emit('linear_acceleration_data', {'linear_acceleration': payload})
+    elif topic == DATA_TOPICS['gravity']:       
+>>>>>>> Stashed changes
         socketio.emit('gravity_data', {'gravity': payload})
-    elif topic == MQTT_TOPICS['calibration']:
+    elif topic == DATA_TOPICS['calibration']:
         socketio.emit('calibration_data', {'calibration': payload})
+<<<<<<< Updated upstream
     elif topic == MQTT_TOPICS['voltage']:
         # payload_value = float(payload)
         # point = Point("voltage").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
@@ -234,9 +283,109 @@ def on_message(client, userdata, msg):
 
     print(f"Received message: {payload} on topic {topic}", flush=True)
     
+=======
+    elif topic == DATA_TOPICS['voltage']:       
+        socketio.emit('voltage_data', {'voltage': float(payload)})
+    elif topic == DATA_TOPICS['power']:
+        socketio.emit('power_data', {'power': float(payload)})
+    elif topic == DATA_TOPICS['current']:    
+        socketio.emit('current_data', {'current': float(payload)})        
+    elif topic == DATA_TOPICS['servo']:
+        socketio.emit('servo_data', {'servo': float(payload)})
+    elif topic == DATA_TOPICS['speed']:
+        #print(f"Speed Payload: {payload}", flush=True)  # Debug: Print the payload
+        socketio.emit('speed_data', {'speed': float(payload)})
+    elif topic == DATA_TOPICS['direction']:
+        #print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
+        socketio.emit('direction_data', {'direction': int(payload)})
+    elif topic == DATA_TOPICS['pressure']:
+        #print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
+        socketio.emit('pressure_data', {'pressure': float(payload)})
+    elif topic == DATA_TOPICS['humidity']:     
+        socketio.emit('humidity_data', {'humidity': float(payload)})
+    elif topic == DATA_TOPICS['altitude']:      
+        socketio.emit('altitude_data', {'altitude': float(payload)})
+    elif topic == DATA_TOPICS['altitude']:      
+        socketio.emit('altitude_data', {'altitude': float(payload)})
+    elif topic == DATA_TOPICS['predictedRPS']:      
+        # Example payload: "{'predictedRPS': np.float64(2.492183260094821)}"
+        try:
+            # Parse the payload
+            data = eval(payload, {"np": np})  # Allow eval to recognize 'np'
+            predicted_rps = data.get('predictedRPS', 0.0)
+        
+            # Convert to RPM
+            predicted_rpm = predicted_rps * 60
+        
+            # Log and display the formatted output
+            print(f"Predicted RPS: {predicted_rps:.2f}, Converted RPM: {predicted_rpm:.2f}", flush=True)
+        except Exception as e:
+            print(f"Error processing predictedRPS payload: {e}", flush=True)
+ 
+>>>>>>> Stashed changes
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message  # Attach on_message callback
 
+<<<<<<< Updated upstream
+=======
+# Attach callbacks to the prediction client
+prediction_client.on_connect = on_connect
+prediction_client.on_message = on_message
+
+# # ----- CONNECT BOTH CLIENTS -----
+try:
+    #Connect to Raspberry Pi MQTT broker
+    mqtt_client.connect(RASP_BROKER, MQTT_PORT, 60)
+    mqtt_client.loop_start()
+    logging.info("Raspberry Pi MQTT client started.")
+
+    # Connect to Mosquitto MQTT broker
+    prediction_client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    prediction_client.loop_start()
+    logging.info("Mosquitto MQTT client started.")
+except Exception as e:
+    logging.error(f"Error connecting to MQTT brokers: {e}")
+ 
+ 
+# This come from the RPS Prediction Input and publishes the data to topic: rpsinputform
+@app.route('/submit_prediction', methods=['POST'])
+def submit_prediction():
+    try:
+   
+        data = request.get_json()
+        logging.info(f"Received data: {data}")  # Log the received data
+
+        wind_speed = float(data.get('windSpeed', 0))
+        wind_direction = data.get('windDirection', 'N')
+        orientation = int(data.get('orientation', 0))
+        blade_angle = int(data.get('blade1', 15))
+
+        # Mapping for wind directions to numeric values
+        wind_direction_mapping = {
+            'N': 0, 'NE': 45, 'E': 90, 'SE': 135,
+            'S': 180, 'SW': 225, 'W': 270, 'NW': 315
+        }
+        wind_direction_numeric = wind_direction_mapping.get(wind_direction, 0)
+
+        logging.info(f"Parsed windSpeed: {wind_speed}, windDirection: {wind_direction_numeric}, orientation: {orientation}, bladeAngle: {blade_angle}")
+
+        # Prepare payload and publish to MQTT
+        payload = {
+            'windSpeed': wind_speed,
+            'windDirection': wind_direction_numeric,
+            'orientation': orientation,
+            'bladeAngle': blade_angle
+        }
+        prediction_client.publish('rpsinputform', str(payload))
+        logging.info(f"Published prediction data: {payload}")
+
+        return jsonify({'status': 'success', 'message': 'Prediction data sent via MQTT!'})
+    except Exception as e:
+        logging.error(f"Error in /submit_prediction: {e}")
+        return jsonify({'status': 'error', 'message': 'Failed to send prediction data'}), 500
+
+    
+>>>>>>> Stashed changes
 @app.route('/')
 def index():
     return render_template('index.html')
