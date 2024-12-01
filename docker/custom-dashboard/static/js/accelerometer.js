@@ -1,4 +1,29 @@
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~// 
+// Real-Time Accelerometer and Gyroscope Chart // // By [Wind Turbine Digital Twins]                               //                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~// 
+// Description:                                                                                                    // 
+// This script generates a dynamic and interactive chart using D3.js to visualize real-time accelerometer          // 
+// (Ax, Ay, Az) and gyroscope (Gx, Gy, Gz) data received via Socket.IO. The chart updates periodically to          // 
+// reflect new sensor readings, offering an intuitive view of motion and orientation data.                         // 
+//                                                                                                                 // 
+// Key Features:                                                                                                   // 
+// Real-Time Data Visualization:                                                                                   // 
+// - Continuously updates the chart with incoming accelerometer and gyroscope data every 2 seconds.                // 
+// Dynamic Line Chart:                                                                                             // 
+// - Plots six metrics (Ax, Ay, Az, Gx, Gy, Gz) using distinct color-coded lines for clear differentiation.        // 
+// Adaptive Scaling:                                                                                               // 
+// - Dynamically adjusts Y-axis scales to fit the latest data ranges, ensuring optimal display for all values.     // 
+// Tooltips for Interaction:                                                                                       // 
+// - Displays detailed data, including time and all six metrics, when hovering over data points.                   // 
+// Responsive Design:                                                                                              // 
+// - Automatically resizes to fit the container, ensuring compatibility with various screen sizes.                 //
+ // Smooth Transitions:                                                                                            // 
+ // - Animates chart updates, including axis scaling and line adjustments, for a seamless user experience.         //
+  // Lightweight Data Handling:                                                                                    // 
+  // - Maintains a fixed dataset size by discarding older data points as new ones are added.                       // 
+  //                                                                                                               // 
+  // This tool provides a comprehensive and visually engaging solution for analyzing motion and orientation data,  // 
+  // suitable for use cases in robotics, IoT, and real-time telemetry monitoring.                                  // 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 let accAx = 0;
 let accAy = 0;
 let accAz = 0;
