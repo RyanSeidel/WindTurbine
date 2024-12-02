@@ -26,7 +26,7 @@ data_files = [
     # 'wind_45_45Degree_2HighFanVib.csv',
     # 'wind_45_NoFanVib.csv'
             
-    # 88 Percent
+    # 93 Percent
     # 'wind_30_1HighFanVib.csv',
     # 'wind_30_2HighFanVib.csv',
     # 'wind_30_45Degree_1HighFanVib.csv',
