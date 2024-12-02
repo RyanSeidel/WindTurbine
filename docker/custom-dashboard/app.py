@@ -147,27 +147,42 @@ def on_message(client, userdata, msg):
             
     elif topic == MQTT_TOPICS['anomaly']:  
         
-            data = json.loads(payload)
+        # Parse the incoming JSON payload
+        data = json.loads(payload)
+
+        # Extract magnitude-related fields
+        predicted_magnitude = data.get('Predicted_Magnitude', 0.0)
+        actual_magnitude = data.get('Actual_Magnitude', 0.0)
+        magnitude_residual = data.get('Magnitude_Residual', 0.0)
+        magnitude_threshold = data.get('Magnitude_Threshold', 0.0)
+        magnitude_anomaly = data.get('Magnitude_Anomaly', False)
+
+        # Extract RPM-related fields
+        predicted_rpm = data.get('Predicted_RPM', 0.0)
+        actual_rpm = data.get('Actual_RPM', 0.0)
+        rpm_residual = data.get('RPM_Residual', 0.0)
+        rpm_threshold = data.get('RPM_Threshold', 0.0)
+        rpm_anomaly = data.get('RPM_Anomaly', False)
+
+        # Log the extracted data for debugging
+        logging.info(f"Received message: {json.dumps(data, indent=4)} from topic: {topic}")
         
-            # Extract individual fields
-            predicted_magnitude = data.get('Predicted_Magnitude', 0.0)
-            actual_magnitude = data.get('Actual_Magnitude', 0.0)
-            residual = data.get('Residual', 0.0)
-            threshold = data.get('Threshold', 0.0)
-            anomaly = data.get('Anomaly', False)
-        
-            # Log the extracted data for debugging
-            logging.info(f"Received message: {payload} from topic: {topic}")
-        
-            # Emit the parsed data to the front-end via SocketIO
-            socketio.emit('anomaly_data', {
+        # Print the message to ensure visibility in the console
+        print(f"Received message from topic {topic}: {json.dumps(data, indent=4)}")
+
+        # Emit the parsed data for magnitude and RPM to the front-end via SocketIO
+        socketio.emit('anomaly_data', {
             'Predicted_Magnitude': predicted_magnitude,
             'Actual_Magnitude': actual_magnitude,
-            'Residual': residual,
-            'Threshold': threshold,
-            'Anomaly': anomaly
+            'Magnitude_Residual': magnitude_residual,
+            'Magnitude_Threshold': magnitude_threshold,
+            'Magnitude_Anomaly': magnitude_anomaly,
+            'Predicted_RPM': predicted_rpm,
+            'Actual_RPM': actual_rpm,
+            'RPM_Residual': rpm_residual,
+            'RPM_Threshold': rpm_threshold,
+            'RPM_Anomaly': rpm_anomaly
         })
-
         
         
  

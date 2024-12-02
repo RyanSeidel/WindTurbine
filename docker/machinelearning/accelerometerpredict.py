@@ -54,16 +54,18 @@ data['accel_magnitude'] = np.sqrt(
 
 
 # Features (excluding magnitude)
-X = data[['speed_value', 'rpm_value', 
+# Features (excluding `rpm_value` and magnitude)
+X = data[['speed_value',
           'linear_acceleration_lx', 'linear_acceleration_ly', 'linear_acceleration_lz',
-          'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz', 'gravity_grx', 'gravity_gry', 'gravity_grz',
-          'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz', 
-          'alignment_0', 'alignment_45', 
-          'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az',
-          'power_value', 'current_value', 'voltage_value']]  # Do not include magnitude
+          'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz',
+          'gravity_grx', 'gravity_gry', 'gravity_grz',
+          'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
+          'alignment_0', 'alignment_45',
+          'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az'
+          ]]
 
-# Target variable: Acceleration Magnitude
-y = data[['accel_magnitude']]
+# Target variables
+y = data[['accel_magnitude', 'rpm_value']]
 
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -77,7 +79,7 @@ X_test_scaled = scaler.transform(X_test)
 joblib.dump(scaler, '60BladeModel_gyro_components.pkl')
 
 # Create Polynomial Features
-poly_degree = 1 # Linear relationship for now
+poly_degree = 1  # Linear relationship for now
 poly = PolynomialFeatures(degree=poly_degree, include_bias=False)
 X_train_poly = poly.fit_transform(X_train_scaled)
 X_test_poly = poly.transform(X_test_scaled)
@@ -123,20 +125,10 @@ print(f"Training RMSE: {np.sqrt(mse_train)}, Testing RMSE: {np.sqrt(mse_test)}")
 print(f"Training R² Score: {r2_train:.4f} ({accuracy_train:.2f}%)")
 print(f"Testing R² Score: {r2_test:.4f} ({accuracy_test:.2f}%)")
 
-# Visualize Predictions vs Actuals for Accelerometer Magnitude
-plt.scatter(y_test, y_test_pred, alpha=0.5)
-plt.plot([y_test.min(), y_test.max()],
-         [y_test.min(), y_test.max()], color='red', linestyle='--')
-plt.xlabel("Actual Acceleration Magnitude")
-plt.ylabel("Predicted Acceleration Magnitude")
-plt.title("Actual vs Predicted Acceleration Magnitude")
-plt.show()
-
 # Predict on Specific Speed Values
-speed_values = [12]
+speed_values = [12]  # Example speed values for predictions
 test_data = pd.DataFrame({
     'speed_value': speed_values,
-    'rpm_value': [X['rpm_value'].mean()] * len(speed_values),
     'linear_acceleration_lx': [X['linear_acceleration_lx'].mean()] * len(speed_values),
     'linear_acceleration_ly': [X['linear_acceleration_ly'].mean()] * len(speed_values),
     'linear_acceleration_lz': [X['linear_acceleration_lz'].mean()] * len(speed_values),
@@ -154,49 +146,68 @@ test_data = pd.DataFrame({
     'accelerometer_ax': [X['accelerometer_ax'].mean()] * len(speed_values),
     'accelerometer_ay': [X['accelerometer_ay'].mean()] * len(speed_values),
     'accelerometer_az': [X['accelerometer_az'].mean()] * len(speed_values)
-
 })
 
+# Predict on Test Data
+y_test_pred = poly_model.predict(X_test_poly)
 
-# Standardize and transform the test data
-test_data_scaled = scaler.transform(test_data)
-test_data_poly = poly.transform(test_data_scaled)
+# Calculate Residuals for `accel_magnitude` and `rpm_value`
+accel_residuals = np.abs(y_test['accel_magnitude'].values - y_test_pred[:, 0])
+rpm_residuals = np.abs(y_test['rpm_value'].values - y_test_pred[:, 1])
 
-# Predict acceleration magnitude
-predictions = poly_model.predict(test_data_poly)
+# Define Separate Thresholds for Anomalies
+accel_threshold = np.mean(accel_residuals) + 2 * np.std(accel_residuals)  # 3 standard deviations
+rpm_threshold = np.mean(rpm_residuals) + 4 * np.std(rpm_residuals)        # 3 standard deviations
 
-# Calculate actual magnitude from test data
-test_data['accel_magnitude'] = np.sqrt(
-    test_data['accelerometer_ax']**2 +
-    test_data['accelerometer_ay']**2 +
-    test_data['accelerometer_az']**2
-)
+# Flag Anomalies Separately
+accel_anomalies = accel_residuals > accel_threshold
+rpm_anomalies = rpm_residuals > rpm_threshold
 
-# Calculate residuals for anomalies
-new_residuals = np.abs(predictions.flatten() - test_data['accel_magnitude'].values)
-
-# Calculate residuals for the test data
-residuals = np.abs(y_test.values.flatten() - y_test_pred.flatten())
-threshold = np.mean(residuals) + 3 * np.std(residuals)  # Set dynamically
-anomalies = new_residuals > threshold
-
-# Display predictions with anomaly flags
-predicted_data = pd.DataFrame({
-    'Predicted Acceleration Magnitude': predictions.flatten(),
-    'Speed Value': speed_values,
-    'Actual Acceleration Magnitude': test_data['accel_magnitude'].values,
-    'Residuals': new_residuals,
-    'Is Anomaly': anomalies,
+# Combine Results into a DataFrame
+anomaly_results = pd.DataFrame({
+    'Actual Acceleration Magnitude': y_test['accel_magnitude'].values,
+    'Predicted Acceleration Magnitude': y_test_pred[:, 0],
+    'Accel Residuals': accel_residuals,
+    'Accel Is Anomaly': accel_anomalies,
+    'Actual RPM': y_test['rpm_value'].values,
+    'Predicted RPM': y_test_pred[:, 1],
+    'RPM Residuals': rpm_residuals,
+    'RPM Is Anomaly': rpm_anomalies
 })
-print(predicted_data)
 
-# Plot predictions with anomaly markers
+# Display Anomaly Results
+print(anomaly_results)
+
+# Separate Analysis for Magnitude Anomalies
+magnitude_anomalies = anomaly_results[anomaly_results['Accel Is Anomaly']]
+print("\nMagnitude Anomalies:")
+print(magnitude_anomalies)
+
+# Separate Analysis for RPM Anomalies
+rpm_anomalies = anomaly_results[anomaly_results['RPM Is Anomaly']]
+print("\nRPM Anomalies:")
+print(rpm_anomalies)
+
+# Plot Predictions and Anomalies for `accel_magnitude`
 plt.figure(figsize=(8, 6))
-plt.plot(speed_values, predictions, label="Predicted Acceleration Magnitude", marker='o')
-plt.scatter(speed_values, predictions, c=anomalies, cmap="coolwarm", label="Anomalies")
-plt.xlabel('Speed Value')
+plt.plot(y_test['accel_magnitude'].values, label='Actual Acceleration Magnitude', linestyle='--')
+plt.plot(y_test_pred[:, 0], label='Predicted Acceleration Magnitude', linestyle=':')
+plt.scatter(np.where(accel_anomalies), y_test_pred[:, 0][accel_anomalies], color='red', label='Anomalies')
+plt.xlabel('Sample Index')
 plt.ylabel('Acceleration Magnitude')
-plt.title('Predicted Acceleration Magnitude vs Speed (with Anomalies)')
+plt.title('Anomaly Detection for Acceleration Magnitude')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot Predictions and Anomalies for `rpm_value`
+plt.figure(figsize=(8, 6))
+plt.plot(y_test['rpm_value'].values, label='Actual RPM', linestyle='--')
+plt.plot(y_test_pred[:, 1], label='Predicted RPM', linestyle=':')
+plt.scatter(np.where(rpm_anomalies), y_test_pred[:, 1][rpm_anomalies], color='red', label='Anomalies')
+plt.xlabel('Sample Index')
+plt.ylabel('RPM')
+plt.title('Anomaly Detection for RPM')
 plt.legend()
 plt.grid(True)
 plt.show()

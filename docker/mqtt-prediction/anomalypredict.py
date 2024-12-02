@@ -28,9 +28,6 @@ MQTT_TOPICS = {
     'accelerometer': 'wind_turbine/accelerometer',
     'linear_acceleration': 'wind_turbine/linear_acceleration',
     'gravity': 'wind_turbine/gravity',
-    'voltage': 'wind_turbine/volt',
-    'power': 'wind_turbine/power',
-    'current': 'wind_turbine/current'
 }
 
 # Initialize the MQTT clients
@@ -63,14 +60,13 @@ except FileNotFoundError as e:
 
 # Data storage
 columns = [
-    'speed_value', 'rpm_value', 
+    'speed_value',
     'linear_acceleration_lx', 'linear_acceleration_ly', 'linear_acceleration_lz',
     'gyroscope_gx', 'gyroscope_gy', 'gyroscope_gz',
     'gravity_grx', 'gravity_gry', 'gravity_grz',
     'magnetometer_mx', 'magnetometer_my', 'magnetometer_mz',
     'alignment_0', 'alignment_45', 
     'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az',
-    'power_value', 'current_value', 'voltage_value'
 ]
 
 df = pd.DataFrame([{col: None for col in columns}])
@@ -83,19 +79,28 @@ def on_connect(client, userdata, flags, rc):
         # Subscribe to all relevant topics
         for topic in MQTT_TOPICS.values():
             client.subscribe(topic)
-            logging.info(f"Subscribed to topic: {topic}")
+            #logging.info(f"Subscribed to topic: {topic}")
     else:
         logging.error(f"Failed to connect to MQTT broker. Return code: {rc}")
 
 def on_message(client, userdata, msg):
     """Callback for when a message is received."""
+    global current_rpm
+    current_rpm = None
     topic = msg.topic
     payload = msg.payload.decode()
-    logging.info(f"Received message from topic {topic}: {payload}")
-    update_dataframe(topic, payload)
+    #logging.info(f"Received message from topic {topic}: {payload}")
     
-    # Make prediction and publish it
-    make_and_publish_prediction()
+    if topic == MQTT_TOPICS['rpm']:
+        # Update the current RPM value
+        current_rpm = float(payload)
+        logging.info(f"Updated RPM: {current_rpm}")
+    else:
+        update_dataframe(topic, payload)
+    
+    # Make prediction and publish only if RPM is available
+    if current_rpm is not None:
+        make_and_publish_prediction(current_rpm)
 
 def update_dataframe(topic, payload):
     global df
@@ -130,20 +135,10 @@ def update_dataframe(topic, payload):
             df.at[0, 'linear_acceleration_lx'] = lx
             df.at[0, 'linear_acceleration_ly'] = ly
             df.at[0, 'linear_acceleration_lz'] = lz
-        elif topic == MQTT_TOPICS['power']:
-            power = float(payload)  # Payload is a single value
-            df.at[0, 'power_value'] = power
-        elif topic == MQTT_TOPICS['voltage']:
-            voltage = float(payload)  # Payload is a single value
-            df.at[0, 'voltage_value'] = voltage
-        elif topic == MQTT_TOPICS['current']:
-            current = float(payload)  # Payload is a single value
-            df.at[0, 'current_value'] = current
-        
 
+        
         # Add static or default values for missing features
         df.at[0, 'speed_value'] = 10
-        df.at[0, 'rpm_value'] = 1
         df.at[0, 'alignment_0'] = 1 
         df.at[0, 'alignment_45'] = 0 
         
@@ -160,12 +155,12 @@ def update_dataframe(topic, payload):
         logging.error(f"Error updating DataFrame: {e}")
     
 # Initialize a sliding window for residuals
-residual_window = []
-WINDOW_SIZE = 75  # Number of recent samples to consider for threshold calculation
+magnitude_residual_window = []
+rpm_residual_window = []
+WINDOW_SIZE = 20  # Number of recent samples to consider for threshold calculation
 
-def update_threshold(new_residual):
-    global residual_window
-    
+def update_threshold(residual_window, new_residual):
+    """Update threshold dynamically for a given residual."""
     # Add the new residual to the sliding window
     residual_window.append(new_residual)
     
@@ -178,79 +173,80 @@ def update_threshold(new_residual):
     std_residual = np.std(residual_window)
     
     # Set the threshold
-    return mean_residual + 2 * std_residual
+    return mean_residual + 1.5 * std_residual
+    
 
-def make_and_publish_prediction():
+def make_and_publish_prediction(current_rpm):
     global df
     try:
-        # Drop `accel_magnitude` from the input features if it exists
+        # Drop columns that are not input features
         input_features = df.drop(columns=['accel_magnitude'], errors='ignore')
-    
+
         # Ensure all feature names match those used during training
         input_data = input_features.astype('float32')
-               
+
+        # Select the appropriate model based on the blade configuration
         if blade_1 == 60:
-          logging.info(f"Blade is 60")
-          # Standardize and transform the input features
-          input_data_scaled = scaler60.transform(input_data)
-          input_data_poly = poly60.transform(input_data_scaled)
-          # Predict acceleration magnitude
-          predictions = poly_model60.predict(input_data_poly)
+            scaler, poly, model = scaler60, poly60, poly_model60
         elif blade_1 == 45:
-          logging.info(f"Blade is 45")
-          # Standardize and transform the input features
-          input_data_scaled = scaler45.transform(input_data)
-          input_data_poly = poly45.transform(input_data_scaled)
-          # Predict acceleration magnitude
-          predictions = poly_model45.predict(input_data_poly)
+            scaler, poly, model = scaler45, poly45, poly_model45
         elif blade_1 == 30:
-          logging.info(f"Blade is 30")
-          # Standardize and transform the input features
-          input_data_scaled = scaler30.transform(input_data)
-          input_data_poly = poly30.transform(input_data_scaled)
-          # Predict acceleration magnitude
-          predictions = poly_model30.predict(input_data_poly)       
+            scaler, poly, model = scaler30, poly30, poly_model30
         elif blade_1 == 15:
-          logging.info(f"Blade is 15")
-          # Standardize and transform the input features
-          input_data_scaled = scaler15.transform(input_data)
-          input_data_poly = poly15.transform(input_data_scaled)
-          # Predict acceleration magnitude
-          predictions = poly_model15.predict(input_data_poly)
+            scaler, poly, model = scaler15, poly15, poly_model15
         else:
-          logging.info(f"Blade is 0")
-          
-        # Calculate the actual acceleration magnitude from accelerometer data
-        accel_magnitude = np.sqrt(
-          df.at[0, 'accelerometer_ax']**2 +
-          df.at[0, 'accelerometer_ay']**2 +
-          df.at[0, 'accelerometer_az']**2
+            logging.warning("Invalid blade configuration.")
+            return
+
+        # Standardize and transform input features
+        input_data_scaled = scaler.transform(input_data)
+        input_data_poly = poly.transform(input_data_scaled)
+
+        # Predict acceleration magnitude and RPM
+        predictions = model.predict(input_data_poly)
+        predicted_magnitude = predictions[0, 0]
+        predicted_rpm = predictions[0, 1]
+
+        # Actual values
+        actual_magnitude = np.sqrt(
+            df.at[0, 'accelerometer_ax']**2 +
+            df.at[0, 'accelerometer_ay']**2 +
+            df.at[0, 'accelerometer_az']**2
         )
-    
-        # Calculate residuals (difference between predicted and actual)
-        residuals = np.abs(predictions.flatten() - accel_magnitude)
+        actual_rpm = current_rpm
 
-        # Update the anomaly threshold dynamically
-        threshold = update_threshold(residuals[0])
+        # Calculate residuals
+        magnitude_residual = np.abs(predicted_magnitude - actual_magnitude)
+        rpm_residual = np.abs(predicted_rpm - actual_rpm)
 
-        # Determine if the residual exceeds the threshold
-        anomalies = residuals > threshold
+        # Update thresholds dynamically
+        magnitude_threshold = update_threshold(magnitude_residual_window, magnitude_residual)
+        rpm_threshold = update_threshold(rpm_residual_window, rpm_residual)
 
-        # Log the results
-        logging.info(f"Predictions: {predictions.flatten()}")
-        logging.info(f"Actual Magnitude: {accel_magnitude}")
-        logging.info(f"Residuals: {residuals}")
-        logging.info(f"Anomaly Threshold: {threshold}")
-        logging.info(f"Anomalies Detected: {anomalies}")
+        # Determine anomalies
+        magnitude_anomaly = magnitude_residual > magnitude_threshold
+        rpm_anomaly = rpm_residual > rpm_threshold
 
-        # Prepare the result for publishing
+        # Log results
+        logging.info(f"Predicted Magnitude: {predicted_magnitude}, Actual Magnitude: {actual_magnitude}")
+        logging.info(f"Predicted RPM: {predicted_rpm}, Actual RPM: {actual_rpm}")
+        logging.info(f"Magnitude Residual: {magnitude_residual}, Threshold: {magnitude_threshold}, Anomaly: {magnitude_anomaly}")
+        logging.info(f"RPM Residual: {rpm_residual}, Threshold: {rpm_threshold}, Anomaly: {rpm_anomaly}")
+
+        # Prepare results for publishing
         result = {
-          "Predicted_Magnitude": float(predictions[0]),
-          "Actual_Magnitude": float(accel_magnitude),
-          "Residual": float(residuals[0]),
-          "Threshold": float(threshold),
-          "Anomaly": bool(anomalies[0]),
+            "Predicted_Magnitude": float(predicted_magnitude),
+            "Actual_Magnitude": float(actual_magnitude),
+            "Magnitude_Residual": float(magnitude_residual),
+            "Magnitude_Threshold": float(magnitude_threshold),
+            "Magnitude_Anomaly": bool(magnitude_anomaly),
+            "Predicted_RPM": float(predicted_rpm),
+            "Actual_RPM": float(actual_rpm),
+            "RPM_Residual": float(rpm_residual),
+            "RPM_Threshold": float(rpm_threshold),
+            "RPM_Anomaly": bool(rpm_anomaly),
         }
+
         # Publish the result
         main_client.publish(PUBLISH_TOPIC, json.dumps(result))
         logging.info(f"Published: {result}")
@@ -266,16 +262,16 @@ def main():
         rasp_client.on_message = on_message
 
         # Connect rasp_client to the Raspberry Pi MQTT broker
-        logging.info(f"Connecting to Raspberry Pi MQTT broker at {RASP_BROKER}:{MQTT_PORT}...")
+        #logging.info(f"Connecting to Raspberry Pi MQTT broker at {RASP_BROKER}:{MQTT_PORT}...")
         rasp_client.connect(RASP_BROKER, MQTT_PORT, 60)
         rasp_client.loop_start()  # Start the subscriber loop
         logging.info("Raspberry Pi MQTT client loop started.")
 
         # Connect and start main_client for publishing predictions
-        logging.info(f"Connecting to Main MQTT broker at {MQTT_BROKER}:{MQTT_PORT}...")
+        #logging.info(f"Connecting to Main MQTT broker at {MQTT_BROKER}:{MQTT_PORT}...")
         main_client.connect(MQTT_BROKER, MQTT_PORT, 60)
         main_client.loop_start()  # Start the publisher loop
-        logging.info("Main MQTT client loop started.")
+        #logging.info("Main MQTT client loop started.")
 
         # Keep the script running
         while True:

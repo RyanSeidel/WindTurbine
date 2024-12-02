@@ -2,17 +2,21 @@ let residual = 0;
 let threshold = 0.3; // Initial threshold value
 let anomaly = false;
 
+let rpm_residual = 0;
+let rpm_threshold = 0.3; // Initial RPM threshold
+let rpm_anomaly = false;
+
 // Initial Anomaly Data and Settings
 let anomalyCurrentTime = new Date();
 let anomalyData = []; // Start with an empty dataset
 const anomalyMaxDataPoints = 6; // Maximum number of points before resetting
-const anomalyInterval = 1000; // Interval for adding new points (2 seconds)
+const anomalyInterval = 1000; // Interval for adding new points (1 second)
 
 // Set dimensions and margins
 const anomalyMargin = { top: 30, right: 70, bottom: 50, left: 70 };
 const anomalyContainerWidth = document.querySelector(".anomaly-chart").offsetWidth;
 const anomalyWidth = anomalyContainerWidth - anomalyMargin.left - anomalyMargin.right;
-const anomalyHeight = 200 - anomalyMargin.top - anomalyMargin.bottom;
+const anomalyHeight = 250 - anomalyMargin.top - anomalyMargin.bottom;
 
 // Create SVG container
 const anomalySVG = d3
@@ -29,7 +33,9 @@ anomalySVG.append("text")
   .attr("text-anchor", "start")
   .attr("fill", "#ddd")
   .attr("font-size", "16px")
-  .text("Anomaly Detection (Residual vs Threshold)");
+  .html(`
+    Anomaly Detection (<tspan fill="#ff7f0e">RPM</tspan> vs <tspan fill="#00FF00">Magnitude</tspan>)
+  `);
 
 // Append group for the main chart content
 const anomalyChartGroup = anomalySVG.append("g")
@@ -43,7 +49,7 @@ let anomalyX = d3
 
 let anomalyY = d3
   .scaleLinear()
-  .domain([0.1, 0.5]) // Initial domain
+  .domain([0, 1]) // Adjusted initial domain for better visualization
   .range([anomalyHeight, 0]);
 
 // Add X-axis
@@ -73,19 +79,33 @@ anomalyChartGroup.append("text")
   .attr("transform", "rotate(-90)")
   .text("Residual");
 
-// Line generator for Residual
-const anomalyLineGenerator = d3
+// Line generator for Magnitude Residual
+const magnitudeLineGenerator = d3
   .line()
   .x(d => anomalyX(d.time))
   .y(d => anomalyY(d.residual));
 
-// Initialize line for Residual
-const anomalyLine = anomalyChartGroup.append("path")
+// Initialize line for Magnitude Residual
+const magnitudeLine = anomalyChartGroup.append("path")
+  .attr("class", "magnitude-line")
   .attr("fill", "none")
-  .attr("stroke", "#2ca02c")
+  .attr("stroke", "#2ca02c") // Green for Magnitude
   .attr("stroke-width", 2);
 
-// Add Threshold Line
+// Line generator for RPM Residual
+const rpmLineGenerator = d3
+  .line()
+  .x(d => anomalyX(d.time))
+  .y(d => anomalyY(d.residual));
+
+// Initialize line for RPM Residual
+const rpmLine = anomalyChartGroup.append("path")
+  .attr("class", "rpm-line")
+  .attr("fill", "none")
+  .attr("stroke", "#ff7f0e") // Orange for RPM
+  .attr("stroke-width", 2);
+
+// Add Threshold Line for Magnitude
 const thresholdLine = anomalyChartGroup.append("line")
   .attr("class", "threshold-line")
   .attr("x1", 0)
@@ -93,6 +113,17 @@ const thresholdLine = anomalyChartGroup.append("line")
   .attr("y1", anomalyY(threshold))
   .attr("y2", anomalyY(threshold))
   .attr("stroke", "#d62728")
+  .attr("stroke-width", 2)
+  .attr("stroke-dasharray", "5,5");
+
+// Add Threshold Line for RPM
+const rpmThresholdLine = anomalyChartGroup.append("line")
+  .attr("class", "rpm-threshold-line")
+  .attr("x1", 0)
+  .attr("x2", anomalyWidth)
+  .attr("y1", anomalyY(rpm_threshold))
+  .attr("y2", anomalyY(rpm_threshold))
+  .attr("stroke", "#ff7f0e")
   .attr("stroke-width", 2)
   .attr("stroke-dasharray", "5,5");
 
@@ -113,30 +144,48 @@ socket.on("anomaly_data", (data) => {
   console.log("Anomaly data received: ", data);
 
   // Parse anomaly data
-  residual = data.Residual;
-  threshold = data.Threshold; // Update threshold dynamically
+  residual = data.Magnitude_Residual;
+  threshold = data.Magnitude_Threshold; // Update threshold dynamically
   anomaly = residual > threshold;
+
+  // RPM anomaly data
+  rpm_residual = data.RPM_Residual / 100;
+  rpm_threshold = data.RPM_Threshold / 100;
+  rpm_anomaly = rpm_residual > rpm_threshold;
 });
 
+// Update function for the chart
 function updateAnomalyChart() {
   const currentTime = new Date();
+
+  // Add data for Magnitude anomalies
   anomalyData.push({
     time: currentTime,
     residual: residual,
     threshold: threshold,
-    anomaly: anomaly
+    anomaly: anomaly,
+    type: "Magnitude"
   });
 
-  if (anomalyData.length > anomalyMaxDataPoints + 1) {
-    anomalyData.shift();
+  // Add data for RPM anomalies
+  anomalyData.push({
+    time: currentTime,
+    residual: rpm_residual,
+    threshold: rpm_threshold,
+    anomaly: rpm_anomaly,
+    type: "RPM"
+  });
+
+  if (anomalyData.length > anomalyMaxDataPoints * 2 + 2) {
+    // Remove pairs of Magnitude and RPM data points
+    anomalyData.shift(); // Removes the oldest "Magnitude" data point
+    anomalyData.shift(); // Removes the oldest "RPM" data point
   }
 
   // Update the Y-axis domain dynamically
-  const residualExtent = d3.extent(anomalyData, d => d.residual);
-  const thresholdExtent = d3.extent(anomalyData, d => d.threshold);
   const combinedExtent = [
-    Math.min(...residualExtent, ...thresholdExtent) - 0.1,
-    Math.max(...residualExtent, ...thresholdExtent) + 0.1
+    Math.min(...anomalyData.map(d => d.residual), ...anomalyData.map(d => d.threshold)) - 0.1,
+    Math.max(...anomalyData.map(d => d.residual), ...anomalyData.map(d => d.threshold)) + 0.1
   ];
 
   anomalyY.domain(combinedExtent);
@@ -145,35 +194,52 @@ function updateAnomalyChart() {
   anomalyChartGroup.select(".y-axis")
     .transition()
     .duration(500)
-    .call(d3.axisLeft(anomalyY).ticks(5));
+    .style("color", "#fff")
+    .call(d3.axisLeft(anomalyY).ticks(5))
+    ;
 
   anomalyX.domain([anomalyData[0].time, new Date(anomalyData[0].time.getTime() + anomalyMaxDataPoints * anomalyInterval)]);
 
   anomalyChartGroup.select(".x-axis")
     .transition()
     .duration(500)
+    .style("color", "#fff")
     .call(d3.axisBottom(anomalyX).ticks(anomalyMaxDataPoints));
 
-  // Update the Residual line
-  anomalyLine
-    .datum(anomalyData)
+  // Update the Magnitude Residual line
+  magnitudeLine
+    .datum(anomalyData.filter(d => d.type === "Magnitude"))
     .transition()
     .duration(500)
-    .attr("d", anomalyLineGenerator);
+    .attr("d", magnitudeLineGenerator);
 
-  // Update the Threshold line
+  // Update the RPM Residual line
+  rpmLine
+    .datum(anomalyData.filter(d => d.type === "RPM"))
+    .transition()
+    .duration(500)
+    .attr("d", rpmLineGenerator);
+
+  // Update the Magnitude Threshold line
   thresholdLine
     .transition()
     .duration(500)
     .attr("y1", anomalyY(threshold))
     .attr("y2", anomalyY(threshold));
 
+  // Update the RPM Threshold line
+  rpmThresholdLine
+    .transition()
+    .duration(500)
+    .attr("y1", anomalyY(rpm_threshold))
+    .attr("y2", anomalyY(rpm_threshold));
+
   const circles = anomalyChartGroup.selectAll(".data-point").data(anomalyData);
 
   circles.enter()
     .append("circle")
     .attr("class", "data-point")
-    .attr("r", 4)
+    .attr("r", 5)
     .merge(circles)
     .attr("cx", d => anomalyX(d.time))
     .attr("cy", d => anomalyY(d.residual))
@@ -182,7 +248,8 @@ function updateAnomalyChart() {
       anomalyTooltip
         .style("opacity", 1)
         .html(
-          `Time: ${d.time.toLocaleTimeString()}<br>
+          `<strong>${d.type} Anomaly</strong><br>
+          Time: ${d.time.toLocaleTimeString()}<br>
           Residual: ${d.residual.toFixed(2)}<br>
           Threshold: ${d.threshold.toFixed(2)}<br>
           Anomaly: ${d.anomaly ? "Yes" : "No"}`
