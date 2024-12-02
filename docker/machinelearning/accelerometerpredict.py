@@ -11,13 +11,13 @@ import joblib
 # Load dataset
 data_files = [
     
-    # 97 Percent
-    'wind_60_HighFanVib.csv',
-    'wind_60_NoFanVib.csv',
-    'wind_60_2HighFanVib.csv',
-    'wind_60_45Degree_1HighFanVib.csv',
-    'wind_60_45Degree_2HighFanVib.csv',
-    'wind_60_45DegreeNoFanVib.csv'
+    # 98 Percent
+    # 'wind_60_HighFanVib.csv',
+    # 'wind_60_NoFanVib.csv',
+    # 'wind_60_2HighFanVib.csv',
+    # 'wind_60_45Degree_1HighFanVib.csv',
+    # 'wind_60_45Degree_2HighFanVib.csv',
+    # 'wind_60_45DegreeNoFanVib.csv'
     
     # 97 Percent
     # 'wind_45_1HighFanVib.csv',
@@ -76,7 +76,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Save the scaler for future use
-joblib.dump(scaler, '60BladeModel_gyro_components.pkl')
+joblib.dump(scaler, '45BladeModel_gyro_components.pkl')
 
 # Create Polynomial Features
 poly_degree = 1  # Linear relationship for now
@@ -85,7 +85,7 @@ X_train_poly = poly.fit_transform(X_train_scaled)
 X_test_poly = poly.transform(X_test_scaled)
 
 # Save the polynomial feature transformer for future use
-joblib.dump(poly, '60BladeModelVibration.pkl')
+joblib.dump(poly, '45BladeModelVibration.pkl')
 
 # Train Multi-Output Polynomial Regression Model
 try:
@@ -101,7 +101,7 @@ except FileNotFoundError:
     print("Training complete.")
 
 # Save the Updated Model
-joblib.dump(poly_model, '60BladeModel_components_model.pkl')
+joblib.dump(poly_model, '45BladeModel_components_model.pkl')
 print("Updated model saved as polynomial_accel_gyro_components_model.pkl.")
 
 # Predict on Train and Test Data
