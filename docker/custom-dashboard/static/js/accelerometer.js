@@ -24,27 +24,23 @@
   // This tool provides a comprehensive and visually engaging solution for analyzing motion and orientation data,  // 
   // suitable for use cases in robotics, IoT, and real-time telemetry monitoring.                                  // 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-let accAx = 0;
+  let accAx = 0;
 let accAy = 0;
 let accAz = 0;
 let Lx = 0;
 let Ly = 0;
 let Lz = 0;
 
-// Initial Accelerometer Data and Settings
 let accCurrentTime = new Date();
-let accData = []; // Start with an empty dataset
-const accMaxDataPoints = 6; // Maximum number of points before resetting
-const accInterval = 2000; // Interval for adding new points (2 seconds)
+let accData = [];
+const accMaxDataPoints = 6;
+const accInterval = 2000;
 
-// Set dimensions and margins
-const accMargin = { top: 30, right: 70, bottom: 50, left: 70 };
+const accMargin = { top: 30, right: 100, bottom: 50, left: 70 };
 const accContainerWidth = document.querySelector(".accelerometer-chart").offsetWidth;
 const accWidth = accContainerWidth - accMargin.left - accMargin.right;
 const accHeight = 225 - accMargin.top - accMargin.bottom;
 
-
-// Create SVG container
 const accSVG = d3
   .select(".accelerometer-chart")
   .append("svg")
@@ -52,103 +48,94 @@ const accSVG = d3
   .attr("height", accHeight + accMargin.top + accMargin.bottom)
   .style("background", "#1a1a1a");
 
-// Add a title to the chart
 accSVG.append("text")
   .attr("x", accMargin.left)
   .attr("y", 20)
   .attr("text-anchor", "start")
   .attr("fill", "#ddd")
   .attr("font-size", "16px")
-  .text("Accelerometer and Linear Accleration Data");
+  .text("Accelerometer and Linear Acceleration Data");
 
-// Add label for Ax
-// Labels for Ax, Ay, Az, Gx, Gy, Gz
-const labels = [
-  { label: "Ax", color: "#ff0000", x: 340 },
-  { label: "Ay", color: "#00ff00", x: 365 },
-  { label: "Az", color: "#0000ff", x: 390 },
-  { label: "Lx", color: "#ffff00", x: 415 },
-  { label: "Ly", color: "#ff00ff", x: 440 },
-  { label: "Lz", color: "#00ffff", x: 465 }
+// Labels for the primary Y-axis (Lx, Ly, Lz, Ax, Ay)
+const primaryLabels = [
+  { label: "Lx", color: "#ffff00", offset: 0 },
+  { label: "Ly", color: "#ff00ff", offset: 20 },
+  { label: "Lz", color: "#00ffff", offset: 40 },
+  { label: "Ax", color: "#ff0000", offset: 60 },
+  { label: "Ay", color: "#00ff00", offset: 80 }
 ];
 
-labels.forEach(({ label, color, x }) => {
+primaryLabels.forEach(({ label, color, offset }) => {
   accSVG.append("text")
-    .attr("x", accMargin.left + x)
-    .attr("y", 20)
-    .attr("text-anchor", "start")
+    .attr("x", accMargin.left - 50) // Position near primary Y-axis
+    .attr("y", accMargin.top + offset)
+    .attr("text-anchor", "center")
     .attr("fill", color)
-    .attr("font-size", "16px")
+    .attr("font-size", "14px")
     .text(label);
 });
 
-// Append group for the main chart content
+// Label for the secondary Y-axis (Az)
+accSVG.append("text")
+  .attr("x", accMargin.left + accWidth + 40) // Position near secondary Y-axis
+  .attr("y", accMargin.top)
+  .attr("text-anchor", "start")
+  .attr("fill", "#0000ff") // Color for Az
+  .attr("font-size", "16px")
+  .text("Az");
+
 const accChartGroup = accSVG.append("g")
   .attr("transform", `translate(${accMargin.left},${accMargin.top})`);
 
-// Create scales
 const accX = d3
   .scaleTime()
   .domain([accCurrentTime, new Date(accCurrentTime.getTime() + accMaxDataPoints * accInterval)])
   .range([0, accWidth]);
 
-const accY = d3
+const accYPrimary = d3
   .scaleLinear()
-  .domain([-1.5, 15]) // Example domain for ax, ay, and az
+  .domain([-1.5, 1.5])
   .range([accHeight, 0]);
 
-// Add X-axis
+const accYSecondary = d3
+  .scaleLinear()
+  .domain([0, 15])
+  .range([accHeight, 0]);
+
 const accXAxis = accChartGroup.append("g")
   .attr("class", "x-axis")
   .attr("transform", `translate(0,${accHeight})`)
-  .call(
-    d3.axisBottom(accX)
-      .ticks(maxDataPoints) // Limit to 6 ticks
-      .tickSize(-accHeight) // Extend tick lines as grid lines
-      .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : ""))
-  )
-  .selectAll("text")
-  .attr("fill", "#ddd") // Text color for tick labels
-  .attr("font-size", "10px"); // Font size for tick labels
-
-accChartGroup.append("text")
-  .attr("x", width / 2)
-  .attr("y", height + 40)
-  .attr("text-anchor", "middle")
-  .attr("fill", "#ddd")
-  .attr("font-size", "12px")
-  .text("Time");
-
-// Add Y-axis
-accChartGroup.append("g")
-  .attr("class", "y-axis")
-  .call(d3.axisLeft(accY).ticks(5))
+  .call(d3.axisBottom(accX).ticks(accMaxDataPoints))
   .selectAll("text")
   .attr("fill", "#ddd")
   .attr("font-size", "10px");
 
-// Add Y-axis label
-accChartGroup.append("text")
-  .attr("x", -accHeight / 2)
-  .attr("y", -50)
-  .attr("text-anchor", "middle")
+accChartGroup.append("g")
+  .attr("class", "y-axis-primary")
+  .call(d3.axisLeft(accYPrimary).ticks(5))
+  .selectAll("text")
   .attr("fill", "#ddd")
-  .attr("font-size", "12px")
-  .attr("transform", "rotate(-90)")
-  .text("Acceleration (m/s²)");
+  .attr("font-size", "10px");
+
+accChartGroup.append("g")
+  .attr("class", "y-axis-secondary")
+  .attr("transform", `translate(${accWidth}, 0)`)
+  .call(d3.axisRight(accYSecondary).ticks(5))
+  .selectAll("text")
+  .attr("fill", "#ddd")
+  .attr("font-size", "10px");
 
 const lineGenerators = {
-    ax: d3.line().x(d => accX(d.time)).y(d => accY(d.ax)),
-    ay: d3.line().x(d => accX(d.time)).y(d => accY(d.ay)),
-    az: d3.line().x(d => accX(d.time)).y(d => accY(d.az)),
-    gx: d3.line().x(d => accX(d.time)).y(d => accY(d.gx)),
-    gy: d3.line().x(d => accX(d.time)).y(d => accY(d.gy)),
-    gz: d3.line().x(d => accX(d.time)).y(d => accY(d.gz))
-  };
+  ax: d3.line().x(d => accX(d.time)).y(d => accYPrimary(d.ax)),
+  ay: d3.line().x(d => accX(d.time)).y(d => accYPrimary(d.ay)),
+  az: d3.line().x(d => accX(d.time)).y(d => accYSecondary(d.az)),
+  lx: d3.line().x(d => accX(d.time)).y(d => accYPrimary(d.lx)),
+  ly: d3.line().x(d => accX(d.time)).y(d => accYPrimary(d.ly)),
+  lz: d3.line().x(d => accX(d.time)).y(d => accYPrimary(d.lz))
+};
 
-// Line generators for ax, ay, and az
 const lines = {};
-["ax", "ay", "az", "gx", "gy", "gz"].forEach((key, index) => {
+["ax", "ay", "az", "lx", "ly", "lz"].forEach((key, index) => {
   const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
   lines[key] = accChartGroup.append("path")
     .attr("fill", "none")
@@ -156,10 +143,6 @@ const lines = {};
     .attr("stroke-width", 2);
 });
 
-
-
-
-// Tooltip setup
 const acctooltip = d3
   .select(".accelerometer-chart")
   .append("div")
@@ -171,77 +154,49 @@ const acctooltip = d3
   .style("pointer-events", "none")
   .style("opacity", 0);
 
-// Socket.IO listener for accelerometer data
 socket.on("accelerometer_data", (data) => {
-  console.log("Accelerometer data received: ", data);
-
-  // Parse accelerometer data
   const [ax, ay, az] = data.accelerometer.split(",").map(Number);
-
-  // Update global variables for Ax, Ay, and Az
   accAx = ax;
   accAy = ay;
   accAz = az;
-
 });
 
 socket.on('linear_acceleration_data', (data) => {
-  //console.log("linear_acceleration data received: ", data);  // Debugging log
-  const [lx, ly, lz] = data.linear_acceleration.split(',').map(Number); // Split and convert to numbers
+  const [lx, ly, lz] = data.linear_acceleration.split(',').map(Number);
   Lx = lx;
   Ly = ly;
   Lz = lz;
 });
 
 function updateAccChart() {
-  // Generate new data point with the latest accelerometer and linear acceleration values
   const currentTime = new Date();
   accData.push({ time: currentTime, ax: accAx, ay: accAy, az: accAz, lx: Lx, ly: Ly, lz: Lz });
+  if (accData.length > accMaxDataPoints + 1) accData.shift();
 
-  // Remove oldest data point if exceeding accMaxDataPoints
-  if (accData.length > accMaxDataPoints + 1) {
-    accData.shift();
-  }
+  const primaryExtent = ["ax", "ay", "lx", "ly", "lz"]
+    .flatMap(key => d3.extent(accData, d => d[key]));
+  accYPrimary.domain([Math.min(...primaryExtent) - 0.5, Math.max(...primaryExtent) + 0.5]);
 
-  // Calculate the extent (min and max) of all data points for accelerometer and linear acceleration
-  const allExtents = ["ax", "ay", "az", "lx", "ly", "lz"].flatMap(key => d3.extent(accData, d => d[key]));
-  const overallExtent = [Math.min(...allExtents), Math.max(...allExtents)];
+  const secondaryExtent = d3.extent(accData, d => d.az);
+  accYSecondary.domain([secondaryExtent[0] - 2, secondaryExtent[1] + 2]);
 
-  // Update the Y-axis domain dynamically
-  accY.domain([overallExtent[0] - 2, overallExtent[1] + 2]);
-
-  // Update the Y-axis
-  accChartGroup.select(".y-axis")
-    .transition()
-    .duration(500)
-    .call(d3.axisLeft(accY).ticks(5))
-    .selectAll("text")
-    .attr("fill", "#ddd")
-    .attr("font-size", "10px");
-
-  // Update the X-axis domain
   accX.domain([accData[0].time, new Date(accData[0].time.getTime() + accMaxDataPoints * accInterval)]);
 
-  // Update the X-axis
+  accChartGroup.select(".y-axis-primary")
+    .transition().duration(500)
+    .style("color", "#fff")
+    .call(d3.axisLeft(accYPrimary));
+
+  accChartGroup.select(".y-axis-secondary")
+    .transition().duration(500)
+    .style("color", "#fff")
+    .call(d3.axisRight(accYSecondary));
+
   accChartGroup.select(".x-axis")
-    .transition()
-    .duration(500)
-    .call(
-      d3.axisBottom(accX)
-        .ticks(accMaxDataPoints)
-        .tickSize(-accHeight)
-        .tickFormat((d, i) => (i % 2 === 0 ? d3.timeFormat("%H:%M:%S")(d) : ""))
-    )
-    .selectAll("text")
-    .attr("fill", "#ddd")
-    .attr("font-size", "10px");
+    .transition().duration(500)
+    .style("color", "#fff")
+    .call(d3.axisBottom(accX).ticks(accMaxDataPoints));
 
-  // Style grid lines for the X-axis
-  accChartGroup.selectAll(".x-axis .tick line")
-    .attr("stroke", "#444")
-    .attr("stroke-dasharray", "2,2");
-
-  // Update lines for Ax, Ay, Az, Lx, Ly, and Lz
   Object.keys(lineGenerators).forEach(key => {
     lines[key]
       .datum(accData)
@@ -250,26 +205,25 @@ function updateAccChart() {
       .attr("d", lineGenerators[key]);
   });
 
-  // Update circles for data points (optional, for accelerometer only)
+  // Tooltip circles
   const circles = accChartGroup.selectAll(".data-point").data(accData);
 
-  circles
-    .enter()
+  circles.enter()
     .append("circle")
     .attr("class", "data-point")
     .attr("r", 4)
     .merge(circles)
     .attr("cx", d => accX(d.time))
-    .attr("cy", d => accY(d.ax)) // Use Ax for tooltip demonstration
+    .attr("cy", d => accYPrimary(d.ax)) // Use Ax as example
     .attr("fill", "#ddd")
     .on("mouseover", (event, d) => {
       acctooltip
         .style("opacity", 1)
-        .html(
-          `Time: ${d.time.toLocaleTimeString()}<br>
+        .html(`
+          Time: ${d.time.toLocaleTimeString()}<br>
           Ax: ${d.ax.toFixed(2)}, Ay: ${d.ay.toFixed(2)}, Az: ${d.az.toFixed(2)}<br>
-          Lx: ${d.lx.toFixed(2)}, Ly: ${d.ly.toFixed(2)}, Lz: ${d.lz.toFixed(2)}`
-        )
+          Lx: ${d.lx.toFixed(2)}, Ly: ${d.ly.toFixed(2)}, Lz: ${d.lz.toFixed(2)}
+        `)
         .style("left", `${event.pageX + 10}px`)
         .style("top", `${event.pageY - 20}px`);
     })
@@ -280,5 +234,4 @@ function updateAccChart() {
   circles.exit().remove();
 }
 
-// Update chart with new data at the specified interval
 setInterval(updateAccChart, accInterval);

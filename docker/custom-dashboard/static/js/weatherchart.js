@@ -236,7 +236,7 @@ function updateChart() {
         .tickValues(d3.range(Math.floor(windSpeedExtent[0] - 1), Math.ceil(windSpeedExtent[1] + 1), 0.3)) // Ticks every 0.5
     )
     .selectAll("text")
-    .attr("fill", "#ddd") // Force tick text color during updates
+    .style("color", "#fff") // Force tick text color during updates
     .attr("font-size", "10px");
 
   chartGroup.select(".y-axis-pressure")
@@ -247,7 +247,7 @@ function updateChart() {
         .tickValues(d3.range(Math.floor(pressureExtent[0] - 1), Math.ceil(pressureExtent[1] + 1), 0.3)) // Ticks every 0.5
     )
     .selectAll("text")
-    .attr("fill", "#ddd") // Force tick text color during updates
+    .style("color", "#fff")
     .attr("font-size", "10px");
 
   
@@ -256,6 +256,7 @@ function updateChart() {
   chartGroup.select(".x-axis")
     .transition()
     .duration(500)
+    .style("color", "#fff")
     .call(
       d3.axisBottom(x)
         .ticks(maxDataPoints)

@@ -12,11 +12,12 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 # Load blade configuration from environment variables
 blade_1 = int(os.environ.get('blade_1', 0))
+alignment = int(os.environ.get('alignment', 0))
 
 # Load environment variables or use defaults
 MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-RASP_BROKER = os.getenv("RASP_BROKER", "192.168.1.208")
+RASP_BROKER = os.getenv("RASP_BROKER")
 PUBLISH_TOPIC = "anomaly_predictions"
 
 # Topics under wind_turbine namespace
@@ -113,7 +114,10 @@ def update_dataframe(topic, payload):
             df.at[0, 'accelerometer_az'] = az
         elif topic == MQTT_TOPICS['speed']:
             speed_value = float(payload)
-            df.at[10, 'speed_value'] = speed_value
+
+            print(f"Received speed value: {speed_value}")
+
+            df.at[0, 'speed_value'] = speed_value
         elif topic == MQTT_TOPICS['magnetometer']:
             mx, my, mz = map(float, payload.split(','))
             df.at[0, 'magnetometer_mx'] = mx
@@ -135,12 +139,16 @@ def update_dataframe(topic, payload):
             df.at[0, 'linear_acceleration_lx'] = lx
             df.at[0, 'linear_acceleration_ly'] = ly
             df.at[0, 'linear_acceleration_lz'] = lz
-
-        
-        # Add static or default values for missing features
-        df.at[0, 'speed_value'] = 10
-        df.at[0, 'alignment_0'] = 1 
-        df.at[0, 'alignment_45'] = 0 
+        # elif topic == MQTT_TOPICS['speed']:
+        #     speed = float(payload)
+        #     df.at[0, 'speed_value'] = speed
+        # 
+        if alignment == 0:
+            df.at[0, 'alignment_0'] = 1  # Set 'alignment_0' to 1 when alignment is 0
+            df.at[0, 'alignment_45'] = 0  # Set 'alignment_45' to 0 when alignment is 0
+        elif alignment == 45:
+            df.at[0, 'alignment_0'] = 0  # Set 'alignment_0' to 0 when alignment is 45
+            df.at[0, 'alignment_45'] = 1  # Set 'alignment_45' to 1 when alignment is 45
         
         # Ensure the full DataFrame is printed
         # pd.set_option('display.max_columns', None)  # Display all columns

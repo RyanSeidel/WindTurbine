@@ -24,7 +24,7 @@ services:
     - FLASK_DEBUG=1
     - MQTT_BROKER=mosquitto
     - MQTT_PORT=1883
-    - RASP_BROKER=192.168.1.208
+    - RASP_BROKER=192.168.0.100
     - blade_1=60
     - blade_2=60
     - blade_3=60
@@ -52,10 +52,12 @@ services:
       - my_network
     environment:
       - MQTT_BROKER=mosquitto  # Pointing to the Mosquitto container
-      - RASP_BROKER=192.168.1.208
+      - RASP_BROKER=192.168.0.100
       - MQTT_PORT=1883
       - PUBLISH_TOPIC=wind_turbine/predictions
       - PUBLISH_INTERVAL=5
+      # I only have 0 and 45 alignment do not go higher
+      - alignment = 45
       - blade_1=60
       - blade_2=60
       - blade_3=60

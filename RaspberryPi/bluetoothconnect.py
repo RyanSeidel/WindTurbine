@@ -1,6 +1,6 @@
 import serial
 
-bluetooth_port = 'COM9'  # Replace with your Bluetooth COM port
+bluetooth_port = 'COM6'  # Replace with your Bluetooth COM port
 baud_rate = 115200
 
 try:

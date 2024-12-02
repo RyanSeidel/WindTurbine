@@ -37,7 +37,7 @@ influx_client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLU
 write_api = influx_client.write_api(write_options=SYNCHRONOUS)  # This line initializes write_api
 
 # MQTT Configuration for Raspberry Pi
-RASP_BROKER = os.getenv("RASP_BROKER", "192.168.1.208")  # Ensure this is always set in the environment
+RASP_BROKER = os.getenv("RASP_BROKER")  # Ensure this is always set in the environment
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))  # Defaults to 1883 if not set
 
 # Model Prediction
@@ -94,8 +94,8 @@ def on_message(client, userdata, msg):
     if topic == MQTT_TOPICS['rpm']:
         socketio.emit('rpm_data', {'latest_rpm': float(payload)})
         #print(f"Socket.IO: Emitted 'rpm_data' with value {float(payload)}", flush=True)
-    # elif topic == MQTT_TOPICS['temperature']:
-    #     socketio.emit('temperature_data', {'temperature': float(payload)})      
+    elif topic == MQTT_TOPICS['temperature']:
+        socketio.emit('temperature_data', {'temperature': float(payload)})      
     elif topic == MQTT_TOPICS['orientation']:          
         socketio.emit('orientation_data', {'orientation': payload})
     elif topic == MQTT_TOPICS['magnetometer']:     
@@ -118,18 +118,18 @@ def on_message(client, userdata, msg):
         socketio.emit('current_data', {'current': float(payload)})        
     elif topic == MQTT_TOPICS['servo']:
         socketio.emit('servo_data', {'servo': float(payload)})
-    # elif topic == MQTT_TOPICS['speed']:
-    #     # socketio.emit('speed_data', {'speed': float(payload)})
-    # elif topic == MQTT_TOPICS['direction']:
-    #     #print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
-    #     socketio.emit('direction_data', {'direction': int(payload)})
-    # elif topic == MQTT_TOPICS['pressure']:
+    elif topic == MQTT_TOPICS['speed']:
+        socketio.emit('speed_data', {'speed': float(payload)})
+    elif topic == MQTT_TOPICS['direction']:
         #print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
-    #     socketio.emit('pressure_data', {'pressure': float(payload)})
-    # elif topic == MQTT_TOPICS['humidity']:     
-    #     socketio.emit('humidity_data', {'humidity': float(payload)})
-    # elif topic == MQTT_TOPICS['altitude']:      
-    #     socketio.emit('altitude_data', {'altitude': float(payload)})
+        socketio.emit('direction_data', {'direction': int(payload)})
+    elif topic == MQTT_TOPICS['pressure']:
+        print(f"Direction Payload: {payload}", flush=True)  # Debug: Print the payload
+        socketio.emit('pressure_data', {'pressure': float(payload)})
+    elif topic == MQTT_TOPICS['humidity']:     
+        socketio.emit('humidity_data', {'humidity': float(payload)})
+    elif topic == MQTT_TOPICS['altitude']:      
+        socketio.emit('altitude_data', {'altitude': float(payload)})
     elif topic == MQTT_TOPICS['predictedRPS']:      
         # Example payload: "{'predictedRPS': np.float64(2.492183260094821)}"
         try:

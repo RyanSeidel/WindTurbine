@@ -9,18 +9,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends mosquitto-clien
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file and install dependencies
-COPY requirements.txt .
+COPY requirements.txt . 
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy Python scripts and the shell script
 COPY . .
-COPY run_scripts.sh .
-
-# Make the shell script executable
-RUN chmod +x run_scripts.sh
 
 # Expose MQTT port (optional, mostly for clarity)
 EXPOSE 1883
 
-# Command to run the shell script
-CMD ["./run_scripts.sh"]
+# Run mqtt_prediction.py directly
+CMD ["sh", "-c", "python mqtt_prediction.py & python anomalypredict.py"]
