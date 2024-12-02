@@ -1,8 +1,18 @@
-let residual = 0;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Anomaly Detection Chart for RPM and Magnitude Residuals                                                       //
+// By [Wind Turbine Digital Twins]                                                                               //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Description:                                                                                                  //
+// This script creates a real-time D3.js chart for detecting and visualizing anomalies in RPM and Magnitude data.//
+// The chart dynamically updates with incoming residual data, displays threshold lines, and highlights anomalies.//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+// Initialize residuals and thresholds for Magnitude and RPM
+let residual = 0; // Current residual for RPM
 let threshold = 0.3; // Initial threshold value
 let anomaly = false;
 
-let rpm_residual = 0;
+let rpm_residual = 0; // Current residual for RPM
 let rpm_threshold = 0.3; // Initial RPM threshold
 let rpm_anomaly = false;
 

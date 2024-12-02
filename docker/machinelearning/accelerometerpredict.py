@@ -1,3 +1,17 @@
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# Wind Turbine Digital Twin - Linear Regression Model for Anomaly Detection                                       #
+# By [Wind Turbine Digital Twins]                                                                                 #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# Description:                                                                                                    #
+# This script preprocesses data from wind turbine sensors, trains a Linear regression model using the             #
+# MultiOutputRegressor for predicting acceleration magnitude and RPM, and detects anomalies based on residuals.   #
+# The script also visualizes predictions and anomalies for easy interpretation.                                   #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+import pandas as pd
+import numpy as np
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split

@@ -1,3 +1,5 @@
+// This is old and not used anymore
+
 document.getElementById("mqttConnectForm").addEventListener("submit", async function(event) {
   event.preventDefault();
 

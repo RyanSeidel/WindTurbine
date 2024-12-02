@@ -1,3 +1,5 @@
+//For future work, I intended to develop a notifier alert module.
+
 document.addEventListener("DOMContentLoaded", () => {
   const consoleToggle = document.getElementById("console-toggle");
   const consolePanel = document.getElementById("console-panel");
