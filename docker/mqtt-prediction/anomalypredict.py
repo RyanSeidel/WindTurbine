@@ -228,10 +228,10 @@ def make_and_publish_prediction(current_rpm):
         rpm_anomaly = rpm_residual > rpm_threshold
 
         # Log results
-        logging.info(f"Predicted Magnitude: {predicted_magnitude}, Actual Magnitude: {actual_magnitude}")
-        logging.info(f"Predicted RPM: {predicted_rpm}, Actual RPM: {actual_rpm}")
-        logging.info(f"Magnitude Residual: {magnitude_residual}, Threshold: {magnitude_threshold}, Anomaly: {magnitude_anomaly}")
-        logging.info(f"RPM Residual: {rpm_residual}, Threshold: {rpm_threshold}, Anomaly: {rpm_anomaly}")
+        #logging.info(f"Predicted Magnitude: {predicted_magnitude}, Actual Magnitude: {actual_magnitude}")
+        #logging.info(f"Predicted RPM: {predicted_rpm}, Actual RPM: {actual_rpm}")
+        #logging.info(f"Magnitude Residual: {magnitude_residual}, Threshold: {magnitude_threshold}, Anomaly: {magnitude_anomaly}")
+        #logging.info(f"RPM Residual: {rpm_residual}, Threshold: {rpm_threshold}, Anomaly: {rpm_anomaly}")
 
         # Prepare results for publishing
         result = {

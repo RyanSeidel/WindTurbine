@@ -60,7 +60,7 @@ body {
   display: flex;
   flex-wrap: wrap; /* Allows items to wrap to the next row */
   gap: 20px;
-  border: 2px solid #fff;
+
   max-width: 1025px; /* Fixed width for the entire side panel */
   
 }
@@ -69,7 +69,6 @@ body {
   display: flex;
   flex-wrap: wrap; /* Allows items to wrap to the next row */
   gap: 20px;
-  border: 2px solid #fff;
   max-width: 625px; /* Fixed width for the entire side panel */
   
 }
@@ -207,7 +206,17 @@ body {
   border: 2px solid #333; /* Border to distinguish the model container */
 }
 
+.analyismodel-container{
 
+  aspect-ratio: 1; /* Maintain a square aspect ratio */
+  background-color: #1a1a1a;
+  border: 2px solid #333; /* Border to distinguish the model container */
+
+}
+
+.hidden {
+  display: none;
+}
 
 .orientation-container div {
   margin-bottom: 10px; /* Adds space between each section */

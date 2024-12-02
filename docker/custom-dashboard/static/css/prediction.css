@@ -1,8 +1,8 @@
 /* General Table Styling */
 .table {
   width: 575px;
-  height: 775px;
-  background-color: #ddd;; /* Sync with theme */
+  height: 390px;
+  background-color: #ddd; /* Sync with theme */
   color: var(--text-primary); /* Sync text color with theme */
   border-radius: 8px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for better aesthetics */
@@ -14,7 +14,7 @@
 .compare-graph {
   width: 775px;
   height: 775px; /* Adjust height dynamically */
-  background-color: #ddd;; /* Sync with theme */
+  background-color: #ddd; /* Sync with theme */
   color: var(--text-primary); /* Sync text color with theme */
   border-radius: 8px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
@@ -47,7 +47,6 @@
 .styled-table td {
   padding: 12px 15px;
   border-bottom: 1px solid var(--bg-secondary); /* Sync border color with theme */
-  color: var(--text-secondary); /* Sync cell text color with theme */
 }
 
 .styled-table tbody tr:nth-of-type(even) {
@@ -74,7 +73,6 @@ h3 {
   width: 100%; /* Adjust width to span container */
   border-radius: 8px;
 }
-
 
 .data-select h2 {
   text-align: center;
@@ -110,8 +108,9 @@ h3 {
   color: var(--text-primary);
 }
 
-.small-buttonPredict {
-  background-color: var(--bg-primary);
+.small-buttonPredict,
+.small-buttonRPSPredict {
+  background-color: var(--bg-secondary);
   border: none;
   border-radius: 4px;
   color: var(--text-secondary);
@@ -119,71 +118,67 @@ h3 {
   height: 35px; /* Set a taller button height */
   cursor: pointer;
   position: relative;
-  top: 6px; /* Adjust this value to raise the button */
+
 }
 
-/* Slider CSS */
+.small-buttonRPSPredict:hover,
 .small-buttonPredict:hover {
   background-color: var(--bg-secondary);
 }
 
-    /* Increase the size of the slider */
-    /* Increase the size of the slider */
-    #windSpeed {
-      width: 100%; /* Make the slider take the full width of the container */
-      height: 20px; /* Increase the height */
-      cursor: pointer; /* Change cursor to pointer for better UX */
+/* Slider CSS */
+#windSpeed {
+  width: 100%; /* Make the slider take the full width of the container */
+  height: 20px; /* Increase the height */
+  cursor: pointer; /* Change cursor to pointer for better UX */
+}
+
+#windSpeed::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove default appearance */
+  width: 30px; /* Increase thumb size */
+  height: 30px;
+  background-color: #007bff; /* Blue color for the thumb */
+  border-radius: 50%; /* Make it circular */
+  cursor: pointer;
+}
+
+#windSpeed::-moz-range-thumb,
+#windSpeed::-ms-thumb {
+  width: 30px;
+  height: 30px;
+  background-color: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#windSpeed::-webkit-slider-runnable-track,
+#windSpeed::-moz-range-track,
+#windSpeed::-ms-track {
+  height: 10px; /* Increase track height */
+  background: #ddd; /* Light gray color for track */
+  border-radius: 5px;
+}
+
+/* Input Box for Wind Speed */
+#windSpeedInput {
+  width: 100px; /* Set width of the text box */
+  padding: 5px; /* Add some padding */
+  font-size: 14px; /* Make the text more readable */
+  margin-top: 10px; /* Add spacing between elements */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 5px; /* Rounded corners */
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 768px) {
+  .table,
+  .compare-graph {
+    width: 100%; /* Full width on smaller screens */
+    height: auto; /* Adjust height */
   }
 
-  /* Style the slider thumb (the draggable part) */
-  #windSpeed::-webkit-slider-thumb {
-      -webkit-appearance: none; /* Remove default appearance */
-      width: 30px; /* Increase thumb size */
-      height: 30px;
-      background-color: #007bff; /* Blue color for the thumb */
-      border-radius: 50%; /* Make it circular */
-      cursor: pointer;
+  .form-row {
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px; /* Reduce gap */
   }
-
-  #windSpeed::-moz-range-thumb {
-      width: 30px;
-      height: 30px;
-      background-color: #007bff;
-      border-radius: 50%;
-      cursor: pointer;
-  }
-
-  #windSpeed::-ms-thumb {
-      width: 30px;
-      height: 30px;
-      background-color: #007bff;
-      border-radius: 50%;
-      cursor: pointer;
-  }
-
-  /* Style the slider track (the line) */
-  #windSpeed::-webkit-slider-runnable-track {
-      height: 10px; /* Increase track height */
-      background: #ddd; /* Light gray color for track */
-      border-radius: 5px;
-  }
-
-  #windSpeed::-moz-range-track {
-      height: 10px;
-      background: #ddd;
-      border-radius: 5px;
-  }
-
-  #windSpeed::-ms-track {
-      height: 10px;
-      background: #ddd;
-      border-radius: 5px;
-  }
-
-  /* Style the text box */
-  #windSpeedInput {
-      width: 100px; /* Set width of the text box */
-      padding: 5px; /* Add some padding */
-      font-size: 14px; /* Make the text more readable */
-  }
-
+}

@@ -1,8 +1,6 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script defer src="/static/js/theme.js"></script>
-  <script defer src="/static/js/table.js"></script>
-  <script defer src="/static/js/console.js"></script>
+
   <link rel="stylesheet" href="/static/css/nav.css" />
 
   <link
@@ -182,18 +180,23 @@
       <div class="form-box">
         <h2>RPS Prediction Input Form</h2>
         <form id="predictionForm">
+          <br>
           <!-- Wind Speed Slider -->
-          <label for="windSpeed">Wind Speed: <span id="windSpeedValue">10.0</span></label>
-          <input type="range" id="windSpeed" name="windSpeed" min="0" max="300" step="0.1" value="10">
-          <br><br>
+          <div class="slider-container">
+            <label for="windSpeed">
+              Wind Speed: <span id="windSpeedValue">10.0</span>
+            </label>
+            <input type="range" id="windSpeed" name="windSpeed" min="0" max="300" step="0.1" value="10">
+          </div>
+          <br>
     
           <!-- Wind Speed Text Box -->
           <label for="windSpeedInput">Enter Wind Speed (if slider is difficult):</label>
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="gap: 4px;">
             <input type="number" id="windSpeedInput" name="windSpeedInput" min="0" max="300" step="0.1" value="10">
-            <button type="button" id="updateSliderButton" class="small-button">Update Slider</button>
+            <button type="button" id="updateSliderButton" class="small-buttonRPSPredict">Update</button>
           </div>
-          <br><br>
+          
     
           <!-- Dropdowns for Wind Direction and Alignment -->
           <label for="windDirection">Wind Direction:</label>
@@ -235,37 +238,10 @@
             
           
             <div class="data-select">
-              <h2>Select Metrics to Compare</h2>
+              <h2>Real-Time vs Predicted RPS/Voltage</h2>
               <form id="data-form">
                 <div class="form-row">
                   <!-- Dropdown for Real-Time Data -->
-                  <div class="dropdown-container">
-                    <label class="metric-label" for="real-time-metric">Real-Time Metric:</label>
-                    <select id="real-time-metric" class="dropdown">
-                      <option value="orientation">Orientation</option>
-                      <option value="temperature">Temperature</option>
-                      <option value="wind-direction">Wind Direction</option>
-                      <option value="wind-speed">Wind Speed</option>
-                      <option value="gravity">Gravity</option>
-                      <option value="linear-acceleration">Linear Acceleration</option>
-                    </select>
-                  </div>
-            
-                  <!-- Dropdown for Prediction Data -->
-                  <div class="dropdown-container">
-                    <label for="prediction-metric">Prediction Metric:</label>
-                    <select id="prediction-metric" class="dropdown">
-                      <option value="orientation">Orientation</option>
-                      <option value="temperature">Temperature</option>
-                      <option value="wind-direction">Wind Direction</option>
-                      <option value="wind-speed">Wind Speed</option>
-                      <option value="gravity">Gravity</option>
-                      <option value="linear-acceleration">Linear Acceleration</option>
-                    </select>
-                  </div>
-            
-                  <!-- Start Button -->
-                  <button type="button" id="start-button" class="small-buttonPredict">Start</button>
                 </div>
               </form>
             </div>
@@ -276,74 +252,15 @@
               
       </div>
  <div class="compare-graph">
+  <div id="3d-model-container" class="analyismodel-container"></div>
+  <button id="switch-view-btn" class="view-btn">
+    Switch to Isometric View
+</button>
               </div>
 
   </main>
-
-  <script>
-    const form = document.getElementById('predictionForm');
-    const windSpeedSlider = document.getElementById('windSpeed');
-    const windSpeedValue = document.getElementById('windSpeedValue');
-    const windSpeedInput = document.getElementById('windSpeedInput');
-    const updateSliderButton = document.getElementById('updateSliderButton');
-
-    // Function to update all elements (slider, text box, and display)
-    function updateWindSpeed(value) {
-      const floatValue = parseFloat(value);
-      windSpeedValue.textContent = floatValue.toFixed(1); // Update displayed value
-      windSpeedSlider.value = floatValue; // Sync slider
-      windSpeedInput.value = floatValue; // Sync text box
-    }
-
-    // Event listener for slider input
-    windSpeedSlider.addEventListener('input', () => {
-      updateWindSpeed(windSpeedSlider.value); // Update based on slider movement
-      submitForm(); // Automatically submit form
-    });
-
-    // Event listener for "Update Slider" button
-    updateSliderButton.addEventListener('click', () => {
-      const value = windSpeedInput.value;
-      if (!isNaN(value) && value >= 0 && value <= 300) {
-        updateWindSpeed(value); // Update slider and text box
-        submitForm(); // Submit the form after button press
-      }
-    });
-
-    // Add change event listeners to dropdowns
-    const dropdowns = form.querySelectorAll('select');
-    dropdowns.forEach((dropdown) => {
-      dropdown.addEventListener('change', () => {
-        submitForm(); // Automatically submit when dropdown value changes
-      });
-    });
-
-    function submitForm() {
-      const formData = new FormData(form);
-      const jsonData = {};
-
-      // Convert form data to JSON
-      formData.forEach((value, key) => {
-        jsonData[key] = key === 'windSpeed' ? parseFloat(value) : value;
-      });
-
-      console.log('Submitting form data:', jsonData); // Debugging output
-
-      // Send data via AJAX
-      fetch('/submit_prediction', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('Prediction submitted:', data);
-        })
-        .catch((error) => {
-          console.error('Error submitting prediction:', error);
-        });
-    }
-</script>
+  <script defer src="/static/js/theme.js"></script>
+  <script defer src="/static/js/table.js"></script>
+  <script defer src="/static/js/console.js"></script>
+  <script src="/static/js/modelforanalyis.js"></script>
 </body>

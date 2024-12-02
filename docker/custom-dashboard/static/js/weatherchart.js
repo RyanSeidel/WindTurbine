@@ -22,7 +22,7 @@ const interval = 2000; // Interval for adding new points (2 seconds)
 const margin = { top: 40, right: 70, bottom: 50, left: 70 };
 const containerWidth = document.querySelector(".weather-chart").offsetWidth;
 const width = containerWidth - margin.left - margin.right;
-const height = 200 - margin.top - margin.bottom;
+const height = 225 - margin.top - margin.bottom;
 
 let latestWindSpeed = 0; // Placeholder for the latest wind speed
 let latestPressure = 0; // Placeholder for the latest pressure

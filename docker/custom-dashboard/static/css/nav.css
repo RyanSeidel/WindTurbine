@@ -115,12 +115,12 @@ main {
 
 .fa-primary {
   /* Icon Primary Color */
-  color: #ff7eee;
+  color: var(--text-secondary);
 }
 
 .fa-secondary {
   /* Icon Secondary Color */
-  color: #df49a6;
+  color: var(--text-secondary);
 }
 
 .fa-primary,
@@ -242,16 +242,6 @@ main {
 .error-active  {
   filter: grayscale(0%) opacity(1);
   animation: blink-red 1s infinite; /* Blink animation */
-}
-
-/* Define the blinking red animation */
-@keyframes blink-red {
-  0%, 100% {
-    color: red; /* Red color at the start and end */
-  }
-  50% {
-    color: transparent; /* Transparent during the middle */
-  }
 }
 
 

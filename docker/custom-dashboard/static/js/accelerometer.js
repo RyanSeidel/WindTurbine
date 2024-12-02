@@ -41,7 +41,7 @@ const accInterval = 2000; // Interval for adding new points (2 seconds)
 const accMargin = { top: 30, right: 70, bottom: 50, left: 70 };
 const accContainerWidth = document.querySelector(".accelerometer-chart").offsetWidth;
 const accWidth = accContainerWidth - accMargin.left - accMargin.right;
-const accHeight = 200 - accMargin.top - accMargin.bottom;
+const accHeight = 225 - accMargin.top - accMargin.bottom;
 
 
 // Create SVG container

@@ -135,13 +135,23 @@ def on_message(client, userdata, msg):
         try:
             # Parse the payload
             data = eval(payload, {"np": np})  # Allow eval to recognize 'np'
+
+            # Extract predicted RPS and Voltage
             predicted_rps = data.get('predictedRPS', 0.0)
+            predicted_voltage = data.get('predictedVoltage', 0.0)
         
-            # Convert to RPM
+            # Convert RPS to RPM
             predicted_rpm = predicted_rps * 60
-        
+
             # Log and display the formatted output
-            print(f"Predicted RPS: {predicted_rps:.2f}, Converted RPM: {predicted_rpm:.2f}", flush=True)
+            print(f"Predicted RPS: {predicted_rps:.2f}, Converted RPM: {predicted_rpm:.2f}, Predicted Voltage: {predicted_voltage:.2f}", flush=True)
+        
+            # Emit data to the front end
+            socketio.emit('predicted_rps', {
+            'predictedRPS': round(predicted_rps, 2),  # RPS with 2 decimals
+            'predictedRPM': round(predicted_rpm, 2),  # RPM with 2 decimals
+            'predictedVoltage': round(predicted_voltage, 2)  # Voltage with 2 decimals
+        })
         except Exception as e:
             print(f"Error processing predictedRPS payload: {e}", flush=True)
             

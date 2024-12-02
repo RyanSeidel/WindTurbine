@@ -16,7 +16,7 @@ const anomalyInterval = 1000; // Interval for adding new points (1 second)
 const anomalyMargin = { top: 30, right: 70, bottom: 50, left: 70 };
 const anomalyContainerWidth = document.querySelector(".anomaly-chart").offsetWidth;
 const anomalyWidth = anomalyContainerWidth - anomalyMargin.left - anomalyMargin.right;
-const anomalyHeight = 250 - anomalyMargin.top - anomalyMargin.bottom;
+const anomalyHeight = 285 - anomalyMargin.top - anomalyMargin.bottom;
 
 // Create SVG container
 const anomalySVG = d3
