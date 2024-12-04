@@ -7,7 +7,7 @@ import time
 
 
 # InfluxDB Configuration
-INFLUXDB_URL = os.getenv("INFLUXDB_URL", "192.168.1.143:8086")
+INFLUXDB_URL = os.getenv("INFLUXDB_URL", "localhost:8086")
 INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "iNLROvcnYQmb6CNVmUyrNuB6CG2EiKOjUrT-F13uF-x1pSYLZGcGS-rbgj9J1cS-zaUwMB6UPd8_SJgVl3KFdQ==")
 INFLUXDB_ORG = os.getenv("INFLUXDB_ORG", "TAMUCC")
 INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET", "WindTurbine")

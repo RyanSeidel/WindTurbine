@@ -48,7 +48,7 @@ try:
     scaler45 = joblib.load('model/45BladeModel_gyro_components.pkl')
     poly45 = joblib.load('model/45BladeModelVibration.pkl')
     poly_model45 = joblib.load('model/45BladeModel_components_model.pkl')
-  # 88 Percent Score
+  # 93 Percent Score
     scaler30 = joblib.load('model/30BladeModel_gyro_components.pkl')
     poly30 = joblib.load('model/30BladeModelVibration.pkl')
     poly_model30 = joblib.load('model/30BladeModel_components_model.pkl')

@@ -70,7 +70,7 @@ let turbine = null;
 let blades = null; // To hold the blades mesh
 
 // RPM setup
-let rpm = 33; // Initial RPM
+let rpm = 0;
 let angularVelocity = (rpm * 2 * Math.PI) / 60; // Convert to radians per second
 
 loader.load(
