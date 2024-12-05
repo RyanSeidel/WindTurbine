@@ -122,11 +122,12 @@ For more details and troubleshooting, refer to [Steve's Internet Guide on MQTT](
 ### Accessing the Dashboard
 1. Once all containers are activated, open your browser and navigate to:
    - `http://localhost:5000`
-2. If everything is set up correctly, this will redirect you to:
-   - `http://localhost:5000/socket`
-   - Ensure that your **MQTT Broker IP** is correct.
-   - Verify that the Raspberry Pi is running all required programs as outlined in the [Raspberry Pi Setup](#RaspberryPi) section.
-
+### Make sure to edit Edit `docker-compose.yml` before building ⚠️
+- Locate the `docker-compose.yml` file in your project directory.
+- Update the `RASP_BROKER` environment variable in the `flask-app` and `mqtt-prediction` services with your Raspberry Pi's IP address. 
+- To find your Raspberry Pi's IP address, run the command `hostname -I` on your Raspberry Pi.
+![DockerCompose](./images/dockercompose.png)
+  
 
 ## RViz
 
