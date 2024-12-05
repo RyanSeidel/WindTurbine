@@ -179,6 +179,7 @@ To use this project, you must install the following dependencies:
 ### Issues and Solutions
 ![Solution #1](./images/bmestep1.png)
 
+### Other Issues
 ![Solution #2](./images/bmestep2.png)
 
 - **INA260**
