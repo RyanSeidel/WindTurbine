@@ -166,6 +166,7 @@ To use this project, you must install the following dependencies:
 ## Sensors
 
 - **BNO055**
+  - **I put my file that I edit and changed from the GITHUB BMEO055 Repository they provided under, use my folder Adafruit_Python_BNO055!**
   - [Documentation for BNO055](https://cdn-learn.adafruit.com/downloads/pdf/bno055-absolute-orientation-sensor-with-raspberry-pi-and-beaglebone-black.pdf)
   - Note: I had to change from using `Adafruit.GPIO` to the `RPIO` library.
   - sudo pip3 install adafruit-circuitpython-bno055
@@ -173,7 +174,7 @@ To use this project, you must install the following dependencies:
   - sudo pip3 install .
   - sudo pip3 install RPi.GPIO
   - sudo nano /usr/local/lib/python3.11/dist-packages/Adafruit_BNO055/BNO055.py
-  - I put my file that I edit and changed from the GITHUB BMEO055 Repository they provided under, use my folder Adafruit_Python_BNO055!
+
  
 ### Issues and Solutions
 ![Solution #1](./images/bmestep1.png)
