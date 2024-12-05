@@ -17,7 +17,7 @@ Digital twins refer to virtual recreations of real-world objects that can mirror
 
 
 ## Usage
-![Poster](./images/poster.png)
+![Poster](./images/Poster.png)
 
 
 ## How We Created the Digital Twin
