@@ -175,8 +175,7 @@ To use this project, you must install the following dependencies:
   - sudo nano /usr/local/lib/python3.11/dist-packages/Adafruit_BNO055/BNO055.py
   - I put my file that I edit and changed from the GITHUB BMEO055 Repository they provided under, use my folder Adafruit_Python_BNO055!
  
-  - Issues and Solutions
-  - 
+### Issues and Solutions
 ![Solution #1](./images/bmestep1.png)
 
 ![Solution #2](./images/bmestep2.png)
