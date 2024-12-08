@@ -68,6 +68,10 @@ Using the same Raspberry Pi configuration tool (`raspi-config`):
   - `make run_all`
 - To stop all programs gracefully:
   - `make stop_all`
+ 
+### Connection
+If you are trying to use localhost, you can set up the Raspberry Pi's Ethernet connection with a router LAN and use your computer to connect and control the Raspberry Pi via PuTTY. 
+Additionally, if you need to view or download files from the Raspberry Pi, you can use WinSCP for file management.
 
    
 ## MQTT
