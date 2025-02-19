@@ -1,9 +1,34 @@
 import serial
 import time
-
+import os
+import logging
+import pandas as pd
+import numpy as np
+import json  
+import paho.mqtt.client as mqtt
+import joblib
 
 
 # So this program would have to be contain in a MQTT to subscribe to the events 
+# MQTT Configuration
+MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")  # Default: Mosquitto broker
+MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
+RPS_INPUT_TOPIC = "rpsinputform"  # Topic for listening to form data
+PREDICTION_TOPIC = "rps_predictions"  # Topic for publishing predictions
+
+# Topics under wind_turbine namespace
+MQTT_TOPICS = {
+    'wind_direction': 'wind_turbine/wind_direction',
+    'rpm': 'wind_turbine/rpm',
+    'voltage': 'wind_turbine/voltage',
+    'anamoly': 'wind_turbine/anomaly_predictions'
+}
+
+#Collect the Data moving the servo orientation from 15 30 45 60 75 90
+# We know 90 by default is not what we want the orientation away we do simple math equation with wind direction and orientation to check for 90
+
+
+
 # Once subscribed then it can use ML to take inputs like Anamoly, Volts, RPM
 # Based on this data, we would be able to use a simple linear relationships to change decisions
 
