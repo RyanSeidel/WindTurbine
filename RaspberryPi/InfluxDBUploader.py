@@ -7,8 +7,8 @@ import time
 
 
 # InfluxDB Configuration
-INFLUXDB_URL = os.getenv("INFLUXDB_URL", "localhost:8086")
-INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "iNLROvcnYQmb6CNVmUyrNuB6CG2EiKOjUrT-F13uF-x1pSYLZGcGS-rbgj9J1cS-zaUwMB6UPd8_SJgVl3KFdQ==")
+INFLUXDB_URL = os.getenv("INFLUXDB_URL", "http://localhost:8086")
+INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "YK5PVqE0aI9pwLBdZMDE5qt_jDvfYv4m2psX6tTQ13unsruDRf8JSzRq2y1cKgVastehinPYlgpDTNu0x0zQ2g==")
 INFLUXDB_ORG = os.getenv("INFLUXDB_ORG", "TAMUCC")
 INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET", "WindTurbine")
 
@@ -17,7 +17,7 @@ influx_client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLU
 write_api = influx_client.write_api(write_options=SYNCHRONOUS)  # This line initializes write_api
 
 # MQTT Configuration
-MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")  # Replace with your MQTT broker address
+MQTT_BROKER = os.getenv("RASP_BROKER", "192.168.1.208")  # Replace with your MQTT broker address
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 # Topics under wind_turbine namespace
 MQTT_TOPICS = {
