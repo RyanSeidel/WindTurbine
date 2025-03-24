@@ -17,7 +17,7 @@ influx_client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLU
 write_api = influx_client.write_api(write_options=SYNCHRONOUS)  # This line initializes write_api
 
 # MQTT Configuration
-MQTT_BROKER = os.getenv("RASP_BROKER", "192.168.1.208")  # Replace with your MQTT broker address
+MQTT_BROKER = os.getenv("RASP_BROKER", "192.168.0.101")  # Replace with your MQTT broker address
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 # Topics under wind_turbine namespace
 MQTT_TOPICS = {
@@ -33,7 +33,12 @@ MQTT_TOPICS = {
     'voltage': 'wind_turbine/volt',
     'power': 'wind_turbine/power',
     'current': 'wind_turbine/current',
-    'servo':'wind_turbine/servo'
+    'servo':'wind_turbine/servo',
+    'speed': 'wind_turbine/speed',
+    'direction': 'wind_turbine/direction',
+    'humidity': 'wind_turbine/humidity',
+    'pressure': 'wind_turbine/pressure',
+    'altitude': 'wind_turbine/altitude'
 }
 
 # Initialize MQTT client
@@ -216,6 +221,26 @@ def on_message(client, userdata, msg):
     elif topic == MQTT_TOPICS['servo']:
         payload_value = float(payload)
         point = Point("servo").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+    elif topic == MQTT_TOPICS['speed']:
+        payload_value = float(payload)
+        point = Point("speed").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+    elif topic == MQTT_TOPICS['direction']:
+        payload_value = float(payload)
+        point = Point("direction").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+    elif topic == MQTT_TOPICS['humidity']:
+        payload_value = float(payload)
+        point = Point("humidity").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+    elif topic == MQTT_TOPICS['pressure']:
+        payload_value = float(payload)
+        point = Point("pressure").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
+    elif topic == MQTT_TOPICS['altitude']:
+        payload_value = float(payload)
+        point = Point("altitude").field("value", payload_value).time(int(time.time() * 1000), write_precision="ms")
         write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=point)
         
     print(f"Received message: {payload} on topic {topic}", flush=True)

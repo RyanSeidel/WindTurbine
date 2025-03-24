@@ -3,7 +3,7 @@ import pandas as pd
 
 # InfluxDB Configuration
 INFLUXDB_URL = "http://localhost:8086"
-INFLUXDB_TOKEN = "iNLROvcnYQmb6CNVmUyrNuB6CG2EiKOjUrT-F13uF-x1pSYLZGcGS-rbgj9J1cS-zaUwMB6UPd8_SJgVl3KFdQ=="
+INFLUXDB_TOKEN = "YK5PVqE0aI9pwLBdZMDE5qt_jDvfYv4m2psX6tTQ13unsruDRf8JSzRq2y1cKgVastehinPYlgpDTNu0x0zQ2g=="
 INFLUXDB_ORG = "TAMUCC"
 INFLUXDB_BUCKET = "WindTurbine"
 
@@ -38,7 +38,7 @@ for measurement, fields in measurements.items():
     for field in fields:
         query = f'''
         from(bucket: "{INFLUXDB_BUCKET}")
-        |> range(start: -30s)
+        |> range(start: -1m)
         |> filter(fn: (r) => r["_measurement"] == "{measurement}")
         |> filter(fn: (r) => r["_field"] == "{field}")
         '''
@@ -58,4 +58,4 @@ client.close()
 df = pd.DataFrame(data).ffill().bfill()
 
 # Optionally, save data locally to avoid re-querying InfluxDB
-df.to_csv("test.csv")
+df.to_csv("30Degree_NorthWest_LowFan.csv")
