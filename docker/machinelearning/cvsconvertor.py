@@ -55,7 +55,7 @@ for measurement, fields in measurements.items():
 client.close()
 
 # Convert to DataFrame and handle missing values
-df = pd.DataFrame(data).ffill().bfill()
+df = pd.DataFrame(data)
 
 # Optionally, save data locally to avoid re-querying InfluxDB
-df.to_csv("30Degree_NorthWest_LowFan.csv")
+df.to_csv("Testing1.csv")
