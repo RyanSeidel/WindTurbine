@@ -59,6 +59,8 @@ data_files = [
     # 'NorthEast_LowFan_330Degree.csv',
 
 ]
+# comment i know this is a lot of cvs but I want to be able to pin down which cvs is good and what is not needed I don't plan on using all of them!
+
 
 # --- Feature, Target, and Model Configuration ---
 # !!! IMPORTANT !!! Verify these column names match your CSV files.
