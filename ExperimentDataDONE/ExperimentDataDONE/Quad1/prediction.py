@@ -3,34 +3,22 @@ import pandas as pd
 import numpy as np
 
 # --- Configuration ---
-# Ensure these match the names used when training the ORIENTATION model
-# This model predicts 'orientation_heading'
-model_filename = 'orientation_poly_regression_model.pkl'
+# Ensure these match the names used when training the model that predicts BOTH direction and RPM
+model_filename = 'direction_rpm_poly_model.pkl' # <-- Loads the model trained to predict DIRECTION and RPM
 feature_names = [
-    # Features used to predict orientation heading
-    'weatherstation_speed', 'weatherstation_direction', # Weather direction is an INPUT here
-    'rpm_value',
-    'accelerometer_ax', 'accelerometer_ay', 'accelerometer_az',
-    'linear_acceleration_lx', 'linear_acceleration_ly', 'linear_acceleration_lz',
-    'voltage_value'
+    # Features used to predict weather direction and RPM
+    'orientation_heading', # Input feature
+    'weatherstation_speed' # Input feature
 ]
-target_name = 'Orientation Heading' # For print statements
+# Define the names of the target variables this model predicts, IN ORDER
+target_names = ['Weather Station Direction', 'RPM Value']
 
 # --- Input Values for Prediction ---
 # Provide values for ALL features the model was trained on
-# Using values gathered from the conversation
 input_data = {
-    'weatherstation_speed': 3.3,
-    'weatherstation_direction': 0, # Input value for wind direction
-    'rpm_value': 30,
-    'accelerometer_ax': -.8,
-    'accelerometer_ay': 0.13,
-    'accelerometer_az': 9.45,
-    'linear_acceleration_lx': -0.01,
-    'linear_acceleration_ly': -0.12,
-    'linear_acceleration_lz': -0.29,
-    'voltage_value': 2
-    # 'orientation_heading' is NOT an input here, it's the target we predict
+    'orientation_heading': 351, # <-- INPUT value for current turbine orientation
+    'weatherstation_speed': 0    # Input value for speed
+    # 'weatherstation_direction' and 'rpm_value' are NOT inputs here, they are the targets
 }
 
 # --- Load the Model Pipeline ---
@@ -40,7 +28,7 @@ try:
     model_pipeline = joblib.load(model_filename)
     print("Model loaded successfully.")
 except FileNotFoundError:
-    print(f"Error: Model file '{model_filename}' not found. Make sure the training script for orientation heading ran successfully and the file is in the correct directory.")
+    print(f"Error: Model file '{model_filename}' not found. Make sure the training script for direction and RPM ran successfully and the file is in the correct directory.")
     exit()
 except Exception as e:
     print(f"Error loading model: {e}")
@@ -68,32 +56,27 @@ except Exception as e:
 
 # --- Make Prediction ---
 try:
-    print(f"\nMaking prediction for {target_name}...")
+    print(f"\nMaking prediction for {target_names}...")
     # Use the pipeline's predict method. It handles scaling and polynomial transformation automatically.
-    predicted_heading = model_pipeline.predict(input_df)
+    # The prediction will be a 2D numpy array with shape (n_samples, n_targets)
+    predictions = model_pipeline.predict(input_df)
 
-    # The prediction is returned as an array (even for a single input), get the first element
-    prediction_value = predicted_heading[0]
+    # Extract the individual predictions (assuming only one input row)
+    predicted_direction = predictions[0, 0] # First column is direction
+    predicted_rpm = predictions[0, 1]       # Second column is RPM
 
-    # --- Rule Override --- (Optional - keep or remove based on preference)
-    # Check if the specific conditions for the rule are met
-    # if input_data['weatherstation_direction'] == 0 and input_data['rpm_value'] == 60:
-    #     print("Applying rule: Wind direction is 0 and RPM is 60. Overriding prediction to 0 degrees.")
-    #     prediction_value = 0.0 # Override the prediction
-    # --- End Rule Override ---
+    print(f"\nPredicted {target_names[0]}: {predicted_direction:.2f} degrees")
+    print(f"Predicted {target_names[1]}: {predicted_rpm:.2f}")
 
-
-    print(f"\nPredicted {target_name}: {prediction_value:.2f} degrees")
-
-    # Optional: Add reminder about circular nature and normalize if needed (applied to final value)
-    if prediction_value < 0 or prediction_value > 360:
-        print("Note: The prediction is outside the typical 0-360 degree range.")
+    # Optional: Normalize the direction prediction
+    if predicted_direction < 0 or predicted_direction > 360:
+        print("Note: The direction prediction is outside the typical 0-360 degree range.")
         # Normalize the prediction to be within 0-360
-        normalized_prediction = prediction_value % 360
+        normalized_prediction = predicted_direction % 360
         # Handle potential negative results from modulo if needed
         if normalized_prediction < 0:
              normalized_prediction += 360
-        print(f"Normalized prediction (modulo 360): {normalized_prediction:.2f} degrees")
+        print(f"Normalized direction prediction (modulo 360): {normalized_prediction:.2f} degrees")
 
 except Exception as e:
     print(f"Error during prediction: {e}")

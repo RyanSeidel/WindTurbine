@@ -4,7 +4,8 @@ from functools import reduce # For merging multiple dataframes
 
 # --- Configuration ---
 # !!! Step 1: Set your file path !!!
-file_path = 'North_LowFan_0Degree.csv'
+file_path = 'North_LowFan_0Degree.csv',
+
 # Example for Excel: file_path = 'your_data_file.xlsx'
 
 # !!! Step 2: Set your column names !!!

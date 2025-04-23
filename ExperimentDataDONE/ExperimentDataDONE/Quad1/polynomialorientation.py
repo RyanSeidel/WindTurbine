@@ -1,17 +1,15 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-# Wind Turbine Digital Twin - Polynomial Regression Model for Predicting Orientation Heading                  # # <-- Corrected Title
+# Wind Turbine Digital Twin - Polynomial Regression Model for Predicting Weather Station Direction            #
 # By [Wind Turbine Digital Twins]                                                                               #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Description:                                                                                                  #
 # This script processes wind turbine data from specified CSV files, trains a Polynomial Regression model        #
-# to predict orientation heading based on weather station speed, direction, RPM, accelerometer,                 # # <-- Corrected Description
-# linear acceleration, and voltage features. It evaluates the model's performance using a train-test split and  #
-# visualizes the results.                                                                                       #
+# to predict weather station direction based on the turbine's orientation heading, weather speed, RPM,          # # <-- Updated Description
+# linear acceleration, and accelerometer features. It evaluates the model's performance using a train-test      #
+# split and visualizes the results.                                                                             #
 #                                                                                                               #
-# IMPORTANT LIMITATION: Orientation heading is a circular variable (0-360 degrees). Standard polynomial       #
-# regression treats it linearly, which means it doesn't understand that 359 degrees is close to 1 degree.       #
-# This can lead to suboptimal predictions near the 0/360 boundary and potential predictions outside the range.  #
-# For more accurate modeling of circular data, consider transformations (sin/cos) or specialized models.       #
+# IMPORTANT LIMITATION: Weather direction is often a circular variable (0-360 degrees). Standard polynomial     #
+# regression treats it linearly. This can lead to suboptimal predictions near the 0/360 boundary.               #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 import pandas as pd
@@ -41,30 +39,52 @@ data_files = [
     'NorthWest_LowFan_30Degree.csv',
     'NorthWest_HighFan_45Degree.csv',
     'NorthWest_MedFan_45Degree.csv',
-    'NorthWest_LowFan_45Degree.csv'
-    # 'your_data_file_2.csv',
+    'NorthWest_LowFan_45Degree.csv',
+    'NorthWest_HighFan_60Degree.csv',
+    'NorthWest_MedFan_60Degree.csv',
+    'NorthWest_LowFan_60Degree.csv',
+    'West_HighFan_90Degree.csv',
+    # 'SouthWest_MedFan_150Degree.csv',
+    # 'West_LowFan_120Degree.csv',
+    'South_HighFan_180Degree.csv', 
+    'East_HighFan_270Degree.csv', # only trying every 90 angle
+    'NorthEast_HighFan_300Degree.csv',
+    #'NorthEast_HighFan_330Degree.csv', # i think it needs hot encode of low, med, high fan
+    'NorthEast_MedFan_300Degree.csv',
+    'NorthEast_LowFan_300Degree.csv',
+    'NorthEast_HighFan_315Degree.csv',
+    # 'NorthEast_MedFan_315Degree.csv',
+    # 'NorthEast_LowFan_315Degree.csv',
+    # 'NorthEast_HighFan_330Degree.csv',
+    # 'NorthEast_LowFan_330Degree.csv',
+
 ]
 
 # --- Feature, Target, and Model Configuration ---
 # !!! IMPORTANT !!! Verify these column names match your CSV files.
-# Input Features
-weather_speed_col = 'weatherstation_speed'
-weather_direction_col = 'weatherstation_direction' # Used as INPUT
-rpm_value_col = 'rpm_value'
-accel_ax_col = 'accelerometer_ax'
-accel_ay_col = 'accelerometer_ay'
-accel_az_col = 'accelerometer_az'
+
+# --- Define INPUT FEATURES ---
+orientation_heading_col = 'orientation_heading' # Input feature
+weather_speed_col = 'weatherstation_speed'      # Input feature
+rpm_value_col = 'rpm_value'                     # Input feature
+# Linear Acceleration Features
 lin_accel_lx_col = 'linear_acceleration_lx'
 lin_accel_ly_col = 'linear_acceleration_ly'
 lin_accel_lz_col = 'linear_acceleration_lz'
-voltage_value_col = 'voltage_value'
-# Target Variable
-target_orientation_col = 'orientation_heading' # <-- Correct Target
+# Accelerometer Features (NEW)
+accel_ax_col = 'accelerometer_ax'
+accel_ay_col = 'accelerometer_ay'
+accel_az_col = 'accelerometer_az'
+
+
+# --- Define TARGET VARIABLE ---
+target_weather_direction_col = 'weatherstation_direction' # Target is Weather Direction
 
 polynomial_degree = 2 # Degree of polynomial features (e.g., 2 for quadratic, 3 for cubic)
 
 # --- Output Model/Pipeline Filename ---
-output_model_filename = 'orientation_poly_regression_model.pkl' # <-- Correct Filename
+# Keeping v2, but consider changing if this is a significant model update
+output_model_filename = 'weather_direction_poly_model_v2.pkl'
 
 #-----------------------------------------------------------------------------------------------------------------#
 # 2. Load Data                                                                                                    #
@@ -104,27 +124,37 @@ print(f"\nCombined dataset shape: {data.shape}")
 print("\nPreprocessing data...")
 
 # --- Define Features (X) and Target (y) ---
-# Define the list of input feature column names (10 features)
+# Define the list of input feature column names (Added Accelerometer)
 features = [
-    weather_speed_col, weather_direction_col, rpm_value_col,
-    accel_ax_col, accel_ay_col, accel_az_col,
-    lin_accel_lx_col, lin_accel_ly_col, lin_accel_lz_col,
-    voltage_value_col
+    orientation_heading_col, # Input
+    weather_speed_col,       # Input
+    rpm_value_col,           # Input
+    lin_accel_lx_col,        # Input
+    lin_accel_ly_col,        # Input
+    lin_accel_lz_col,        # Input
+    accel_ax_col,            # Input (NEW)
+    accel_ay_col,            # Input (NEW)
+    accel_az_col             # Input (NEW)
 ]
-target = target_orientation_col # Set the correct target
+target = target_weather_direction_col # Single target column
 
 # Check if columns exist before selecting
-missing_cols = [col for col in features if col not in data.columns]
+missing_features = [col for col in features if col not in data.columns]
 if target not in data.columns:
-    missing_cols.append(target)
-if missing_cols:
-    print(f"Error: The following required columns are missing from the data: {missing_cols}")
+    missing_target = [target] # Target is a single string here
+else:
+    missing_target = []
+
+if missing_features or missing_target:
+    print(f"Error: The following required columns are missing from the data:")
+    if missing_features: print(f"  Features: {missing_features}")
+    if missing_target: print(f"  Target: {missing_target}")
     print(f"Available columns are: {data.columns.tolist()}")
     exit()
 
 # --- Handle Missing Values (Example: Drop rows with NaNs in features/target) ---
 initial_rows = data.shape[0]
-data.dropna(subset=features + [target], inplace=True)
+data.dropna(subset=features + [target], inplace=True) # Check both features and target
 rows_after_dropna = data.shape[0]
 if initial_rows > rows_after_dropna:
     print(f"Removed {initial_rows - rows_after_dropna} rows with missing values in features or target.")
@@ -134,14 +164,14 @@ if data.empty:
     exit()
 
 X = data[features]
-y = data[target]
-print(f"Selected Features ({len(features)}): {features}")
-print(f"Selected Target: {target}") # Should now show orientation heading
+y = data[target] # y is now a Series (single target)
+print(f"Selected Features ({len(features)}): {features}") # Will now print 9 features
+print(f"Selected Target: {target}") # Should now show weather direction
 
 # --- Train-Test Split ---
 # Split data into training and testing sets
-# Using test_size=0.3 as in the user's provided code
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+# Using test_size=0.2 based on user's last provided code
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 print(f"Data split into training ({X_train.shape[0]} rows) and testing ({X_test.shape[0]} rows) sets.")
 
 # Note: Scaling is handled *within* the pipeline.
@@ -199,37 +229,37 @@ print(f"\nNote: R² can be low or negative for {target} prediction due to its ci
 #-----------------------------------------------------------------------------------------------------------------#
 print("\nGenerating visualizations...")
 
-# --- Plot 1: Predicted vs Actual Orientation Heading (Test Set) --- # Corrected title/labels
+# --- Plot 1: Predicted vs Actual Weather Direction (Test Set) --- # Updated title/labels
 plt.figure(figsize=(8, 6))
 plt.scatter(y_test, y_test_pred, alpha=0.6, edgecolors='k', s=50, label="Test Data Points")
 # Add a y=x line for reference
 min_val = min(y_test.min(), y_test_pred.min())
 max_val = max(y_test.max(), y_test_pred.max())
 plt.plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--', linewidth=2, label="Perfect Fit Line (y=x)")
-plt.xlabel(f"Actual {target_orientation_col} (Test Set)") # Corrected label
-plt.ylabel(f"Predicted {target_orientation_col} (Test Set)") # Corrected label
-plt.title(f"Polynomial Regression (Deg={polynomial_degree}): Predicted vs Actual Heading") # Corrected title
+plt.xlabel(f"Actual {target_weather_direction_col} (Test Set)") # Updated label
+plt.ylabel(f"Predicted {target_weather_direction_col} (Test Set)") # Updated label
+plt.title(f"Polynomial Regression (Deg={polynomial_degree}): Predicted vs Actual Weather Direction") # Updated title
 plt.legend()
 plt.grid(True)
-plt.savefig('Predicted_vs_Actual_Heading_Test.png', dpi=300, bbox_inches='tight') # Corrected filename
-print("Saved plot: Predicted_vs_Actual_Heading_Test.png")
+plt.savefig('Predicted_vs_Actual_Direction_Test.png', dpi=300, bbox_inches='tight') # Updated filename
+print("Saved plot: Predicted_vs_Actual_Direction_Test.png")
 plt.show()
 
 
-# --- Plot 2: Residual Plot (Test Set) --- # Corrected title/labels
+# --- Plot 2: Residual Plot (Test Set) --- # Updated title/labels
 # Residuals = Actual - Predicted
 residuals_test = y_test - y_test_pred
 
 plt.figure(figsize=(10, 6))
 plt.scatter(y_test_pred, residuals_test, alpha=0.6, edgecolors='k', s=50, label='Test Set Residuals')
 plt.axhline(y=0, color='red', linestyle='--', linewidth=2, label='Zero Error Line')
-plt.xlabel(f"Predicted {target_orientation_col} (Test Set)") # Corrected label
+plt.xlabel(f"Predicted {target_weather_direction_col} (Test Set)") # Updated label
 plt.ylabel("Residuals (Actual - Predicted)")
-plt.title(f"Residual Plot: Errors vs Predicted Heading on Test Data") # Corrected title
+plt.title(f"Residual Plot: Errors vs Predicted Weather Direction on Test Data") # Updated title
 plt.legend()
 plt.grid(True)
-plt.savefig('Residual_Plot_Heading_Test.png', dpi=300, bbox_inches='tight') # Corrected filename
-print("Saved plot: Residual_Plot_Heading_Test.png")
+plt.savefig('Residual_Plot_Direction_Test.png', dpi=300, bbox_inches='tight') # Updated filename
+print("Saved plot: Residual_Plot_Direction_Test.png")
 plt.show()
 
 # --- (Optional) Plotting against individual features ---
