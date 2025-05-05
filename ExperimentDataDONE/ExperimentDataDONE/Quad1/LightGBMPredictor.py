@@ -64,80 +64,63 @@ weather_direction_col = 'weatherstation_direction' # Set to None if not used or 
 # Ensure all keys match the 'numerical_features' list above.
 
 # NorthWest_HighFan_45Degree
-input_data_dict = {
-    'weatherstation_speed': 4.5,         # Example value
-    'weatherstation_direction': 45.0,     # Example value (in degrees if conversion is enabled)
-    'weatherstation_humidity': 65.39,      # Example value
-    'weatherstation_pressure': 1020.68,    # Example value
-    'weatherstation_altitude': -47.3,      # Example value
-    'orientation_heading': 355.875,          # Example value
-    'orientation_roll': -1.9375,              # Example value
-    'orientation_pitch': -0.75,            # Example value
-    'low_fan': 0,                         # Example value (0 or 1)
-    'med_fan': 0,                         # Example value (0 or 1)
-    'high_fan': 1,                        # Example value (0 or 1)
-    'linear_acceleration_lx': -0.24,        # Example value
-    'linear_acceleration_ly': -0.17,      # Example value
-    'linear_acceleration_lz': -0.43         # Example value
-}
-# --- End Input Definition ---
-
-#ZeroFan_0Degree
 # input_data_dict = {
-#     'weatherstation_speed': 0,         # Example value
-#     'weatherstation_direction': 0,     # Example value (in degrees if conversion is enabled)
-#     'weatherstation_humidity': 65.81,      # Example value
-#     'weatherstation_pressure': 1021.01,    # Example value
-#     'weatherstation_altitude': -49.83,      # Example value
-#     'orientation_heading': 348.9375,          # Example value
-#     'orientation_roll': -2.3125,              # Example value
+#     'weatherstation_speed': 4.5,         # Example value
+#     'weatherstation_direction': 45.0,     # Example value (in degrees if conversion is enabled)
+#     'weatherstation_humidity': 65.39,      # Example value
+#     'weatherstation_pressure': 1020.68,    # Example value
+#     'weatherstation_altitude': -47.3,      # Example value
+#     'orientation_heading': 355.875,          # Example value
+#     'orientation_roll': -1.9375,              # Example value
 #     'orientation_pitch': -0.75,            # Example value
-#     'low_fan': 0,                         # Example value (0 or 1)
-#     'med_fan': 0,                         # Example value (0 or 1)
-#     'high_fan': 0,                        # Example value (0 or 1)
-#     'linear_acceleration_lx': -0.07,        # Example value
-#     'linear_acceleration_ly': -0.01,      # Example value
-#     'linear_acceleration_lz': -0.35        # Example value
-# }
-# --- End Input Definition ---
-
-
-#ZeroFan_0Degree
-# input_data_dict = {
-#     'weatherstation_speed': 0,         # Example value
-#     'weatherstation_direction': 0,     # Example value (in degrees if conversion is enabled)
-#     'weatherstation_humidity': 65.81,      # Example value
-#     'weatherstation_pressure': 1021.01,    # Example value
-#     'weatherstation_altitude': -49.83,      # Example value
-#     'orientation_heading': 348.9375,          # Example value
-#     'orientation_roll': -2.3125,              # Example value
-#     'orientation_pitch': -0.75,            # Example value
-#     'low_fan': 0,                         # Example value (0 or 1)
-#     'med_fan': 0,                         # Example value (0 or 1)
-#     'high_fan': 0,                        # Example value (0 or 1)
-#     'linear_acceleration_lx': -0.07,        # Example value
-#     'linear_acceleration_ly': -0.01,      # Example value
-#     'linear_acceleration_lz': -0.35        # Example value
-# }
-# --- End Input Definition ---
-
-# South_HighFan_180Degree
-# input_data_dict = {
-#     'weatherstation_speed': 5.4,         # Example value
-#     'weatherstation_direction': 180,     # Example value (in degrees if conversion is enabled)
-#     'weatherstation_humidity': 64.96,      # Example value
-#     'weatherstation_pressure': 1020.47,    # Example value
-#     'weatherstation_altitude': -44.97,      # Example value
-#     'orientation_heading': 2,          # Example value
-#     'orientation_roll': -4.0625,              # Example value
-#     'orientation_pitch': -0.5,            # Example value
 #     'low_fan': 0,                         # Example value (0 or 1)
 #     'med_fan': 0,                         # Example value (0 or 1)
 #     'high_fan': 1,                        # Example value (0 or 1)
-#     'linear_acceleration_lx': -0.12,        # Example value
-#     'linear_acceleration_ly': 0.32,      # Example value
-#     'linear_acceleration_lz': -0.33        # Example value
+#     'linear_acceleration_lx': -0.24,        # Example value
+#     'linear_acceleration_ly': -0.17,      # Example value
+#     'linear_acceleration_lz': -0.43         # Example value
 # }
+# --- End Input Definition ---
+
+#ZeroFan_0Degree
+# input_data_dict = {
+#     'weatherstation_speed': 0,         # Example value
+#     'weatherstation_direction': 0,     # Example value (in degrees if conversion is enabled)
+#     'weatherstation_humidity': 65.81,      # Example value
+#     'weatherstation_pressure': 1021.01,    # Example value
+#     'weatherstation_altitude': -49.83,      # Example value
+#     'orientation_heading': 348.9375,          # Example value
+#     'orientation_roll': -2.3125,              # Example value
+#     'orientation_pitch': -0.75,            # Example value
+#     'low_fan': 0,                         # Example value (0 or 1)
+#     'med_fan': 0,                         # Example value (0 or 1)
+#     'high_fan': 0,                        # Example value (0 or 1)
+#     'linear_acceleration_lx': -0.07,        # Example value
+#     'linear_acceleration_ly': -0.01,      # Example value
+#     'linear_acceleration_lz': -0.35        # Example value
+# }
+# --- End Input Definition ---
+
+
+
+
+# South_HighFan_180Degree
+input_data_dict = {
+    'weatherstation_speed': 5.4,         # Example value
+    'weatherstation_direction': 180,     # Example value (in degrees if conversion is enabled)
+    'weatherstation_humidity': 64.96,      # Example value
+    'weatherstation_pressure': 1020.47,    # Example value
+    'weatherstation_altitude': -44.97,      # Example value
+    'orientation_heading': 2,          # Example value
+    'orientation_roll': -4.0625,              # Example value
+    'orientation_pitch': -0.5,            # Example value
+    'low_fan': 0,                         # Example value (0 or 1)
+    'med_fan': 0,                         # Example value (0 or 1)
+    'high_fan': 1,                        # Example value (0 or 1)
+    'linear_acceleration_lx': -0.12,        # Example value
+    'linear_acceleration_ly': 0.32,      # Example value
+    'linear_acceleration_lz': -0.33        # Example value
+}
 # --- End Input Definition ---
 
 #-----------------------------------------------------------------------------------------------------------------#

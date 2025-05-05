@@ -55,4 +55,4 @@ client.close()
 df = pd.DataFrame(data)
 
 # Optionally, save data locally to avoid re-querying InfluxDB
-df.to_csv("NorthEast_MedFan_300Degree.csv")
+df.to_csv("May_West_LowFan_270Degree.csv")
