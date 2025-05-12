@@ -4,7 +4,7 @@ from functools import reduce # For merging multiple dataframes
 
 # --- Configuration ---
 # !!! Step 1: Set your file path !!!
-file_path = 'May_North_LowFan_0Degree.csv',
+file_path = 'May_West_MedFan_345Degree.csv'
 
 # Example for Excel: file_path = 'your_data_file.xlsx'
 
@@ -284,9 +284,9 @@ try:
         'curr': {'func': is_current_row, 'cols': current_cols},
         'power': {'func': is_power_row, 'cols': power_cols},
         'ws_spd': {'func': is_ws_speed_row, 'cols': weather_speed_cols},
+        'ws_hum': {'func': is_ws_humidity_row, 'cols': weather_humidity_cols}, # NEW
         'ws_press': {'func': is_ws_pressure_row, 'cols': weather_pressure_cols},
-        'ws_alt': {'func': is_ws_altitude_row, 'cols': weather_altitude_cols},
-        'ws_hum': {'func': is_ws_humidity_row, 'cols': weather_humidity_cols} # NEW
+        'ws_alt': {'func': is_ws_altitude_row, 'cols': weather_altitude_cols}
     }
 
     # Check existence of all columns needed by any filter upfront
@@ -368,9 +368,9 @@ try:
             'curr': {'df_key': 'curr', 'cols': current_cols, 'suffix': '_curr'},
             'power': {'df_key': 'power', 'cols': power_cols, 'suffix': '_power'},
             'ws_spd': {'df_key': 'ws_spd', 'cols': weather_speed_cols, 'suffix': '_ws_spd'},
+            'ws_hum': {'df_key': 'ws_hum', 'cols': weather_humidity_cols, 'suffix': '_ws_hum'},# NEW
             'ws_press': {'df_key': 'ws_press', 'cols': weather_pressure_cols, 'suffix': '_ws_press'},
-            'ws_alt': {'df_key': 'ws_alt', 'cols': weather_altitude_cols, 'suffix': '_ws_alt'},
-            'ws_hum': {'df_key': 'ws_hum', 'cols': weather_humidity_cols, 'suffix': '_ws_hum'} # NEW
+            'ws_alt': {'df_key': 'ws_alt', 'cols': weather_altitude_cols, 'suffix': '_ws_alt'}
         }
 
         for key, group_config in sensor_groups.items():
@@ -404,10 +404,11 @@ try:
 
 
         # --- 7. Display Results ---
+        # --- 7. Display Results ---
         if not final_df.empty:
             print("-" * 200)
 
-            # Define renaming for final output columns
+            # Define renaming for final output columns (Ensure this is the FULL original map)
             final_cols_rename_map = {
                 timestamp_col: 'RPM Timestamp', rpm_col: 'RPM Value',
                 # Orientation
@@ -432,21 +433,22 @@ try:
                 timestamp_col + '_power': 'Nearest Power TS', power_col: 'Power',
                 # Weather Station
                 timestamp_col + '_ws_spd': 'Nearest WS Spd TS', ws_speed_col: 'WS Speed',
+                 timestamp_col + '_ws_hum': 'Nearest WS Hum TS', ws_humidity_col: 'WS Humidity',
                 timestamp_col + '_ws_press': 'Nearest WS Pres TS', ws_pressure_col: 'WS Pressure',
-                timestamp_col + '_ws_alt': 'Nearest WS Alt TS', ws_altitude_col: 'WS Altitude',
-                timestamp_col + '_ws_hum': 'Nearest WS Hum TS', ws_humidity_col: 'WS Humidity' # NEW
+                timestamp_col + '_ws_alt': 'Nearest WS Alt TS', ws_altitude_col: 'WS Altitude'
             }
 
             cols_to_select = [col for col in final_cols_rename_map.keys() if col in final_df.columns]
             output_df = final_df[cols_to_select].rename(columns=final_cols_rename_map)
 
             # Calculate time differences safely for each sensor type
+            # Ensure time_diff_configs is the FULL original list
             time_diff_configs = [
                  ('_orient', 'Orient'), ('_temp', 'Temp'), ('_mag', 'Mag'),
                  ('_gyro', 'Gyro'), ('_accel', 'Accel'), ('_linaccel', 'LinAccel'),
                  ('_grav', 'Grav'), ('_volt', 'Volt'), ('_curr', 'Curr'),
-                 ('_power', 'Power'), ('_ws_spd', 'WS Spd'), ('_ws_press', 'WS Pres'),
-                 ('_ws_alt', 'WS Alt'), ('_ws_hum', 'WS Hum') # NEW
+                 ('_power', 'Power'), ('_ws_spd', 'WS Spd'), ('_ws_hum', 'WS Hum'),
+                 ('_ws_press', 'WS Pres'),('_ws_alt', 'WS Alt')
             ]
             for suffix_key, display_name in time_diff_configs:
                 sensor_ts_col = f'Nearest {display_name} TS'
@@ -462,10 +464,23 @@ try:
                     else: print(f"Warning: Could not calculate {display_name} time difference - timestamp columns have incorrect types.")
                 else: print(f"Could not calculate {display_name} time difference (missing columns for {display_name}).")
 
+            # --- ADD THIS NEW SECTION TO DROP "Nearest ... TS" COLUMNS ---
+            if not output_df.empty:
+                columns_to_drop_from_excel = []
+                for _, display_name in time_diff_configs: # Reuse time_diff_configs to identify the columns
+                    nearest_ts_col_name = f'Nearest {display_name} TS'
+                    if nearest_ts_col_name in output_df.columns:
+                        columns_to_drop_from_excel.append(nearest_ts_col_name)
+                
+                if columns_to_drop_from_excel:
+                    print(f"\nRemoving the following 'Nearest Timestamp' columns before final Excel export and console display: {columns_to_drop_from_excel}")
+                    output_df = output_df.drop(columns=columns_to_drop_from_excel)
+            # --- END OF NEW SECTION ---
+
             print("\nFinal Matched Data (NaN indicates no match within tolerance):")
             pd.set_option('display.max_columns', None)
             pd.set_option('display.width', 5000)
-            print(output_df.to_string(index=False, na_rep='NaN'))
+            print(output_df.to_string(index=False, na_rep='NaN')) # This will now print the version without "Nearest ... TS"
             pd.reset_option('display.max_columns')
             pd.reset_option('display.width')
             print("-" * 200)
